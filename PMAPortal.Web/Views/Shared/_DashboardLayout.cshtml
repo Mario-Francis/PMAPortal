@@ -1,0 +1,216 @@
+﻿@inject ISessionService service;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>@ViewData["Title"] | Prepaid Meter Application Portal</title>
+    <link href="~/lib/animate.css/animate.css" rel="stylesheet" />
+    <link href="~/css/styles.css" rel="stylesheet" />
+    @*<link href="~/lib/bootstrap-notify/css/bootstrap-notify.css" rel="stylesheet" />*@
+    <link href="~/lib/boxicons/css/boxicons.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
+    @RenderSection("css", false)
+    <link href="~/css/fonts.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/main.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body class="sb-nav-fixed" style="background-color:#eee;">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-blue shadow-sm">
+        <a class="navbar-brand f18" asp-controller="Dashboard" asp-action="Index">
+            <img src="~/img/eraskorp_logo.png" style="max-width:120px;" />
+
+        </a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0 ml-lg-0 ml-2" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar-->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                @*<div class="btn-group d-block">
+                        <button type="button" class="btn text-dark btn-sm dropdown-toggle text-white d-block ml-auto remove-btn-outline px-0" style="margin-top:8px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-globe-africa"></i> &nbsp;@sharedLocalizer[service.Culture] <i class="fa fa-caret-down"></i>
+                        </button>
+                        <input type="hidden" id="culture" value="@service.Culture" />
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <button class="dropdown-item culture" type="button" culture="en" lng="english">@sharedLocalizer["en"]</button>
+                            <button class="dropdown-item culture" type="button" culture="fr" lng="french">@sharedLocalizer["fr"]</button>
+                            <button class="dropdown-item culture" type="button" culture="pt" lng="portuguese">@sharedLocalizer["pt"]</button>
+                            <button class="dropdown-item culture" type="button" culture="es" lng="spanish">@sharedLocalizer["es"]</button>
+                        </div>
+                    </div>*@
+            </li>
+            @if (service.UserSessionExist)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="userDropdown" href="#!" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="f14 py-2" style="max-width:250px;">
+                            <div class="float-left mt-n1 px-2">
+                                <p class="font-weight-bold mt-0">
+                                    Hi @service.UserSession.FirstName.Capitalize()
+                                </p>
+                                <p class="mt-n1 small text-right">@(service.DisplayRoles)</p>
+                            </div>
+                            <div class="p-2 rounded-circle bg-light text-blue float-left mt-n2 d-none d-sm-inline-block text-center font-weight-bold" style="width:37px;height:37px;">@(service.Initial)</div>
+                            <div class="h-50 pl-3"><i class="fa fa-caret-down pl-1 mt-1"></i></div>
+                        </div>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        @*<a class="dropdown-item" asp-controller="Logs" asp-action="ActivityLogs">Activity Logs</a>
+                            <a class="dropdown-item" asp-controller="Logs" asp-action="ErrorLogs">Error Logs</a>*@
+                        @*<div class="dropdown-divider"></div>*@
+                        <a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a>
+                    </div>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    Not logged in!
+                </li>
+            }
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-light bg-light border-right shadow-sm" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="m-2 p-2 bg-lblue rounded roboto shadow-sm" style="line-height:20px;">
+                            <p class="text-center">PREPAID METER APPLICATION PORTAL</p>
+                        </div>
+                        <a class="nav-link @(service.ControllerName.ToLower()=="dashboard"?"active":"")" asp-controller="Dashboard" asp-action="Index">
+                            <i class="fas fa-tachometer-alt"></i> &nbsp; Dashboard
+                        </a>
+                        @if (User.IsInRole(Constants.ROLE_ADMIN))
+                        {
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+
+                                <i class='fa fa-clipboard-list'></i> &nbsp; Applications
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav pl-2">
+
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">All</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending Installation</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending Disco Confirmation</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
+                                </nav>
+                            </div>
+                        }
+                        else if (User.IsInRole(Constants.ROLE_INSTALLER))
+                        {
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+
+                                <i class='fa fa-clipboard-list'></i> &nbsp; Applications
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav pl-2">
+
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Installation</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Disco Confirmation</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
+                                </nav>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+
+                                <i class='fa fa-clipboard-list'></i> &nbsp; Applications
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav pl-2">
+
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Confirmation</a>
+                                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
+                                </nav>
+                            </div>
+                        }
+
+                        @if (User.IsInRole(Constants.ROLE_ADMIN))
+                        {
+                        <a class="nav-link @(service.ControllerName.ToLower() == "users" ? "active" : "")" asp-controller="Users" asp-action="Index">
+                            <i class="fas fa-users"></i> &nbsp; Users
+                        </a>
+                        <a class="nav-link @(service.ControllerName.ToLower() == "meters" ? "active" : "")" asp-controller="Meters" asp-action="Index">
+                            <i class="fas fa-bolt"></i> &nbsp; Meters
+                        </a>
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
+
+                            <i class='fa fa-angle-double-down'></i> &nbsp; Dropdown Options
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav pl-2">
+
+                                <a class="nav-link" asp-controller="Areas" asp-action="Index">Areas</a>
+                                <a class="nav-link" asp-controller="HouseTypes" asp-action="Index">House Types</a>
+                                <a class="nav-link" asp-controller="Appliances" asp-action="Index">Appliances</a>
+                                <a class="nav-link" asp-controller="Pets" asp-action="Index">Pets</a>
+                            </nav>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer bg-light">
+                    <div class="small">Version 1.0.0</div>
+                    @*Start Bootstrap*@
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid" style="padding-bottom:40px;">
+                    @RenderBody()
+
+                </div>
+            </main>
+            <footer class="py-3 bg-light mt-auto shadow-sm">
+                <div class="container-fluid">
+                    <div class="d-inline d-md-flex align-items-center justify-content-between small">
+                        <div class="text-muted text-center text-md-left">Copyright @DateTime.Now.ToString("yyyy") &copy; Eraskorp. All rights reserved.</div>
+                        <div class=" text-center text-md-right">
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    @*<environment include="Development">*@
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="~/js/scripts.js"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.js"></script>
+    <script src="~/lib/sweetalert2/dist/sweetalert2.all.js"></script>
+    <script src="~/lib/bootbox.js/bootbox.js"></script>
+    <script src="~/lib/js-cookie/js.cookie.js"></script>
+    <script src="~/lib/accounting.js/accounting.js"></script>
+    <script src="~/js/notify.js" asp-append-version="true"></script>
+    <script src="~/js/error_handler.js" asp-append-version="true"></script>
+    <script src="~/js/utilities.js" asp-append-version="true"></script>
+    <script>
+            $base = '@service.BaseUrl';
+
+            // roles
+            const isAdmin = @(service.IsAdmin.ToString().ToLower());
+            const isDisco = @(service.IsDisco.ToString().ToLower());
+            const isInstaller = @(service.IsInstaller.ToString().ToLower());
+    </script>
+    @RenderSection("js", false)
+    @*</environment>*@
+    <environment exclude="Development">
+
+    </environment>
+</body>
+</html>

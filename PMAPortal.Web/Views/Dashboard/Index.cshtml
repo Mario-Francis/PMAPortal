@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2 class="mt-4">Dashboard</h2>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
+    <li class="breadcrumb-item active">Dashboard</li>
+</ol>
+<!-- Batches raw data -->
+<div class="row">
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card bg-primary text-white mb-4 shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-users fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h5 class="pt-3 m-0 text-right">Users</h5>
+                                <h4 class="text-right pt-1 text-right w-100">@ViewData["UsersCount"]</h4>
+                                @*<hr class="my-0 w-50 border-white ml-auto mr-0" style="max-width: 70px;" />
+                                <h6 class="text-right pt-1 text-right w-100">@Model.EmployeeCount.ToString("N0")</h6>*@
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white w-100" asp-controller="Users" asp-action="Index">
+                        View Details
+                        <div class="small text-white float-right"><i class="fas fa-angle-right"></i></div>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+   
+</div>
+
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/Chart.js/chart.js"></script>
+    <script src="~/lib/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js"></script>
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    @*<script src="~/js/dashboard.js"></script>*@
+}

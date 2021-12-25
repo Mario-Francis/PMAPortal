@@ -1,0 +1,209 @@
+﻿@model ApplicationVM;
+@inject ISessionService service;
+@inject IDropdownService dropdownService;
+@{
+    var title = $"Application #{Model.TrackNumber}";
+    Layout = "_HomeLayout";
+    ViewData["Title"] = title;
+
+}
+
+
+<div class="row">
+    <div class="offset-lg-2 col-lg-8 col-sm-12">
+        <div class="row">
+            <div class="col-12">
+                <div class="px-3 py-2" style="border-left: 3px solid #1C5B91;">
+                    <h6 class="roboto text-white f18 font-weight-bold">PREPAID METER <br />APPLICATION PORTAL</h6>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6 border-right">
+                        <div class="f14">
+                            <div class="d-flex">
+                                <div style="min-width:130px" class="mini-bold">Requested Meter: </div>
+                                <div class="flex-fill">@Model.MeterName</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:130px" class="mini-bold">Amount Paid: </div>
+                                <div class="flex-fill">@Model.Payment.Amount</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:130px" class="mini-bold">Status: </div>
+                                <div class="flex-fill">
+                                    <span class="badge bg-lblue rounded-pill py-1 px-2" style="word-break:break-word;">@Model.Status</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="mini-bold mt-4">Applicant Info</h6>
+                        <hr class="mt-2 mb-3" />
+                        <div class="f14">
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">First Name: </div>
+                                <div class="flex-fill">@Model.FirstName</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Last Name: </div>
+                                <div class="flex-fill">@Model.LastName</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Email: </div>
+                                <div class="flex-fill" style="word-break:break-word;">@Model.Email</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Phone No: </div>
+                                <div class="flex-fill">@Model.PhoneNumber</div>
+                            </div>
+                        </div>
+
+                        <h6 class="mini-bold mt-4">Address</h6>
+                        <hr class="mt-2 mb-3" />
+                        <div class="f14">
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Area: </div>
+                                <div class="flex-fill">@Model.Area</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">House No: </div>
+                                <div class="flex-fill">@Model.HouseNumber</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Apartment No: </div>
+                                <div class="flex-fill" style="word-break:break-word;">@Model.ApartmentNumber</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Street: </div>
+                                <div class="flex-fill">@Model.Street</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Landmark: </div>
+                                <div class="flex-fill">@Model.Landmark</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Description: </div>
+                                <div class="flex-fill">@Model.Description</div>
+                            </div>
+                        </div>
+
+                        <h6 class="mini-bold mt-4">House Description</h6>
+                        <hr class="mt-2 mb-3" />
+                        <div class="f14">
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">House Type: </div>
+                                <div class="flex-fill">@Model.HouseType</div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">No of Rooms: </div>
+                                <div class="flex-fill">@Model.RoomsCount</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <h6 class="mini-bold mt-4">Pets</h6>
+                        <hr class="mt-2 mb-3" />
+                        <div class="f14 table-responsive">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Pet</th>
+                                        <th>No.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Pets != null && Model.Pets.Count() > 0)
+                                    {
+                                        var cnt = 1;
+                                        foreach (var p in Model.Pets)
+                                        {
+                                            <tr>
+                                                <td>@cnt.</td>
+                                                <td>@p.Name</td>
+                                                <td>@p.Count</td>
+                                            </tr>
+                                            cnt++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3"><p class="text-center">No pets</p></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h6 class="mini-bold mt-4">Appliances</h6>
+                        <hr class="mt-2 mb-3" />
+                        <div class="f14 table-responsive">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Appliance</th>
+                                        <th>No.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Appliances != null && Model.Appliances.Count() > 0)
+                                    {
+                                        var cnt = 1;
+                                        foreach (var p in Model.Appliances)
+                                        {
+                                            <tr>
+                                                <td>@cnt.</td>
+                                                <td>@p.Name</td>
+                                                <td>@p.Count</td>
+                                            </tr>
+                                            cnt++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3"><p class="text-center">No appliance</p></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="f12 mt-4 font-italic">
+                            <hr />
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Date Created: </div>
+                                <div class="flex-fill">@Model.FormattedCreatedDate</div>
+                            </div>
+                            @*<div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Last Updated By: </div>
+                                <div class="flex-fill">@Model.UpdatedBy</div>
+                            </div>*@
+                            <div class="d-flex">
+                                <div style="min-width:120px" class="mini-bold">Date Updated: </div>
+                                <div class="flex-fill" style="word-break:break-word;">@Model.FormattedUpdatedDate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-sm ml-auto px-3 d-block" style="max-width:120px;" id="okBtn"><i class="fa fa-check-circle"></i> OK</a>
+            </div>
+        </div>
+    </div>
+   
+</div>
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    
+}

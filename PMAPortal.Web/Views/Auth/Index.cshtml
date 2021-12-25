@@ -1,0 +1,74 @@
+﻿@inject IDropdownService dropDownservice
+@inject ISessionService service
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "Setup";
+}
+
+
+<div class="row">
+    <div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
+        <div class="row">
+            <div class="col-12">
+                <div class="px-3 py-2" style="border-left: 3px solid #1C5B91;">
+                    <h6 class="roboto text-white f18 font-weight-bold">PREPAID METER <br />APPLICATION PORTAL</h6>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow" style="margin-top: 10vh;">
+            <div class="card-header">
+                <h5 class="m-0">Login </h5>
+            </div>
+            <form method="post" id="setupForm">
+                <fieldset>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="email">* Email</label>
+                                    <input id="email" type="email" placeholder="Enter email" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="password">* Password</label>
+                                    <input id="password" type="password" placeholder="Enter password" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer d-flex flex-row">
+                        <input type="hidden" id="returnUrl" value="@(ViewData["returnUrl"])" />
+                        <div>
+                            @*<button type="button" class="btn btn-danger btn-sm px-3 cancel" id="cancelBtn"><i class="fa fa-times"></i> Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm px-3" id="prevBtn"><i class="fa fa-chevron-left"></i> &nbsp;Previous</button>*@
+                        </div>
+                        <div class="ml-auto">
+                            @*<button type="button" class="btn btn-primary btn-sm px-3" id="nextBtn">Next &nbsp;<i class="fa fa-chevron-right"></i></button>*@
+                            <button type="submit" class="btn btn-primary btn-sm px-3" id="loginBtn" form="setupForm"><i class="fa fa-check-circle"></i> &nbsp;Login</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section css{
+    @*<link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />*@
+    <!-- <link href="~/lib/chosen_v1.8.7/chosen.min.css" rel="stylesheet" /> -->
+}
+
+@section js{
+    <!-- <script src="~/lib/Chart.js/chart.js"></script>
+    <script src="~/lib/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js"></script> -->
+    @*<script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+        <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>*@
+
+    <!-- <script src="~/lib/chosen_v1.8.7/chosen.jquery.min.js"></script>
+    <script src="~/js/complete_profile.js"></script> -->
+    <script src="~/js/login.js" asp-append-version="true"></script>
+}
