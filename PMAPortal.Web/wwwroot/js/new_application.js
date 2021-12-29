@@ -523,10 +523,10 @@ function validateEmail(email) {
                 let text =
                     `The email you provided matches an existing record. Please confirm if the below information is yours
                     <br /><br />
-                    <b>Name: </b>${applicant.firstName} ${applicant.lastName}<br />
+                   <!-- <b>Name: </b>${applicant.firstName} ${applicant.lastName}<br /> -->
                     <b>Email: </b>${applicant.email}<br />
-                    <b>Phone Number: </b>${applicant.phoneNumber}<br />
-                    <b>Address: </b>${applicant.address.formattedAddress}
+                   <!-- <b>Phone Number: </b>${applicant.phoneNumber}<br />
+                    <b>Address: </b>${applicant.address.formattedAddress}-->
                     `;
                 bootConfirm(text, {
                     title: "Confirm Action",
