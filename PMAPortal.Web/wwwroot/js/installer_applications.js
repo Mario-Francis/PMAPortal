@@ -6,7 +6,7 @@
             url: $base + 'applications/InstallerApplicationsDataTable?tableType=pending',
             type: "POST"
         },
-        "order": [[2, "asc"]],
+        "order": [[12, "desc"]],
         "lengthMenu": [10, 20, 30, 50, 100],
         "paging": true,
         autoWidth: false,
@@ -123,7 +123,7 @@
             url: $base + 'applications/InstallerApplicationsDataTable?tableType=failed',
             type: "POST"
         },
-        "order": [[2, "asc"]],
+        "order": [[12, "desc"]],
         "lengthMenu": [10, 20, 30, 50, 100],
         "paging": true,
         autoWidth: false,
@@ -240,7 +240,7 @@
             url: $base + 'applications/InstallerApplicationsDataTable?tableType=disco',
             type: "POST"
         },
-        "order": [[2, "asc"]],
+        "order": [[12, "desc"]],
         "lengthMenu": [10, 20, 30, 50, 100],
         "paging": true,
         autoWidth: false,
@@ -357,7 +357,7 @@
             url: $base + 'applications/InstallerApplicationsDataTable?tableType=completed',
             type: "POST"
         },
-        "order": [[2, "asc"]],
+        "order": [[12, "desc"]],
         "lengthMenu": [10, 20, 30, 50, 100],
         "paging": true,
         autoWidth: false,

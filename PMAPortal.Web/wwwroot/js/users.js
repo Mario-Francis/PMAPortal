@@ -534,9 +534,11 @@ function getRoleBadge(role) {
     if (role == 1) {
         return `<span class="badge bg-primary text-white badge-sm rounded-pill px-2 py-1">Administrator</span>`;
     } else if (role == 2) {
-        return `<span class="badge bg-secondary badge-sm rounded-pill px-2 py-1">Disco Personnel</span>`;
+        return `<span class="badge bg-secondary badge-sm rounded-pill px-2 py-1">Supervisor</span>`;
     } else if (role == 3) {
-        return `<span class="badge bg-info text-white badge-sm rounded-pill px-2 py-1">Installer</span>`;
+        return `<span class="badge bg-info text-white badge-sm rounded-pill px-2 py-1">Disco Personnel</span>`;
+    }else if (role == 4) {
+        return `<span class="badge bg-success text-white badge-sm rounded-pill px-2 py-1">Installer</span>`;
     } else {
         return '';
     }

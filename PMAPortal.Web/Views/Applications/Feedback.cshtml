@@ -1,0 +1,73 @@
+﻿@model IEnumerable<FeedbackQuestion>;
+@inject ISessionService service;
+@inject IDropdownService dropdownService;
+@{
+    var title = $"Application #{ViewData["TrackNumber"]} Feedback";
+    Layout = "_HomeLayout";
+    ViewData["Title"] = title;
+
+}
+
+
+<div class="row">
+    <div class="offset-lg-2 col-lg-8 col-sm-12">
+        <div class="row">
+            <div class="col-12">
+                <div class="px-3 py-2" style="border-left: 3px solid #1C5B91;">
+                    <h6 class="roboto text-white f18 font-weight-bold">PREPAID METER <br />APPLICATION PORTAL</h6>
+                </div>
+            </div>
+        </div>
+
+        <form method="post">
+            <fieldset>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5>@title</h5>
+                        <hr class="mt-2" />
+                        @{
+                            var cnt = 1;
+                        }
+                        @foreach (var q in Model)
+                        {
+                            <div class="form-group">
+                                <label for="a@(cnt)">@(cnt). @q.Question</label>
+                                <select id="a@(cnt)" qid="@q.Id" class="form-control custom-select" required>
+                                    <option value="">- select rating -</option>
+                                    <option value="5">5</option>
+                                    <option value="4">4</option>
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+                            cnt++;
+                        }
+                        <div class="form-group">
+                            <label for="comment">@(cnt). Comment</label>
+                            <textarea id="comment" class="form-control" rows="3" placeholder="Ennter any other comment"></textarea>
+                        </div>
+                        <input type="hidden" id="applicationId" value="@ViewData["ApplicationId"]" />
+                        <input type="hidden" id="applicantId" value="@ViewData["ApplicantId"]" />
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary btn-sm ml-auto px-3 d-block" id="submitBtn"><i class="fa fa-check-circle"></i> Submit</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+
+</div>
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    <script src="~/js/feedback.js"></script>
+
+}

@@ -16,7 +16,6 @@ namespace PMAPortal.Web.ViewModels
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        [Required]
         [EmailAddress]
         public string Email { get; set; }
         [Required]
@@ -36,6 +35,8 @@ namespace PMAPortal.Web.ViewModels
         public string Landmark { get; set; }
         public string Description { get; set; }
 
+       
+
         [Required]
         public long HouseTypeId { get; set; }
         [Required]
@@ -52,7 +53,8 @@ namespace PMAPortal.Web.ViewModels
         public long MeterId { get; set; }
         [Required]
         public IEnumerable<ItemCountVM> Appliances { get; set; }
-
+        public long? AssignedBy { get; set; }
+        public long? InstallerId { get; set; }
 
         // display
         public string ApplicantFullName { get; set; }
@@ -63,6 +65,8 @@ namespace PMAPortal.Web.ViewModels
         public string TrackNumber { get; set; }
         public long StatusId { get; set; }
         public string Status { get; set; }
+        public string AssignedByUser { get; set; }
+        public string Installer { get; set; }
 
         public IEnumerable<StatusLogVM> StatusLogs { get; set; }
 
@@ -201,7 +205,11 @@ namespace PMAPortal.Web.ViewModels
                 CreatedDate = clientTimeOffset == null ? application.CreatedDate : application.CreatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value)),
                 UpdatedBy = application.UpdatedByUser == null ? null : $"{application.UpdatedByUser.FirstName} {application.UpdatedByUser.LastName} ({application.UpdatedByUser.Email})",
                 UpdatedDate = clientTimeOffset == null ? application.UpdatedDate : application.UpdatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value)),
-                StatusLogs = application.ApplicationStatusLogs.Select(l => StatusLogVM.FromApplicationStatusLog(l, clientTimeOffset))
+                StatusLogs = application.ApplicationStatusLogs.Select(l => StatusLogVM.FromApplicationStatusLog(l, clientTimeOffset)),
+                AssignedByUser = application.AssignedByUser == null ? null : $"{application.AssignedByUser.FirstName} {application.AssignedByUser.LastName} ({application.AssignedByUser.Email})",
+                AssignedBy=application.AssignedBy,
+                Installer = application.Installer == null ? null : $"{application.Installer.FirstName} {application.Installer.LastName} ({application.Installer.Email})",
+                InstallerId = application.InstallerId
             };
         }
     }

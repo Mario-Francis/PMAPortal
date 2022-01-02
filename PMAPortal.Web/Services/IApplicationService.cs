@@ -10,6 +10,7 @@ namespace PMAPortal.Web.Services
     {
         Task<(string trackNo, long applicationId)> AddApplication(Application application, Applicant applicant, ApplicantAddress address, IEnumerable<ApplicationAppliance> appliances, IEnumerable<ApplicationPet> pets);
         Task UpdateApplicationStatus(long applicationId, long statusId, string comment = null);
+        Task AssignInstaller(long applicationId, long installerId);
         Task<Applicant> GetApplicant(string email);
         Task ScheduleNewApplicationMail(long applicationId);
         Task<(bool exist, Applicant applicant)> ApplicantExists(string email);

@@ -1,0 +1,56 @@
+﻿@model ApplicantFeedback;
+@inject ISessionService service;
+@inject IDropdownService dropdownService;
+@{
+    Layout = "_DashboardLayout";
+    var title = "Applicant Feedback for Application #" + Model.Application.TrackNumber;
+    ViewData["Title"] = title;
+}
+
+
+<h2 class="mt-4">@title</h2>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
+    <li class="breadcrumb-item">Applications</li>
+    <li class="breadcrumb-item">#@Model.Application.TrackNumber</li>
+    <li class="breadcrumb-item active">Applicant Feedback</li>
+</ol>
+
+<div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <a asp-controller="Applications" asp-action="ApplicantFeedbacks" class="btn btn-primary btn-sm f12 mb-3"><i class="fa fa-arrow-left"></i> Back to list</a>
+                <h5>@title</h5>
+                <hr class="mt-2" />
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>Question</th>
+                            <th>Answer</th>
+                        </tr>
+                        @foreach (var a in Model.FeedbackAnswers)
+                        {
+                            <tr>
+                                <td>@a.FeedbackQuestion.Question</td>
+                                <td>@a.rating</td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+}

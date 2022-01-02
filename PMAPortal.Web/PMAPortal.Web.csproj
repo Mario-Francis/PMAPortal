@@ -10,9 +10,12 @@
     <Compile Remove="Migrations\20211222123138_Initial_Migration.Designer.cs" />
     <Compile Remove="Migrations\20211222163834_Updated.cs" />
     <Compile Remove="Migrations\20211222163834_Updated.Designer.cs" />
+    <Compile Remove="Migrations\20220101085457_Added_AssignedBy_Column_To_Applications_Table.cs" />
+    <Compile Remove="Migrations\20220101085457_Added_AssignedBy_Column_To_Applications_Table.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.18" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.18">

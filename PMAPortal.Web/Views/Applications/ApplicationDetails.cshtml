@@ -38,6 +38,18 @@
                                     <span class="badge bg-lblue rounded-pill py-1 px-2" style="word-break:break-word;">@Model.Status</span>
                                 </div>
                             </div>
+                            <div class="d-flex">
+                                <div style="min-width:130px" class="mini-bold">Assigned To: </div>
+                                <div class="flex-fill">
+                                    <span class="" style="word-break:break-word;">@Model.Installer</span>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div style="min-width:130px" class="mini-bold">Assigned By: </div>
+                                <div class="flex-fill">
+                                    <span class="" style="word-break:break-word;">@Model.AssignedByUser</span>
+                                </div>
+                            </div>
                         </div>
                         <h6 class="mini-bold mt-4">Applicant Info</h6>
                         <hr class="mt-2 mb-3" />
@@ -193,91 +205,119 @@
             </div>
         </div>
     </div>
-    @if(User.IsInRole(Constants.ROLE_ADMIN) || (User.IsInRole(Constants.ROLE_INSTALLER) && new long[]{2,3,4,5,7}.Contains(Model.StatusId)) || (User.IsInRole(Constants.ROLE_DISCO) && new long[] { 6,7 }.Contains(Model.StatusId)))
-    {
     <div class="col-lg-4 col-sm-12">
-        <div class="card mt-3">
-            <div class="card-body">
-                <h6 class="mini-bold">Update Application Status</h6>
-                <hr class="mt-2 mb-3" />
-               <div style="max-width:450px;">
-                   <form method="post">
-                       <fieldset>
-                           <input type="hidden" id="applicationId" value="@Model.Id" />
-                           <div class="form-group">
-                               <label for="status" class="f14">* Status</label>
-                               <select id="status" class="form-control custom-select" asp-items="dropdownService.GetApplicationStatuses(Model.StatusId.ToString())" required></select>
-                           </div>
-                           <div class="form-group" id="commentDiv" style="display:none;">
-                               <label for="comment" class="f14">* Comment</label>
-                               <textarea id="comment" class="form-control" rows="3" placeholder="Enter comment"></textarea>
-                           </div>
-                           <p class="text-right">
-                               <button type="submit" id="updateBtn" class="btn btn-sm btn-primary px-4"><i class="fa fa-check-circle"></i> &nbsp;Update</button>
-                           </p>
-                       </fieldset>
-                   </form>
-               </div>
+        @if (User.IsInRole(Constants.ROLE_ADMIN) || (User.IsInRole(Constants.ROLE_INSTALLER) && new long[] { 2, 3, 4, 5, 7 }.Contains(Model.StatusId)) || (User.IsInRole(Constants.ROLE_DISCO) && new long[] { 6, 7 }.Contains(Model.StatusId)))
+        {
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="mini-bold">Update Application Status</h6>
+                    <hr class="mt-2 mb-3" />
+                    <div style="max-width:450px;">
+                        <form method="post">
+                            <fieldset>
+                                <input type="hidden" id="applicationId" value="@Model.Id" />
+                                <div class="form-group">
+                                    <label for="status" class="f14">* Status</label>
+                                    <select id="status" class="form-control custom-select" asp-items="dropdownService.GetApplicationStatuses(Model.StatusId.ToString())" required></select>
+                                </div>
+                                <div class="form-group" id="commentDiv" style="display:none;">
+                                    <label for="comment" class="f14">* Comment</label>
+                                    <textarea id="comment" class="form-control" rows="3" placeholder="Enter comment"></textarea>
+                                </div>
+                                <p class="text-right">
+                                    <button type="submit" id="updateBtn" class="btn btn-sm btn-primary px-4"><i class="fa fa-check-circle"></i> &nbsp;Update</button>
+                                </p>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
+
+        }
+        @if (User.IsInRole(Constants.ROLE_ADMIN) || (User.IsInRole(Constants.ROLE_SUPERVISOR)))
+        {
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="mini-bold">Assign Installer</h6>
+                    <hr class="mt-2 mb-3" />
+                    <div style="max-width:450px;">
+                        <form method="post">
+                            <fieldset>
+                                <input type="hidden" id="applicationId" value="@Model.Id" />
+                                <div class="form-group">
+                                    <label for="installer" class="f14">* Select Installer</label>
+                                    <select id="installer" class="form-control custom-select chosen-select w-100" asp-items="dropdownService.GetInstallers(Model.InstallerId.ToString())" required></select>
+                                </div>
+                                <p class="text-right">
+                                    <button type="submit" id="assignBtn" class="btn btn-sm btn-primary px-4"><i class="fa fa-check-circle"></i> &nbsp;Assign</button>
+                                </p>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        }
     </div>
-    }
 </div>
 
 <div class="row mt-2">
     <div class="col-md-12">
         <!--status logs-->
-       <div class="card">
-           <div class="card-body">
-               <h6 class="mini-bold">Application Status Log</h6>
-               <div class="f14 table-responsive">
-                   <table class="table table-sm table-striped">
-                       <thead>
-                           <tr>
-                               <th>#</th>
-                               <th>Status</th>
-                               <th>Comment</th>
-                               <th>Action&nbsp;By</th>
-                               <th>Created&nbsp;Date</th>
-                           </tr>
-                       </thead>
-                       <tbody>
-                           @if (Model.StatusLogs != null && Model.StatusLogs.Count() > 0)
-                           {
-                               var cnt = 1;
-                               foreach (var l in Model.StatusLogs)
-                               {
-                                   <tr>
-                                       <td>@cnt.</td>
-                                       <td>@l.Status</td>
-                                       <td>@l.Comment</td>
-                                       <td>@l.ActionBy</td>
-                                       <td>@l.FormattedCreatedDate</td>
-                                   </tr>
-                                   cnt++;
-                               }
-                           }
-                           else
-                           {
-                               <tr>
-                                   <td colspan="5"><p class="text-center">No record found</p></td>
-                               </tr>
-                           }
-                       </tbody>
-                   </table>
-               </div>
-           </div>
-       </div>
+        <div class="card">
+            <div class="card-body">
+                <h6 class="mini-bold">Application Status Log</h6>
+                <div class="f14 table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Status</th>
+                                <th>Comment</th>
+                                <th>Action&nbsp;By</th>
+                                <th>Created&nbsp;Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.StatusLogs != null && Model.StatusLogs.Count() > 0)
+                            {
+                                var cnt = 1;
+                                foreach (var l in Model.StatusLogs)
+                                {
+                                    <tr>
+                                        <td>@cnt.</td>
+                                        <td>@l.Status</td>
+                                        <td>@l.Comment</td>
+                                        <td>@l.ActionBy</td>
+                                        <td>@l.FormattedCreatedDate</td>
+                                    </tr>
+                                    cnt++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5"><p class="text-center">No record found</p></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section css{
     <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/lib/chosen/chosen.min.css" rel="stylesheet" />
 }
 
 @section js{
     <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
     <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    <script src="~/lib/chosen/chosen.jquery.min.js"></script>
     <script>
 
     </script>

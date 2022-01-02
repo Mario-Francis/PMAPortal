@@ -24,6 +24,7 @@ namespace PMAPortal.Web.Services.Implementations
         private readonly IHttpContextAccessor contextAccessor;
         private readonly IMailService mailService;
         private readonly IUserService userService;
+        private readonly ITokenService tokenService;
         private readonly Random Rand;
 
         public ApplicationService(ILoggerService<ApplicationService> logger,
@@ -37,7 +38,8 @@ namespace PMAPortal.Web.Services.Implementations
             IApplicationRepo appRepo,
             IHttpContextAccessor contextAccessor,
             IMailService mailService,
-            IUserService userService)
+            IUserService userService,
+            ITokenService tokenService)
         {
             this.logger = logger;
             this.applicationRepo = applicationRepo;
@@ -51,15 +53,16 @@ namespace PMAPortal.Web.Services.Implementations
             this.contextAccessor = contextAccessor;
             this.mailService = mailService;
             this.userService = userService;
+            this.tokenService = tokenService;
             this.Rand = new Random();
         }
 
         public async Task<(string trackNo, long applicationId)> AddApplication(Application application, Applicant applicant, ApplicantAddress address, IEnumerable<ApplicationAppliance> appliances, IEnumerable<ApplicationPet> pets)
         {
-            if(applicant.Id == 0 && (await applicantRepo.Any(a=>a.Email == applicant.Email)))
-            {
-                throw new AppException($"A customer with email '{applicant.Email}' already exist. Please use a different email");
-            }
+            //if(applicant.Id == 0 && (await applicantRepo.Any(a=>a.Email == applicant.Email)))
+            //{
+            //    throw new AppException($"A customer with email '{applicant.Email}' already exist. Please use a different email");
+            //}
 
             if(applicant.Id != 0)
             {
@@ -128,6 +131,30 @@ namespace PMAPortal.Web.Services.Implementations
             await ScheduleMailOnStatusUpdate(applicationId, statusId, comment);
         }
 
+        public async Task AssignInstaller(long applicationId, long installerId)
+        {
+            var application = await applicationRepo.GetById(applicationId);
+            if (application == null)
+            {
+                throw new AppException("Application is not found");
+            }
+
+            if ((await userService.GetUser(installerId))==null)
+            {
+                throw new AppException("Invalid installer id");
+            }
+
+            var currentUser = contextAccessor.HttpContext?.GetUserSession();
+            application.InstallerId = installerId;
+            application.AssignedBy = currentUser.Id;
+            application.UpdatedDate = DateTimeOffset.Now;
+            application.UpdatedBy = currentUser?.Id;
+            await applicationRepo.Update(application, false);
+
+
+            await ScheduleMailToInstallerOnNewAssignment(applicationId, installerId, currentUser.FullName, currentUser.Email);
+        }
+
         public async Task UpdateApplicant(Applicant applicant)
         {
             if (applicant == null)
@@ -194,7 +221,7 @@ namespace PMAPortal.Web.Services.Implementations
         {
             var application = await applicationRepo.GetById(applicationId);
             var applicant = application.Applicant;
-            var installers = userService.GetUsers((int)AppRoles.INSTALLER);
+            var supervisors = userService.GetUsers((int)AppRoles.SUPERVISOR);
 
             var applicantMail = new MailObject
             {
@@ -211,9 +238,9 @@ namespace PMAPortal.Web.Services.Implementations
             };
             await mailService.ScheduleApplicationReceivedMail(applicantMail);
 
-            var installerMail = new MailObject
+            var supervisorMail = new MailObject
             {
-                Recipients = installers.Select(u => new Recipient
+                Recipients = supervisors.Select(u => new Recipient
                 {
                     Email = u.Email,
                     FirstName = u.FirstName,
@@ -224,7 +251,7 @@ namespace PMAPortal.Web.Services.Implementations
                 MeterType = application.Meter.Name,
                 TrackNo = application.TrackNumber
             };
-            await mailService.ScheduleNewApplicationMailToInstallers(installerMail);
+            await mailService.ScheduleNewApplicationMailToSupervisors(supervisorMail);
         }
 
         private async Task ScheduleMailOnStatusUpdate(long applicationId, long statusId, string comment)
@@ -235,7 +262,7 @@ namespace PMAPortal.Web.Services.Implementations
             var discos = userService.GetUsers((int)AppRoles.DISCO_PERSONNEL);
             var status = await applicationStatusRepo.GetById(statusId);
 
-            if (new long[] {3,4,5,6 }.Contains(statusId))
+            if (new long[] {3,4,5,6,8 }.Contains(statusId))
             {
                 var applicantMail = new MailObject
                 {
@@ -245,7 +272,8 @@ namespace PMAPortal.Web.Services.Implementations
                     {
                         Email=applicant.Email,
                         FirstName=applicant.FirstName,
-                        LastName=applicant.LastName
+                        LastName=applicant.LastName,
+                        Token=tokenService.GenerateTokenFromData(applicationId.ToString())
                     }
                 },
                     TrackNo = application.TrackNumber,
@@ -253,7 +281,7 @@ namespace PMAPortal.Web.Services.Implementations
                     Comment = comment,
                     MeterType = application.Meter.Name
                 };
-                if(statusId==3 || statusId == 4)
+                if(statusId==3 || statusId == 4 || statusId== 6)
                 {
                     await mailService.ScheduleInstallationUpdateMail(applicantMail);
                 }else if (statusId == 5)
@@ -313,6 +341,33 @@ namespace PMAPortal.Web.Services.Implementations
                 await mailService.ScheduleInstallationCompletedMailToDisco(discoMail);
             }
         }
+        private async Task ScheduleMailToInstallerOnNewAssignment(long applicationId, long installerId, string assignedByName, string assignedByEmail)
+        {
+            var application = await applicationRepo.GetById(applicationId);
+            var applicant = application.Applicant;
+            var installer = await userService.GetUser(installerId);
+
+            var installerMail = new MailObject
+            {
+                Recipients=new List<Recipient>
+                {
+                    new Recipient
+                    {
+                        Email=installer.Email,
+                        FirstName=installer.FirstName,
+                        LastName=installer.LastName
+                    }
+                },
+                ApplicantEmail = applicant.Email,
+                ApplicantName = applicant.FirstName + " " + applicant.LastName,
+                ApplicantPhoneNo=applicant.PhoneNumber,
+                MeterType = application.Meter.Name,
+                TrackNo = application.TrackNumber,
+                AssignedByEmail=assignedByEmail,
+                AssignedByName=assignedByName
+            };
+            await mailService.ScheduleNewAssignmentMailToInstaller(installerMail);
+        }
 
 
         public async Task<(bool exist, Applicant applicant)> ApplicantExists(string email)
@@ -327,11 +382,11 @@ namespace PMAPortal.Web.Services.Implementations
         //===================================
         public IEnumerable<Application> GetApplications()
         {
-            return appRepo.GetAll();
+            return appRepo._GetAll();
         }
         public IEnumerable<Application> GetApplications(long[] statuses)
         {
-            return appRepo.GetWhere(a=> statuses.Contains(a.ApplicationStatusId));
+            return appRepo._GetWhere(a=> statuses.Contains(a.ApplicationStatusId));
         }
         public async Task<Application> GetApplication(long id)
         {
@@ -341,5 +396,7 @@ namespace PMAPortal.Web.Services.Implementations
         {
             return await applicationRepo.GetSingleWhere(a => a.TrackNumber == trackNumber);
         }
+
+
     }
 }

@@ -152,6 +152,8 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicantId");
 
+                    b.HasIndex("ApplicationId");
+
                     b.ToTable("ApplicantFeedbacks");
                 });
 
@@ -168,6 +170,9 @@ namespace PMAPortal.Web.Migrations
                     b.Property<long>("ApplicationStatusId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("AssignedBy")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("CreatedBy")
                         .HasColumnType("bigint");
 
@@ -178,6 +183,9 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("bit");
 
                     b.Property<long>("HouseTypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InstallerId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("MeterId")
@@ -201,7 +209,11 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicationStatusId");
 
+                    b.HasIndex("AssignedBy");
+
                     b.HasIndex("HouseTypeId");
+
+                    b.HasIndex("InstallerId");
 
                     b.HasIndex("MeterId");
 
@@ -487,6 +499,58 @@ namespace PMAPortal.Web.Migrations
                     b.ToTable("AuditLogChanges");
                 });
 
+            modelBuilder.Entity("PMAPortal.Web.Models.FeedbackAnswer", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("ApplicantFeedbackId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("FeedbackQuestionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicantFeedbackId");
+
+                    b.HasIndex("FeedbackQuestionId");
+
+                    b.ToTable("FeedbackAnswers");
+                });
+
+            modelBuilder.Entity("PMAPortal.Web.Models.FeedbackQuestion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeedbackQuestions");
+                });
+
             modelBuilder.Entity("PMAPortal.Web.Models.HouseType", b =>
                 {
                     b.Property<long>("Id")
@@ -702,11 +766,17 @@ namespace PMAPortal.Web.Migrations
                         {
                             Id = 2L,
                             CreatedDate = new DateTimeOffset(new DateTime(2021, 10, 29, 18, 38, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
-                            Name = "Disco Personnel"
+                            Name = "Supervisor"
                         },
                         new
                         {
                             Id = 3L,
+                            CreatedDate = new DateTimeOffset(new DateTime(2021, 10, 29, 18, 38, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
+                            Name = "Disco Personnel"
+                        },
+                        new
+                        {
+                            Id = 4L,
                             CreatedDate = new DateTimeOffset(new DateTime(2021, 10, 29, 18, 38, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
                             Name = "Installer"
                         });
@@ -785,6 +855,12 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("ApplicantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("PMAPortal.Web.Models.Application", "Application")
+                        .WithMany("ApplicantFeedbacks")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.Application", b =>
@@ -801,11 +877,21 @@ namespace PMAPortal.Web.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("PMAPortal.Web.Models.User", "AssignedByUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedBy")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("PMAPortal.Web.Models.HouseType", "HouseType")
                         .WithMany()
                         .HasForeignKey("HouseTypeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("PMAPortal.Web.Models.User", "Installer")
+                        .WithMany("Applications")
+                        .HasForeignKey("InstallerId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("PMAPortal.Web.Models.Meter", "Meter")
                         .WithMany()
@@ -862,6 +948,21 @@ namespace PMAPortal.Web.Migrations
                         .WithMany("AuditLogChanges")
                         .HasForeignKey("AuditLogId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PMAPortal.Web.Models.FeedbackAnswer", b =>
+                {
+                    b.HasOne("PMAPortal.Web.Models.ApplicantFeedback", "ApplicantFeedback")
+                        .WithMany("FeedbackAnswers")
+                        .HasForeignKey("ApplicantFeedbackId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PMAPortal.Web.Models.FeedbackQuestion", "FeedbackQuestion")
+                        .WithMany()
+                        .HasForeignKey("FeedbackQuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

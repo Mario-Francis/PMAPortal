@@ -7,10 +7,11 @@ namespace PMAPortal.Web.UIServices
     {
         IEnumerable<SelectListItem> GetAppliances(string value = null);
         IEnumerable<SelectListItem> GetPets(string value = null);
-        IEnumerable<SelectListItem> GetAreas(string value = null);
+        IEnumerable<SelectListItem> GetAreas(string value = null, string emptyText = null);
         IEnumerable<SelectListItem> GetHouseTypes(string value = null);
-        IEnumerable<SelectListItem> GetMeters(string value = null);
+        IEnumerable<SelectListItem> GetMeters(string value = null, string emptyText = null);
         IEnumerable<SelectListItem> GetRoles(string value = null);
-        IEnumerable<SelectListItem> GetApplicationStatuses(string value = null);
+        IEnumerable<SelectListItem> GetApplicationStatuses(string value = null, string emptyText = null);
+        IEnumerable<SelectListItem> GetInstallers(string value = null, string emptyText = null);
     }
 }

@@ -131,7 +131,7 @@ This is to notify you that your prepaid meter installation with tracking number 
 
 Kindly rate our services and suggest ways you think we can improve using the link below
 
-Feedback link: {baseUrl}ApplicantFeedbacks/{{token}}
+Feedback link: {baseUrl}Applications/Feedback/{{token}}
 
 Kindly note this is an automated mail, hence, do not reply.
 
@@ -198,7 +198,7 @@ MOS Team.
         }
 
         // schedule mail to installers on new application
-        public async Task ScheduleNewApplicationMailToInstallers(MailObject mail)
+        public async Task ScheduleNewApplicationMailToSupervisors(MailObject mail)
         {
             // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
             var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
@@ -208,6 +208,7 @@ Dear {{name}},
 This is to notify you that there has been a new prepaid meter application pending installation. Kindly find application details below
 
 Applicant Name       : {mail.ApplicantName}
+Applicant Phone No.  : {mail.ApplicantPhoneNo}
 Applicant Email      : {mail.ApplicantEmail}
 Requested Meter Type : {mail.MeterType}
 Tracking Number      : {mail.TrackNo}
@@ -239,8 +240,50 @@ MOS Team.
             }
             await mailRepo.InsertBulk(_mails);
         }
+        public async Task ScheduleNewAssignmentMailToInstaller(MailObject mail)
+        {
+            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
+            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            var htmlBody = $@"
+Dear {{name}},
+
+This is to notify you that a new prepaid meter application has been assigned to you for installation by {mail.AssignedByName}. Kindly find application details below
+
+Applicant Name       : {mail.ApplicantName}
+Applicant Phone No.  : {mail.ApplicantPhoneNo}
+Applicant Email      : {mail.ApplicantEmail}
+Requested Meter Type : {mail.MeterType}
+Tracking Number      : {mail.TrackNo}
+
+Please attend to the above request as soon as possible.
+
+Kindly note this is an automated mail, hence, do not reply.
+
+Best regards,
+MOS Team.
+";
+            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
+
+            var _mails = new List<Mail>();
+            foreach (var m in mail.Recipients)
+            {
+                var _htmlBody = htmlBody;
+
+                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
+                var _mail = new Mail
+                {
+                    Body = _htmlBody,
+                    CreatedDate = DateTimeOffset.Now,
+                    UpdatedDate = DateTimeOffset.Now,
+                    Email = m.Email,
+                    Subject = $"New Installation Assignment Alert - MOS Team"
+                };
+                _mails.Add(_mail);
+            }
+            await mailRepo.InsertBulk(_mails);
+        }
         // schedule reminder to installer on pending application
-        public async Task ScheduleReminderMailToInstallers(MailObject mail)
+        public async Task ScheduleReminderMailToSupervisorsAndInstallers(MailObject mail)
         {
             // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
             var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
@@ -250,6 +293,7 @@ Dear {{name}},
 This is a gentle reminder on the prepaid meter application pending installation. Kindly find application details below
 
 Applicant Name       : {mail.ApplicantName}
+Applicant Phone No.  : {mail.ApplicantPhoneNo}
 Applicant Email      : {mail.ApplicantEmail}
 Requested Meter Type : {mail.MeterType}
 Tracking Number      : {mail.TrackNo}
@@ -516,7 +560,7 @@ MOS Team.
 
                 // send email
                 using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(appSettingsDelegate.Value.EmailSMTPConfig.Host, appSettingsDelegate.Value.EmailSMTPConfig.Port, SecureSocketOptions.StartTls);
+                await smtp.ConnectAsync(appSettingsDelegate.Value.EmailSMTPConfig.Host, appSettingsDelegate.Value.EmailSMTPConfig.Port, SecureSocketOptions.Auto);
                 await smtp.AuthenticateAsync(appSettingsDelegate.Value.EmailSMTPConfig.Username, appSettingsDelegate.Value.EmailSMTPConfig.Password);
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);

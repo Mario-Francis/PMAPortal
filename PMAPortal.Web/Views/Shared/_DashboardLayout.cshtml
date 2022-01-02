@@ -13,6 +13,7 @@
     @*<link href="~/lib/bootstrap-notify/css/bootstrap-notify.css" rel="stylesheet" />*@
     <link href="~/lib/boxicons/css/boxicons.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="~/lib/Zebra_datepicker/css/bootstrap/zebra_datepicker.css" rel="stylesheet" />
     @RenderSection("css", false)
     <link href="~/css/fonts.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/main.css" rel="stylesheet" asp-append-version="true" />
@@ -136,26 +137,35 @@
 
                         @if (User.IsInRole(Constants.ROLE_ADMIN))
                         {
-                        <a class="nav-link @(service.ControllerName.ToLower() == "users" ? "active" : "")" asp-controller="Users" asp-action="Index">
-                            <i class="fas fa-users"></i> &nbsp; Users
-                        </a>
-                        <a class="nav-link @(service.ControllerName.ToLower() == "meters" ? "active" : "")" asp-controller="Meters" asp-action="Index">
-                            <i class="fas fa-bolt"></i> &nbsp; Meters
-                        </a>
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
+                            <a class="nav-link @(service.ControllerName.ToLower() == "users" ? "active" : "")" asp-controller="Users" asp-action="Index">
+                                <i class="fas fa-users"></i> &nbsp; Users
+                            </a>
+                            <a class="nav-link @(service.ControllerName.ToLower() == "meters" ? "active" : "")" asp-controller="Meters" asp-action="Index">
+                                <i class="fas fa-bolt"></i> &nbsp; Meters
+                            </a>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
 
-                            <i class='fa fa-angle-double-down'></i> &nbsp; Dropdown Options
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav pl-2">
+                                <i class='fa fa-angle-double-down'></i> &nbsp; Dropdown Options
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav pl-2">
 
-                                <a class="nav-link" asp-controller="Areas" asp-action="Index">Areas</a>
-                                <a class="nav-link" asp-controller="HouseTypes" asp-action="Index">House Types</a>
-                                <a class="nav-link" asp-controller="Appliances" asp-action="Index">Appliances</a>
-                                <a class="nav-link" asp-controller="Pets" asp-action="Index">Pets</a>
-                            </nav>
-                        </div>
+                                    <a class="nav-link" asp-controller="Areas" asp-action="Index">Areas</a>
+                                    <a class="nav-link" asp-controller="HouseTypes" asp-action="Index">House Types</a>
+                                    <a class="nav-link" asp-controller="Appliances" asp-action="Index">Appliances</a>
+                                    <a class="nav-link" asp-controller="Pets" asp-action="Index">Pets</a>
+                                </nav>
+                            </div>
+                        }
+                        @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR))
+                        {
+                            <a class="nav-link @(service.ControllerName.ToLower()=="reports"?"active":"")" asp-controller="Reports" asp-action="Index">
+                                <i class="fa fa-chart-bar"></i> &nbsp; Reports
+                            </a>
+                            <a class="nav-link @(service.ControllerName.ToLower()=="applications" && service.ActionName.ToLower()=="applicantfeedbacks"?"active":"")" asp-controller="Applications" asp-action="ApplicantFeedbacks">
+                                <i class="fa fa-comments"></i> &nbsp; Feedbacks
+                            </a>
                         }
                     </div>
                 </div>
@@ -197,6 +207,7 @@
     <script src="~/lib/js-cookie/js.cookie.js"></script>
     <script src="~/lib/accounting.js/accounting.js"></script>
     <script src="~/js/notify.js" asp-append-version="true"></script>
+    <script src="~/lib/Zebra_datepicker/zebra_datepicker.min.js"></script>
     <script src="~/js/error_handler.js" asp-append-version="true"></script>
     <script src="~/js/utilities.js" asp-append-version="true"></script>
     <script>

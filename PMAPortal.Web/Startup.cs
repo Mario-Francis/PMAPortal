@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PMAPortal.Web.BackgroundServices;
 using PMAPortal.Web.Data;
 using PMAPortal.Web.Data.Repositories;
 using PMAPortal.Web.Data.Repositories.Implementations;
@@ -18,6 +19,7 @@ using PMAPortal.Web.Services.Implementations;
 using PMAPortal.Web.UIServices;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace PMAPortal.Web
 {
@@ -75,10 +77,14 @@ namespace PMAPortal.Web
             services.AddScoped<IHouseTypeService, HouseTypeService>();
             services.AddScoped<IApplianceService, ApplianceService>();
             services.AddScoped<IPetService, PetService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
 
             // ui services
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IDropdownService, DropdownService>();
+
+            // background service
+            services.AddHostedService<NotificationService>();
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
@@ -94,6 +100,7 @@ namespace PMAPortal.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddHttpClient();
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddHsts(options =>
             {

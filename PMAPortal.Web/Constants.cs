@@ -8,6 +8,7 @@ namespace PMAPortal.Web
     public enum AppRoles
     {
         ADMINISTRATOR = 1,
+        SUPERVISOR,
         DISCO_PERSONNEL,
         INSTALLER
     }
@@ -62,6 +63,7 @@ namespace PMAPortal.Web
         public const string CONTEXT_USER_KEY = "Identity";
 
         public const string ROLE_ADMIN = "Administrator";
+        public const string ROLE_SUPERVISOR = "Supervisor";
         public const string ROLE_DISCO = "Disco Personnel";
         public const string ROLE_INSTALLER = "Installer";
 

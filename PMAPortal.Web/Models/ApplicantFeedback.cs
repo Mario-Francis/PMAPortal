@@ -14,5 +14,7 @@ namespace PMAPortal.Web.Models
 
         // navigation properties
         public virtual Applicant Applicant { get; set; }
+        public virtual Application Application { get; set; }
+        public virtual ICollection<FeedbackAnswer> FeedbackAnswers { get; set; }
     }
 }

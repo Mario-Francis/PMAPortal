@@ -24,7 +24,11 @@ namespace PMAPortal.Web.Data.Repositories.Implementations
                 .Include(a => a.HouseType)
                 .Include(a => a.Meter)
                 .Include(a => a.Payments)
-                .Join(db.Users, a => a.UpdatedBy, u => u.Id, (a, u) => new { a, u }).Select(au => new Application
+                .GroupJoin(db.Users, a => a.UpdatedBy, u => u.Id, (a, u) => new { a, u })
+                .SelectMany(au => au.u.DefaultIfEmpty(),
+                                    (au, u) => new { au.a, u }
+                               )
+                .Select(au => new Application
                 {
                     Id = au.a.Id,
                     Applicant = au.a.Applicant,
@@ -46,7 +50,12 @@ namespace PMAPortal.Web.Data.Repositories.Implementations
                     UpdatedBy = au.a.UpdatedBy,
                     CreatedDate = au.a.CreatedDate,
                     UpdatedByUser = au.u,
-                    UpdatedDate = au.a.UpdatedDate
+                    UpdatedDate = au.a.UpdatedDate,
+
+                    AssignedBy=au.a.AssignedBy,
+                    AssignedByUser=au.a.AssignedByUser,
+                    Installer=au.a.Installer,
+                    InstallerId=au.a.InstallerId
                 }
            );
         }
@@ -62,7 +71,9 @@ namespace PMAPortal.Web.Data.Repositories.Implementations
                  .Include(a => a.Meter)
                  .Include(a => a.Payments)
                  .Where(expression)
-                 .Join(db.Users, a => a.UpdatedBy, u => u.Id, (a, u) => new { a, u }).Select(au => new Application
+                 .GroupJoin(db.Users, a => a.UpdatedBy, u => u.Id, (a, u) => new { a, u })
+                 .SelectMany(au => au.u.DefaultIfEmpty(), (au, u) => new { au.a, u })
+                 .Select(au => new Application
                  {
                      Id = au.a.Id,
                      Applicant = au.a.Applicant,
@@ -84,7 +95,12 @@ namespace PMAPortal.Web.Data.Repositories.Implementations
                      UpdatedBy = au.a.UpdatedBy,
                      CreatedDate = au.a.CreatedDate,
                      UpdatedByUser = au.u,
-                     UpdatedDate = au.a.UpdatedDate
+                     UpdatedDate = au.a.UpdatedDate,
+
+                     AssignedBy = au.a.AssignedBy,
+                     AssignedByUser = au.a.AssignedByUser,
+                     Installer = au.a.Installer,
+                     InstallerId = au.a.InstallerId
                  }
             );
         }

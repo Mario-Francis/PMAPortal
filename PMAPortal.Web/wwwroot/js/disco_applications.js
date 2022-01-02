@@ -6,7 +6,7 @@
             url: $base + 'applications/DiscoApplicationsDataTable?tableType=pending',
             type: "POST"
         },
-        "order": [[2, "asc"]],
+        "order": [[13, "desc"]],
         "lengthMenu": [10, 20, 30, 50, 100],
         "paging": true,
         autoWidth: false,
@@ -84,6 +84,12 @@
             },
             {
                 data: {
+                    "filter": "Installer",
+                    "display": "installer"
+                }
+            },
+            {
+                data: {
                     "filter": "CreatedDate",
                     "display": "createdDate"
                 }, visible: false
@@ -92,7 +98,7 @@
                 data: {
                     "filter": "FormattedCreatedDate",
                     "display": "formattedCreatedDate"
-                }, orderData: 9
+                }, orderData: 10
             },
             {
                 data: {
@@ -110,7 +116,7 @@
                 data: {
                     "filter": "FormattedUpdatedDate",
                     "display": "formattedUpdatedDate"
-                }, orderData: 12
+                }, orderData: 13
             },
 
         ]
@@ -123,7 +129,7 @@
             url: $base + 'applications/DiscoApplicationsDataTable?tableType=failed',
             type: "POST"
         },
-        "order": [[2, "asc"]],
+        "order": [[13, "desc"]],
         "lengthMenu": [10, 20, 30, 50, 100],
         "paging": true,
         autoWidth: false,
@@ -201,6 +207,12 @@
             },
             {
                 data: {
+                    "filter": "Installer",
+                    "display": "installer"
+                }
+            },
+            {
+                data: {
                     "filter": "CreatedDate",
                     "display": "createdDate"
                 }, visible: false
@@ -209,7 +221,7 @@
                 data: {
                     "filter": "FormattedCreatedDate",
                     "display": "formattedCreatedDate"
-                }, orderData: 9
+                }, orderData: 10
             },
             {
                 data: {
@@ -227,7 +239,7 @@
                 data: {
                     "filter": "FormattedUpdatedDate",
                     "display": "formattedUpdatedDate"
-                }, orderData: 12
+                }, orderData: 13
             },
 
         ]
@@ -240,7 +252,7 @@
             url: $base + 'applications/DiscoApplicationsDataTable?tableType=completed',
             type: "POST"
         },
-        "order": [[2, "asc"]],
+        "order": [[13, "desc"]],
         "lengthMenu": [10, 20, 30, 50, 100],
         "paging": true,
         autoWidth: false,
@@ -318,6 +330,12 @@
             },
             {
                 data: {
+                    "filter": "Installer",
+                    "display": "installer"
+                }
+            },
+            {
+                data: {
                     "filter": "CreatedDate",
                     "display": "createdDate"
                 }, visible: false
@@ -326,7 +344,7 @@
                 data: {
                     "filter": "FormattedCreatedDate",
                     "display": "formattedCreatedDate"
-                }, orderData: 9
+                }, orderData: 10
             },
             {
                 data: {
@@ -344,7 +362,7 @@
                 data: {
                     "filter": "FormattedUpdatedDate",
                     "display": "formattedUpdatedDate"
-                }, orderData: 12
+                }, orderData: 13
             },
 
         ]

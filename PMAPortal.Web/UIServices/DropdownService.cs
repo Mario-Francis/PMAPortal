@@ -10,10 +10,12 @@ namespace PMAPortal.Web.UIServices
     public class DropdownService:IDropdownService
     {
         private readonly IListService listService;
+        private readonly IUserService userService;
 
-        public DropdownService(IListService listService)
+        public DropdownService(IListService listService, IUserService userService)
         {
             this.listService = listService;
+            this.userService = userService;
         }
 
         public IEnumerable<SelectListItem> GetAppliances(string value=null)
@@ -36,11 +38,11 @@ namespace PMAPortal.Web.UIServices
             return pets;
         }
 
-        public IEnumerable<SelectListItem> GetAreas(string value = null)
+        public IEnumerable<SelectListItem> GetAreas(string value = null, string emptyText=null)
         {
             List<SelectListItem> areas = listService.GetAreas()
                 .Select(c => new SelectListItem { Text = c.Name, Value = c.Name.ToString(), Selected = c.Name.ToString() == value }).ToList();
-            areas.Insert(0, new SelectListItem { Text = "- Select area -", Value = "" });
+            areas.Insert(0, new SelectListItem { Text = emptyText ?? "- Select area -", Value = "" });
 
             return areas;
         }
@@ -54,11 +56,11 @@ namespace PMAPortal.Web.UIServices
             return houseTypes;
         }
 
-        public IEnumerable<SelectListItem> GetMeters(string value = null)
+        public IEnumerable<SelectListItem> GetMeters(string value = null, string emptyText = null)
         {
             List<SelectListItem> meters = listService.GetMeters()
                 .Select(c => new SelectListItem { Text = $"{c.Name} - {c.Amount.Format()}", Value = c.Id.ToString(), Selected = c.Id.ToString() == value }).ToList();
-            meters.Insert(0, new SelectListItem { Text = "- Select meter -", Value = "" });
+            meters.Insert(0, new SelectListItem { Text = emptyText ?? "- Select meter -", Value = "" });
 
             return meters;
         }
@@ -71,13 +73,21 @@ namespace PMAPortal.Web.UIServices
             roles.Insert(0, new SelectListItem { Text = "- Select role -", Value = "" });
             return roles;
         }
-        public IEnumerable<SelectListItem> GetApplicationStatuses(string value = null)
+        public IEnumerable<SelectListItem> GetApplicationStatuses(string value = null, string emptyText = null)
         {
             List<SelectListItem> statuses = listService.GetApplicationStatuses()
                 .Select(c => new SelectListItem { Text =c.Name, Value = c.Id.ToString(), Selected = c.Id.ToString() == value }).ToList();
-            statuses.Insert(0, new SelectListItem { Text = "- Select status -", Value = "" });
+            statuses.Insert(0, new SelectListItem { Text = emptyText ?? "- Select status -", Value = "" });
 
             return statuses;
+        }
+        public IEnumerable<SelectListItem> GetInstallers(string value = null, string emptyText = null)
+        {
+            List<SelectListItem> installers = userService.GetUsers().Where(u=>u.RoleId == (int)AppRoles.INSTALLER).OrderBy(u=>u.FirstName)
+                .Select(u => new SelectListItem { Text = $"{u.FirstName} {u.LastName} ({u.Email})", Value = u.Id.ToString(), Selected = u.Id.ToString() == value }).ToList();
+            installers.Insert(0, new SelectListItem { Text = emptyText ?? "- Select installer -", Value = "" });
+
+            return installers;
         }
 
     }

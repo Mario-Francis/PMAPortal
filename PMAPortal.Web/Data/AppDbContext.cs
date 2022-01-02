@@ -32,6 +32,8 @@ namespace PMAPortal.Web.Data
         public DbSet<Pet> Pets { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<FeedbackQuestion> FeedbackQuestions { get; set; }
+        public DbSet<FeedbackAnswer> FeedbackAnswers { get; set; }
 
         //===== Audit ====
         public DbSet<ActivityLog> ActivityLogs { get; set; }
@@ -53,6 +55,11 @@ namespace PMAPortal.Web.Data
             modelBuilder.Entity<ApplicantFeedback>()
                 .HasOne(x => x.Applicant)
                 .WithMany(x => x.ApplicantFeedbacks)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ApplicantFeedback>()
+                .HasOne(x => x.Application)
+                .WithMany(x=>x.ApplicantFeedbacks)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Application>()
@@ -110,6 +117,29 @@ namespace PMAPortal.Web.Data
                 .WithMany(x => x.Users)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Application>()
+               .HasOne(x => x.Installer)
+               .WithMany(x => x.Applications)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Application>()
+               .HasOne(x => x.AssignedByUser)
+               .WithMany()
+               .HasForeignKey(x=>x.AssignedBy)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ApplicantFeedback>()
+               .HasMany(x => x.FeedbackAnswers)
+               .WithOne(x=>x.ApplicantFeedback)
+               .HasForeignKey(x => x.ApplicantFeedbackId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<FeedbackAnswer>()
+               .HasOne(x => x.FeedbackQuestion)
+               .WithMany()
+               .HasForeignKey(x => x.FeedbackQuestionId)
+               .OnDelete(DeleteBehavior.NoAction);
+
 
             SeeData(modelBuilder);
         }
@@ -126,12 +156,18 @@ namespace PMAPortal.Web.Data
                 new Role
                 {
                     Id = 2,
-                    Name = "Disco Personnel",
+                    Name = "Supervisor",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                 },
                 new Role
                 {
                     Id = 3,
+                    Name = "Disco Personnel",
+                    CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
+                },
+                new Role
+                {
+                    Id = 4,
                     Name = "Installer",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                 }

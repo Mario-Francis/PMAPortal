@@ -27,5 +27,6 @@ namespace PMAPortal.Web.Models
         [NotMapped]
         public virtual User UpdatedByUser { get; set; }
         public virtual Role Role { get; set; }
+        public virtual ICollection<Application> Applications { get; set; }
     }
 }

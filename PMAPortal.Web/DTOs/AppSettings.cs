@@ -13,5 +13,7 @@ namespace PMAPortal.Web.DTOs
         public EmailSMTPConfig EmailSMTPConfig { get; set; }
         public int MailRetentionPeriod { get; set; }
         public Paystack Paystack { get; set; }
+        public int NotificationServiceExecutionInterval { get; set; }
+        public bool NotificationServiceEnabled { get; set; }
     }
 }

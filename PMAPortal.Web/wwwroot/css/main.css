@@ -495,7 +495,9 @@ label {
 .badge {
     white-space: normal;
 }
-
+.chosen-container{
+    width:100% !important;
+}
 
 
 

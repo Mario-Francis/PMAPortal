@@ -317,7 +317,7 @@ async function validateStage(stage) {
     // return bool
     if (stage == 1) {
         let form = $("#form1")[0];
-        return validateForm(form) && (await validateEmail($('#email').val()));
+        return validateForm(form); //&& (await validateEmail($('#email').val()));
     } else if (stage == 2) {
         let form = $("#form2")[0];
         return validateForm(form);

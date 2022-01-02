@@ -1,4 +1,5 @@
-﻿using DataTablesParser;
+﻿using AutoMapper;
+using DataTablesParser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -24,13 +25,19 @@ namespace PMAPortal.Web.Controllers
         private readonly IPaymentService paymentService;
         private readonly IOptionsSnapshot<AppSettings> appSettingsDelegate;
         private readonly IUserService userService;
+        private readonly IMapper mapper;
+        private readonly ITokenService tokenService;
+        private readonly IFeedbackService feedbackService;
 
         public ApplicationsController(ILoggerService<ApplicationsController> logger,
             IApplicationService applicationService,
             IMeterService meterService,
             IPaymentService paymentService,
             IOptionsSnapshot<AppSettings> appSettingsDelegate,
-            IUserService userService)
+            IUserService userService,
+            IMapper mapper, 
+            ITokenService tokenService,
+            IFeedbackService feedbackService)
         {
             this.logger = logger;
             this.applicationService = applicationService;
@@ -38,11 +45,14 @@ namespace PMAPortal.Web.Controllers
             this.paymentService = paymentService;
             this.appSettingsDelegate = appSettingsDelegate;
             this.userService = userService;
+            this.mapper = mapper;
+            this.tokenService = tokenService;
+            this.feedbackService = feedbackService;
         }
        
         public IActionResult Index()
         {
-            if (User.IsInRole(Constants.ROLE_ADMIN))
+            if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR))
             {
                 return View();
             }
@@ -79,7 +89,20 @@ namespace PMAPortal.Web.Controllers
                     (long)ApplicationsStatus.Disco_Confirmation_Failed,
                     (long)ApplicationsStatus.Disco_Confirmation_Successful,
                 };
-            }else if (tableType == "installer")
+            }
+            else if (tableType == "unassigned")
+            {
+                statuses = new long[] {
+                   (long)ApplicationsStatus.Submitted,
+                    (long)ApplicationsStatus.Scheduled_for_Installation,
+                    (long)ApplicationsStatus.Installation_In_Progress,
+                    (long)ApplicationsStatus.Installation_Failed,
+                    (long)ApplicationsStatus.Installation_Completed,
+                    (long)ApplicationsStatus.Disco_Confirmation_Failed,
+                    (long)ApplicationsStatus.Disco_Confirmation_Successful,
+                };
+            }
+            else if (tableType == "installer")
             {
                 statuses = new long[] {
                     (long)ApplicationsStatus.Submitted,
@@ -100,14 +123,36 @@ namespace PMAPortal.Web.Controllers
                     (long)ApplicationsStatus.Disco_Confirmation_Successful
                 };
             }
+            IEnumerable<ApplicationItemVM> applications = null;
+            if (tableType == "unassigned")
+            {
+                applications = applicationService.GetApplications(statuses).Where(a=>a.InstallerId==null).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
+            }
+            else
+            {
+                if (tableType == "all")
+                {
+                    applications = applicationService.GetApplications(statuses).OrderByDescending(a=>a.Id).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
 
-            var applications = applicationService.GetApplications(statuses).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
+                }
+                else
+                {
+                    applications = applicationService.GetApplications(statuses).Where(a => a.InstallerId != null).OrderByDescending(a => a.Id).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
+
+                }
+            }
+           
            
             var parser = new Parser<ApplicationItemVM>(Request.Form, applications.AsQueryable())
                   .SetConverter(x => x.UpdatedDate, x => x.UpdatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
                    .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"));
 
-            return Ok(parser.Parse());
+            var dtData = parser.Parse();
+            var result = mapper.Map<DataTableResultVM<ApplicationItemVM>>(dtData);
+
+            result.MeterCount = 50;
+            return Ok(result);
+            //return Ok(parser.Parse());
         }
 
         [HttpPost]
@@ -144,7 +189,7 @@ namespace PMAPortal.Web.Controllers
                 };
             }
 
-            var applications = applicationService.GetApplications(statuses).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
+            var applications = applicationService.GetApplications(statuses).Where(a => a.InstallerId != null).OrderByDescending(a => a.Id).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
 
             var parser = new Parser<ApplicationItemVM>(Request.Form, applications.AsQueryable())
                   .SetConverter(x => x.UpdatedDate, x => x.UpdatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
@@ -179,7 +224,7 @@ namespace PMAPortal.Web.Controllers
                 };
             }
 
-            var applications = applicationService.GetApplications(statuses).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
+            var applications = applicationService.GetApplications(statuses).Where(a => a.InstallerId != null).OrderByDescending(a => a.Id).Select(a => ApplicationItemVM.FromApplication(a, clientTimeOffset));
 
             var parser = new Parser<ApplicationItemVM>(Request.Form, applications.AsQueryable())
                   .SetConverter(x => x.UpdatedDate, x => x.UpdatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
@@ -338,7 +383,70 @@ namespace PMAPortal.Web.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignInstaller(AssignInstallerVM model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errs = ModelState.Values.Where(v => v.Errors.Count > 0).Select(v => v.Errors.First().ErrorMessage);
+                    return StatusCode(400, new { IsSuccess = false, Message = "One or more fields failed validation", ErrorItems = errs });
+                }
+                else
+                {
+                    await applicationService.AssignInstaller(model.ApplicationId.Value, model.InstallerId.Value);
+                    return Ok(new
+                    {
+                        IsSuccess = true,
+                        Message = "Application assigned to installer succeessfully",
+                        ErrorItems = new string[] { }
+                    });
+                }
+            }
+            catch (AppException ex)
+            {
+                return StatusCode(400, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, "An error was encountered while application status");
+                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
+            }
+        }
 
+        [HttpGet("[controller]/ApplicantFeedbacks")]
+        public IActionResult ApplicantFeedbacks()
+        { 
+            return View();
+        }
+
+        [HttpGet("[controller]/ApplicantFeedbacks/{id}")]
+        public async Task<IActionResult> ApplicantFeedbackDetails(long id)
+        {
+            var feedback = await feedbackService.GetFeedback(id);
+            if (feedback == null)
+            {
+                return NotFound();
+            }
+
+            return View(feedback);
+        }
+        [HttpPost]
+        public IActionResult FeedbacksDataTable()
+        {
+            var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
+                appSettingsDelegate.Value.DefaultTimeZoneOffset : Convert.ToInt32(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]);
+
+           
+            var feedbacks = feedbackService.GetFeedbacks().Select(a => FeedbackVM.FromApplicantFeedback(a, clientTimeOffset));
+
+            var parser = new Parser<FeedbackVM>(Request.Form, feedbacks.AsQueryable())
+                   .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"));
+
+            return Ok(parser.Parse());
+        }
 
         //===============
         public IActionResult New()
@@ -478,6 +586,74 @@ namespace PMAPortal.Web.Controllers
             }
         }
 
+        [HttpGet("[controller]/Feedback/{token}")]
+        public async Task<IActionResult> Feedback(string token)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(token))
+                {
+                    return NotFound();
+                }
 
+                var applicationId = Convert.ToInt64(tokenService.ExtractDataFromToken(token));
+                var application = await applicationService.GetApplication(applicationId);
+                var questions = feedbackService.GetQuestions();
+
+                if(application.ApplicantFeedbacks.Count() > 0)
+                {
+                    return RedirectToAction("FeedbackReceived");
+                }
+
+                ViewData["TrackNumber"] = application.TrackNumber;
+                ViewData["ApplicantId"] = application.ApplicantId;
+                ViewData["ApplicationId"] = application.Id;
+
+                return View(questions);
+            }
+            catch(Exception ex)
+            {
+                logger.LogException(ex);
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Feedback(FeedbackVM model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errs = ModelState.Values.Where(v => v.Errors.Count > 0).Select(v => v.Errors.First().ErrorMessage);
+                    return StatusCode(400, new { IsSuccess = false, Message = "One or more fields failed validation", ErrorItems = errs });
+                }
+                else
+                {
+                    await feedbackService.AddFeedback(model.ToApplicantFeedback());
+                    return Ok(new
+                    {
+                        IsSuccess = true,
+                        Message = "Feedback added succeessfully",
+                        ErrorItems = new string[] { }
+                    });
+                }
+            }
+            catch (AppException ex)
+            {
+                return StatusCode(400, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, "An error was encountered while adding a new feedback");
+                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
+            }
+        }
+
+        public IActionResult FeedbackReceived()
+        {
+            return View();
+        }
     }
 }
