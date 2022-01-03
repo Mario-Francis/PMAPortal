@@ -57,9 +57,9 @@ namespace PMAPortal.Web.Controllers
 
             if (User.IsInRole(Constants.ROLE_DISCO))
             {
-                model.PendingApplicationCount = applicationService.GetApplications(new long[] { 6 }).Where(a => a.InstallerId == currentUser.Id).Count();
-                model.FailedApplicationCount = applicationService.GetApplications(new long[] { 7 }).Where(a => a.InstallerId == currentUser.Id).Count();
-                model.CompletedApplicationCount = applicationService.GetApplications(new long[] { 8 }).Where(a => a.InstallerId == currentUser.Id).Count();
+                model.PendingApplicationCount = applicationService.GetApplications(new long[] { 6 }).Count();
+                model.FailedApplicationCount = applicationService.GetApplications(new long[] { 7 }).Count();
+                model.CompletedApplicationCount = applicationService.GetApplications(new long[] { 8 }).Count();
             }
 
             return View(model);

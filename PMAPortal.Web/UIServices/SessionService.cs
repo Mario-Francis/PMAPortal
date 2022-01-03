@@ -105,9 +105,13 @@ namespace PMAPortal.Web.UIServices
                 {
                     return Constants.ROLE_INSTALLER;
                 }
-                else
+                else if(session.Role == Constants.ROLE_DISCO)
                 {
                     return Constants.ROLE_DISCO;
+                }
+                else
+                {
+                    return Constants.ROLE_SUPERVISOR;
                 }
             }
         }
@@ -132,6 +136,13 @@ namespace PMAPortal.Web.UIServices
             get
             {
                 return accessor.HttpContext.User.IsInRole(Constants.ROLE_INSTALLER);
+            }
+        }
+        public bool IsSupervisor
+        {
+            get
+            {
+                return accessor.HttpContext.User.IsInRole(Constants.ROLE_SUPERVISOR);
             }
         }
 

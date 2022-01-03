@@ -27,6 +27,10 @@ namespace PMAPortal.Web.UIServices
         public bool IsInstaller
         {
             get;
+        } 
+        public bool IsSupervisor
+        {
+            get;
         }
         public string PaystackPKey { get; }
         public string Culture { get; }

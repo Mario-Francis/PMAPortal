@@ -211,12 +211,13 @@
     <script src="~/js/error_handler.js" asp-append-version="true"></script>
     <script src="~/js/utilities.js" asp-append-version="true"></script>
     <script>
-            $base = '@service.BaseUrl';
+        $base = '@service.BaseUrl';
 
-            // roles
-            const isAdmin = @(service.IsAdmin.ToString().ToLower());
-            const isDisco = @(service.IsDisco.ToString().ToLower());
-            const isInstaller = @(service.IsInstaller.ToString().ToLower());
+        // roles
+        const isAdmin = @(service.IsAdmin.ToString().ToLower());
+        const isDisco = @(service.IsDisco.ToString().ToLower());
+        const isInstaller = @(service.IsInstaller.ToString().ToLower());
+        const isSupervisor =  @(service.IsSupervisor.ToString().ToLower());
     </script>
     @RenderSection("js", false)
     @*</environment>*@

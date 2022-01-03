@@ -78,11 +78,11 @@
         e.preventDefault();
         let btn = $(e.currentTarget);
         try {
-            let form = $("form")[1];
+            let form = $("form")[$("form").length-1];
             if (validateForm(form)) {
                 let id = $.trim($('#applicationId').val());
                 let installerId = $.trim($('#installer').val());
-                let __RequestVerificationToken = $($('input[name=__RequestVerificationToken]')[1]).val();
+                let __RequestVerificationToken = $($('input[name=__RequestVerificationToken]')[$('input[name=__RequestVerificationToken]').length-1]).val();
 
                 if (installerId == '') {
                     notify('All fields are required', 'warning');

@@ -345,7 +345,7 @@ namespace PMAPortal.Web.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("[controller]/UpdateSatus")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateSatus(UpdateStatusVM model)
         {
@@ -383,7 +383,7 @@ namespace PMAPortal.Web.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("[controller]/AssignInstaller")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignInstaller(AssignInstallerVM model)
         {
