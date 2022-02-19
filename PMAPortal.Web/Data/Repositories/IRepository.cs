@@ -25,7 +25,8 @@ namespace PMAPortal.Web.Data.Repositories
         Task Delete(long id, bool save = true);
         Task DeleteRange(IEnumerable<long> ids, bool save = true);
         Task DeleteWhere(Expression<Func<T, bool>> expression, bool save = true);
-        Task<bool> Any(Expression<Func<T, bool>> expression);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
+        bool Any(Expression<Func<T, bool>> expression);
         Task<int> Count();
         Task<int> CountWhere(Expression<Func<T, bool>> expression);
         Task Save();

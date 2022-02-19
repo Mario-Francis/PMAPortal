@@ -60,7 +60,7 @@ namespace PMAPortal.Web.Controllers
                 }
                 else
                 {
-                    if (userVM.RoleId == 0)
+                    if (userVM.Roles.Count() == 0)
                     {
                         throw new AppException($"Role is required");
                     }
@@ -98,7 +98,7 @@ namespace PMAPortal.Web.Controllers
                 }
                 else
                 {
-                    if (userVM.RoleId == 0)
+                    if (userVM.Roles.Count() == 0)
                     {
                         throw new AppException($"Role is required");
                     }

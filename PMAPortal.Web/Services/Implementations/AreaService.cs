@@ -32,7 +32,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException("Area object cannot be null");
             }
 
-            if (await areaRepo.Any(m => m.Name.ToLower() == area.Name.ToLower()))
+            if (await areaRepo.AnyAsync(m => m.Name.ToLower() == area.Name.ToLower()))
             {
                 throw new AppException($"A area with name '{area.Name}' already exist");
             }

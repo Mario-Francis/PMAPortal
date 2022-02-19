@@ -61,5 +61,25 @@ namespace PMAPortal.Web.ViewModels
                 CreatedDate = clientTimeOffset == null ? pet.CreatedDate : pet.CreatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value))
             };
         }
+
+        public static ItemVM FromUserRole(UserRole role, int? clientTimeOffset = null)
+        {
+            return new ItemVM
+            {
+                Id = role.RoleId,
+                Name = role.Role.Name,
+                CreatedDate = clientTimeOffset == null ? role.CreatedDate : role.CreatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value))
+            };
+        }
+
+        public static ItemVM FromRole(Role role, int? clientTimeOffset = null)
+        {
+            return new ItemVM
+            {
+                Id = role.Id,
+                Name = role.Name,
+                CreatedDate = clientTimeOffset == null ? role.CreatedDate : role.CreatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value))
+            };
+        }
     }
 }

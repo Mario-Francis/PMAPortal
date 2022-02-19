@@ -32,7 +32,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException("Pet object cannot be null");
             }
 
-            if (await petRepo.Any(m => m.Name.ToLower() == pet.Name.ToLower()))
+            if (await petRepo.AnyAsync(m => m.Name.ToLower() == pet.Name.ToLower()))
             {
                 throw new AppException($"A pet with name '{pet.Name}' already exist");
             }

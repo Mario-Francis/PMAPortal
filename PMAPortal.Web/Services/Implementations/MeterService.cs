@@ -35,7 +35,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException("Meter object cannot be null");
             }
 
-            if (await meterRepo.Any(m => m.Name.ToLower() == meter.Name.ToLower()))
+            if (await meterRepo.AnyAsync(m => m.Name.ToLower() == meter.Name.ToLower()))
             {
                 throw new AppException($"A meter with name '{meter.Name}' already exist");
             }
@@ -62,7 +62,7 @@ namespace PMAPortal.Web.Services.Implementations
             }
             else
             {
-                if (await appRepo.Any(a=>a.MeterId==meterId))
+                if (await appRepo.AnyAsync(a=>a.MeterId==meterId))
                 {
                     throw new AppException("Meter cannot be deleted as it has one or more applications attached to it");
                 }
@@ -87,7 +87,7 @@ namespace PMAPortal.Web.Services.Implementations
             {
                 throw new AppException($"Invalid Meter id {meter.Id}");
             }
-            else if (await meterRepo.Any(m => (m.Name.ToLower() == meter.Name.ToLower()) &&
+            else if (await meterRepo.AnyAsync(m => (m.Name.ToLower() == meter.Name.ToLower()) &&
             !(_meter.Name.ToLower() == meter.Name.ToLower())))
             {
                 throw new AppException($"A Meter with name '{meter.Name}' already exist");

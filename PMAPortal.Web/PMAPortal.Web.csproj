@@ -12,6 +12,8 @@
     <Compile Remove="Migrations\20211222163834_Updated.Designer.cs" />
     <Compile Remove="Migrations\20220101085457_Added_AssignedBy_Column_To_Applications_Table.cs" />
     <Compile Remove="Migrations\20220101085457_Added_AssignedBy_Column_To_Applications_Table.Designer.cs" />
+    <Compile Remove="Migrations\20220219121747_Add_New_Tables_Survey_Installations_Customers_InstallationStatuses_UseRoles_CustomerStatusLog_Batch.cs" />
+    <Compile Remove="Migrations\20220219121747_Add_New_Tables_Survey_Installations_Customers_InstallationStatuses_UseRoles_CustomerStatusLog_Batch.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +44,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\BatchUploads\" />
+    <Folder Include="wwwroot\ImageUploads\" />
   </ItemGroup>
   
 </Project>

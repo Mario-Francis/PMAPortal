@@ -560,6 +560,10 @@ MOS Team.
 
                 // send email
                 using var smtp = new SmtpClient();
+
+                smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                smtp.CheckCertificateRevocation = false;
+
                 await smtp.ConnectAsync(appSettingsDelegate.Value.EmailSMTPConfig.Host, appSettingsDelegate.Value.EmailSMTPConfig.Port, SecureSocketOptions.Auto);
                 await smtp.AuthenticateAsync(appSettingsDelegate.Value.EmailSMTPConfig.Username, appSettingsDelegate.Value.EmailSMTPConfig.Password);
                 await smtp.SendAsync(email);

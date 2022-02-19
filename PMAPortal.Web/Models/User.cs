@@ -9,7 +9,6 @@ namespace PMAPortal.Web.Models
 {
     public class User:BaseEntity, IUpdatable
     {
-        public long RoleId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Code { get; set; }
@@ -26,7 +25,6 @@ namespace PMAPortal.Web.Models
         [JsonIgnore]
         [NotMapped]
         public virtual User UpdatedByUser { get; set; }
-        public virtual Role Role { get; set; }
-        public virtual ICollection<Application> Applications { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

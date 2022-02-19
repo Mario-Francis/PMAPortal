@@ -13,6 +13,7 @@ namespace PMAPortal.Web.Models
         }
 
         // navigation properties
-        public virtual ICollection<User> Users { get; set; }
+        //public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

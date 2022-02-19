@@ -80,10 +80,10 @@ namespace PMAPortal.Web.Services.Implementations
             var currentUser = contextAccessor.HttpContext.GetUserSession();
             if (currentUser != null)
             {
-                if(currentUser.Role == Constants.ROLE_ADMIN || currentUser.Role == Constants.ROLE_SUPERVISOR)
+                if(currentUser.Roles.Any(r=> new string[] { Constants.ROLE_ADMIN , Constants.ROLE_SUPERVISOR }.Contains(r)))
                 {
                     ids = new long[] { 2, 3, 4, 5, 6, 7, 8 };
-                }else if(currentUser.Role == Constants.ROLE_INSTALLER)
+                }else if(currentUser.Roles.Any(r => new string[] { Constants.ROLE_INSTALLER }.Contains(r)))
                 {
                     ids = new long[] { 3, 4, 5, 6 };
                 }

@@ -97,15 +97,15 @@ namespace PMAPortal.Web.UIServices
             get
             {
                 var session = UserSession;
-                if (session.Role == Constants.ROLE_ADMIN)
+                if (session.Roles.Contains(Constants.ROLE_ADMIN))
                 {
                     return Constants.ROLE_ADMIN;
                 }
-                else if(session.Role== Constants.ROLE_INSTALLER)
+                else if(session.Roles.Contains(Constants.ROLE_INSTALLER))
                 {
                     return Constants.ROLE_INSTALLER;
                 }
-                else if(session.Role == Constants.ROLE_DISCO)
+                else if(session.Roles.Contains(Constants.ROLE_DISCO))
                 {
                     return Constants.ROLE_DISCO;
                 }

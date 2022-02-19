@@ -108,7 +108,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException("Application is not found");
             }
 
-            if(!(await applicationStatusRepo.Any(s=>s.Id == statusId))){
+            if(!(await applicationStatusRepo.AnyAsync(s=>s.Id == statusId))){
                 throw new AppException("Invalid application status");
             }
 

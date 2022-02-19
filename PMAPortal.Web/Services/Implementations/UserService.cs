@@ -20,6 +20,7 @@ namespace PMAPortal.Web.Services.Implementations
     {
         private readonly IRepository<User> userRepo;
         private readonly IRepository<Role> roleRepo;
+        private readonly IRepository<UserRole> userRoleRepo;
         private readonly IPasswordService passwordService;
         private readonly ILoggerService<UserService> logger;
         private readonly IHttpContextAccessor accessor;
@@ -31,6 +32,7 @@ namespace PMAPortal.Web.Services.Implementations
         public UserService(
             IRepository<User> userRepo,
             IRepository<Role> roleRepo,
+            IRepository<UserRole> userRoleRepo,
             IPasswordService passwordService,
             ILoggerService<UserService> logger,
             IHttpContextAccessor accessor,
@@ -40,6 +42,7 @@ namespace PMAPortal.Web.Services.Implementations
         {
             this.userRepo = userRepo;
             this.roleRepo = roleRepo;
+            this.userRoleRepo = userRoleRepo;
             this.passwordService = passwordService;
             this.logger = logger;
             this.accessor = accessor;
@@ -63,7 +66,12 @@ namespace PMAPortal.Web.Services.Implementations
             }
 
             //var user = req.ToUser();
-            user.RoleId = (int)AppRoles.ADMINISTRATOR;
+            user.UserRoles = new List<UserRole> { new UserRole
+                {
+                    RoleId = (int)AppRoles.ADMINISTRATOR,
+                    CreatedDate=DateTimeOffset.Now
+                }
+            };
             user.Password = passwordService.Hash(user.Password);
             user.IsActive = true;
             user.CreatedDate = DateTimeOffset.Now;
@@ -92,11 +100,11 @@ namespace PMAPortal.Web.Services.Implementations
             {
                 throw new AppException("User object is required");
             }
-            if (user.RoleId == 0)
+            if (user.UserRoles.Count() == 0)
             {
                 throw new AppException($"Role is required");
             }
-            if (await userRepo.Any(u => u.Email == user.Email))
+            if (await userRepo.AnyAsync(u => u.Email == user.Email))
             {
                 throw new AppException($"A user with email '{user.Email}' already exist");
             }
@@ -145,11 +153,11 @@ namespace PMAPortal.Web.Services.Implementations
             {
                 throw new AppException($"User with id '{user.Id}' does not exist");
             }
-            if (user.RoleId == 0)
+            if (user.UserRoles.Count() == 0)
             {
                 throw new AppException($"Role is required");
             }
-            if (await userRepo.Any(u => u.Email == user.Email) && user.Email != _user.Email)
+            if (await userRepo.AnyAsync(u => u.Email == user.Email) && user.Email != _user.Email)
             {
                 throw new AppException($"A user with email '{user.Email}' already exist");
             }
@@ -157,17 +165,20 @@ namespace PMAPortal.Web.Services.Implementations
             var currentUser = accessor.HttpContext.GetUserSession();
 
             var oldUser = _user.Clone<User>();
-            if (user.Id == currentUser.Id && _user.RoleId == (long)AppRoles.ADMINISTRATOR && !(user.RoleId == (long)AppRoles.ADMINISTRATOR))
+            if (user.Id == currentUser.Id && _user.UserRoles.Any(ur=>ur.RoleId== (long)AppRoles.ADMINISTRATOR) && !(user.UserRoles.Any(r=>r.RoleId== (long)AppRoles.ADMINISTRATOR)))
             {
                 throw new AppException($"You cannot unassign the Administartor role from yourself. You can make another user an administrator and then the user can unassign the role from you");
             }
+
+           await  userRoleRepo.DeleteWhere(x => x.UserId == _user.Id && !user.UserRoles.Any(r => r.RoleId == x.RoleId));
+            var userRolesToAdd = user.UserRoles.Where(r => !userRoleRepo.Any(r => r.RoleId == r.RoleId));
+            await userRoleRepo.InsertRange(userRolesToAdd);
 
             _user.FirstName = user.FirstName;
             _user.LastName = user.LastName;
             _user.PhoneNumber = user.PhoneNumber;
             _user.Email = user.Email;
             _user.Code = user.Code;
-            _user.RoleId = user.RoleId;
 
             _user.UpdatedBy = currentUser.Id;
             _user.UpdatedDate = DateTimeOffset.Now;
@@ -281,7 +292,7 @@ namespace PMAPortal.Web.Services.Implementations
             //if (user == null)
             //    throw new AppException($"User with id: '{userId}' does not exist");
             //else
-                return user;
+            return user;
         }
 
         public async Task<User> GetUser(string email)
@@ -306,7 +317,7 @@ namespace PMAPortal.Web.Services.Implementations
 
         public IEnumerable<User> GetUsers(long roleId, bool includeInactive = true)
         {
-            var users = userRepo.GetWhere(u => u.RoleId == roleId);
+            var users = userRepo.GetWhere(u => u.UserRoles.Any(ur=>ur.RoleId==roleId));
             if (!includeInactive)
             {
                 users = users.Where(u => u.IsActive);

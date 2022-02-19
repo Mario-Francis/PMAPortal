@@ -107,7 +107,12 @@ namespace PMAPortal.Web.Controllers
                     identity.AddClaim(new Claim(ClaimTypes.Name, sessionObject.FullName));
                     identity.AddClaim(new Claim(ClaimTypes.Sid, sessionObject.Id.ToString()));
                     identity.AddClaim(new Claim(ClaimTypes.Actor, Constants.USER_TYPE_USER));
-                    identity.AddClaim(new Claim(ClaimTypes.Role, sessionObject.Role));
+
+                    foreach(var r in sessionObject.Roles)
+                    {
+                        identity.AddClaim(new Claim(ClaimTypes.Role, r));
+                    }
+                    
 
                     var principal = new ClaimsPrincipal(identity);
                     await HttpContext.SignInAsync(Constants.AUTH_COOKIE_ID, principal);

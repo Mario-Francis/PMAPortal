@@ -35,7 +35,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException("HouseType object cannot be null");
             }
 
-            if (await houseTypeRepo.Any(m => m.Name.ToLower() == houseType.Name.ToLower()))
+            if (await houseTypeRepo.AnyAsync(m => m.Name.ToLower() == houseType.Name.ToLower()))
             {
                 throw new AppException($"A houseType with name '{houseType.Name}' already exist");
             }
@@ -60,7 +60,7 @@ namespace PMAPortal.Web.Services.Implementations
             }
             else
             {
-                if (await appRepo.Any(a => a.HouseTypeId == houseTypeId))
+                if (await appRepo.AnyAsync(a => a.HouseTypeId == houseTypeId))
                 {
                     throw new AppException("HouseType cannot be deleted as it has one or more applications attached to it");
                 }
@@ -85,7 +85,7 @@ namespace PMAPortal.Web.Services.Implementations
             {
                 throw new AppException($"Invalid HouseType id {houseType.Id}");
             }
-            else if (await houseTypeRepo.Any(m => (m.Name.ToLower() == houseType.Name.ToLower()) &&
+            else if (await houseTypeRepo.AnyAsync(m => (m.Name.ToLower() == houseType.Name.ToLower()) &&
             !(_houseType.Name.ToLower() == houseType.Name.ToLower())))
             {
                 throw new AppException($"A HouseType with name '{houseType.Name}' already exist");

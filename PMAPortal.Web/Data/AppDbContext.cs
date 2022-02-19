@@ -35,15 +35,22 @@ namespace PMAPortal.Web.Data
         public DbSet<FeedbackQuestion> FeedbackQuestions { get; set; }
         public DbSet<FeedbackAnswer> FeedbackAnswers { get; set; }
 
+
+        public DbSet<Batch> Batches { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Survey> Surveys { get; set; }
+        public DbSet<Installation> Installations { get; set; }
+        public DbSet<InstallationStatus> InstallationStatuses { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<CustomerStatusLog> CustomerStatusLogs { get; set; }
+
         //===== Audit ====
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<AuditLogChange> AuditLogChanges { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<Applicant>()
-            //    .HasIndex(x => x.Email).IsUnique();
+        {   
             modelBuilder.Entity<User>()
                 .HasIndex(x => x.Email).IsUnique();
 
@@ -112,16 +119,6 @@ namespace PMAPortal.Web.Data
                .WithMany(x => x.PaymentLogs)
                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<User>()
-                .HasOne(x => x.Role)
-                .WithMany(x => x.Users)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Application>()
-               .HasOne(x => x.Installer)
-               .WithMany(x => x.Applications)
-               .OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<Application>()
                .HasOne(x => x.AssignedByUser)
                .WithMany()
@@ -140,6 +137,86 @@ namespace PMAPortal.Web.Data
                .HasForeignKey(x => x.FeedbackQuestionId)
                .OnDelete(DeleteBehavior.NoAction);
 
+
+            //=====================================
+            modelBuilder.Entity<Customer>()
+                .HasIndex(x => x.AccountNumber).IsUnique();
+
+            modelBuilder.Entity<Customer>()
+                .HasIndex(x => x.Email).IsUnique();
+
+            modelBuilder.Entity<Customer>()
+                .HasIndex(x => x.PhoneNumber).IsUnique();
+
+            modelBuilder.Entity<Customer>()
+               .HasOne(x => x.Batch)
+               .WithMany(x => x.Customers)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Survey>()
+               .HasOne(x => x.Customer)
+               .WithMany(x => x.Surveys)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Survey>()
+               .HasOne(x => x.SurveyStaff)
+               .WithMany()
+               .HasForeignKey(x=>x.SurveyStaffId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<Survey>()
+               .HasOne(x => x.AssignedByUser)
+               .WithMany()
+               .HasForeignKey(x => x.AssignedBy)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Installation>()
+              .HasOne(x => x.Customer)
+              .WithMany(x=> x.Installations)
+              .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Installation>()
+               .HasOne(x => x.Installer)
+               .WithMany()
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Installation>()
+               .HasOne(x => x.InstallationStatus)
+               .WithMany()
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Installation>()
+               .HasOne(x => x.AssignedByUser)
+               .WithMany()
+               .HasForeignKey(x => x.AssignedBy)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserRole>()
+               .HasOne(x => x.User)
+               .WithMany(x=>x.UserRoles)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserRole>()
+              .HasOne(x => x.Role)
+              .WithMany(x => x.UserRoles)
+              .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CustomerStatusLog>()
+              .HasOne(x => x.Customer)
+              .WithMany(x => x.CustomerStatusLogs)
+              .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CustomerStatusLog>()
+              .HasOne(x => x.InstallationStatus)
+              .WithMany()
+              .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CustomerStatusLog>()
+              .HasOne(x => x.ActionByUser)
+              .WithMany()
+              .HasForeignKey(x=>x.ActionBy)
+              .OnDelete(DeleteBehavior.NoAction);
 
             SeeData(modelBuilder);
         }
@@ -170,55 +247,55 @@ namespace PMAPortal.Web.Data
                     Id = 4,
                     Name = "Installer",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
-                }
+                },
+                 new Role
+                 {
+                     Id = 5,
+                     Name = "Survey Staff",
+                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
+                 }
            );
 
-            modelBuilder.Entity<ApplicationStatus>().HasData(
+            modelBuilder.Entity<InstallationStatus>().HasData(
                 new Role
                 {
                     Id = 1,
                     Name = "Pending",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                 },
-                new Role
-                {
-                    Id = 2,
-                    Name = "Submitted",
-                    CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
-                },
                  new Role
                  {
-                     Id = 3,
+                     Id = 2,
                      Name = "Scheduled for Installation",
                      CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                  },
                   new Role
                   {
-                      Id = 4,
+                      Id = 3,
                       Name = "Installation In Progress",
                       CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                   },
                 new Role
                 {
-                    Id = 5,
+                    Id = 4,
                     Name = "Installation Failed",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                 },
                 new Role
                 {
-                    Id = 6,
+                    Id = 5,
                     Name = "Installation Completed",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                 },
                 new Role
                 {
-                    Id = 7,
+                    Id = 6,
                     Name = "Disco Confirmation Failed",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                 },
                 new Role
                 {
-                    Id = 8,
+                    Id = 7,
                     Name = "Disco Confirmation Successful",
                     CreatedDate = new DateTimeOffset(2021, 10, 29, 18, 38, 0, TimeSpan.FromMinutes(60))
                 }

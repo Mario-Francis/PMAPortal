@@ -10,7 +10,8 @@ namespace PMAPortal.Web
         ADMINISTRATOR = 1,
         SUPERVISOR,
         DISCO_PERSONNEL,
-        INSTALLER
+        INSTALLER,
+        SURVEY_STAFF
     }
 
     public enum ActivityActionType

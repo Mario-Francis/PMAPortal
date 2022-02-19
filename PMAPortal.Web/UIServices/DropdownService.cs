@@ -83,7 +83,7 @@ namespace PMAPortal.Web.UIServices
         }
         public IEnumerable<SelectListItem> GetInstallers(string value = null, string emptyText = null)
         {
-            List<SelectListItem> installers = userService.GetUsers().Where(u=>u.RoleId == (int)AppRoles.INSTALLER).OrderBy(u=>u.FirstName)
+            List<SelectListItem> installers = userService.GetUsers().Where(u=>u.UserRoles.Any(ur=>ur.RoleId == (int)AppRoles.INSTALLER)).OrderBy(u=>u.FirstName)
                 .Select(u => new SelectListItem { Text = $"{u.FirstName} {u.LastName} ({u.Email})", Value = u.Id.ToString(), Selected = u.Id.ToString() == value }).ToList();
             installers.Insert(0, new SelectListItem { Text = emptyText ?? "- Select installer -", Value = "" });
 

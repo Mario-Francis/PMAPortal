@@ -32,7 +32,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException("Appliance object cannot be null");
             }
 
-            if (await applianceRepo.Any(m => m.Name.ToLower() == appliance.Name.ToLower()))
+            if (await applianceRepo.AnyAsync(m => m.Name.ToLower() == appliance.Name.ToLower()))
             {
                 throw new AppException($"A appliance with name '{appliance.Name}' already exist");
             }

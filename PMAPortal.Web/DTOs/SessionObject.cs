@@ -13,7 +13,7 @@ namespace PMAPortal.Web.DTOs
         public string FullName { get; set; }
         public string Email { get; set; }
         public string Code { get; set; }
-        public string Role { get; set; }
+        public IEnumerable<string> Roles { get; set; }
         public string UserType { get; set; } // user or student
 
         public static SessionObject FromUser(User user)
@@ -26,7 +26,7 @@ namespace PMAPortal.Web.DTOs
                 FullName = $"{user.FirstName} {user.LastName}",
                 Code=user.Code,
                 Id = user.Id,
-                Role = user.Role.Name,
+                Roles = user.UserRoles.Select(r=>r.Role.Name),
                 UserType = Constants.USER_TYPE_USER
             };
         }

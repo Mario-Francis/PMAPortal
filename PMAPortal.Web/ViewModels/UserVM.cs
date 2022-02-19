@@ -1,6 +1,9 @@
 ﻿using PMAPortal.Web.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace PMAPortal.Web.ViewModels
 {
@@ -16,15 +19,14 @@ namespace PMAPortal.Web.ViewModels
         [Required]
         public string PhoneNumber { get; set; }
         public string Code { get; set; }
-        public string Role { get; set; }
+        [Required]
+        public IEnumerable<ItemVM> Roles { get; set; }
 
         public string FullName { get {
                 return $"{FirstName} {LastName}".Replace("  ", " ");
             } }
 
         public bool IsActive { get; set; }
-        [Required]
-        public long  RoleId { get; set; }
         public string UpdatedBy { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
@@ -56,7 +58,12 @@ namespace PMAPortal.Web.ViewModels
                 IsActive = IsActive,
                 CreatedDate = DateTimeOffset.Now,
                 UpdatedDate = DateTimeOffset.Now,
-                RoleId = RoleId
+                UserRoles = Roles.Select(r=> new UserRole
+                {
+                    RoleId=r.Id,
+                    UserId=Id,
+                    CreatedDate=DateTimeOffset.Now
+                }).ToList()
             };
         }
 
@@ -71,8 +78,7 @@ namespace PMAPortal.Web.ViewModels
                 PhoneNumber = user.PhoneNumber,
                 Code = user.Code ?? "",
                 IsActive = user.IsActive,
-                RoleId=user.RoleId,
-                Role=user.Role.Name,
+                Roles = user.UserRoles.Select(ur=> ItemVM.FromUserRole(ur)),
                 UpdatedBy = user.UpdatedByUser == null ? null : $"{user.UpdatedByUser.FirstName} {user.UpdatedByUser.LastName} ({user.UpdatedByUser.Email})",
                 CreatedDate = clientTimeOffset == null ? user.CreatedDate : user.CreatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value)),
                 UpdatedDate = clientTimeOffset == null ? user.UpdatedDate : user.UpdatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value)),
