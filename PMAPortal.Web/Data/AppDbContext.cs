@@ -139,6 +139,12 @@ namespace PMAPortal.Web.Data
 
 
             //=====================================
+            modelBuilder.Entity<Batch>()
+               .HasOne(x => x.CreatedByUser)
+               .WithMany()
+               .HasForeignKey(x=>x.CreatedBy)
+               .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Customer>()
                 .HasIndex(x => x.AccountNumber).IsUnique();
 

@@ -7,6 +7,8 @@ namespace PMAPortal.Web.Models
 {
     public class Batch:BaseEntity
     {
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
         public DateTimeOffset DateShared { get; set; }
 
         // navigation
