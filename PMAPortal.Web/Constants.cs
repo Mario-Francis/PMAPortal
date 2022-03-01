@@ -44,7 +44,13 @@ namespace PMAPortal.Web
         CREATE_PET,
         DELETE_PET,
 
-        CREATE_BATCH
+        CREATE_BATCH,
+        DELETE_BATCH,
+
+        CREATE_CUSTOMER,
+        UPDATE_CUSTOMER,
+        DELETE_CUSTOMER
+
     }
 
     public enum ApplicationsStatus

@@ -14,6 +14,8 @@
     <Compile Remove="Migrations\20220101085457_Added_AssignedBy_Column_To_Applications_Table.Designer.cs" />
     <Compile Remove="Migrations\20220219121747_Add_New_Tables_Survey_Installations_Customers_InstallationStatuses_UseRoles_CustomerStatusLog_Batch.cs" />
     <Compile Remove="Migrations\20220219121747_Add_New_Tables_Survey_Installations_Customers_InstallationStatuses_UseRoles_CustomerStatusLog_Batch.Designer.cs" />
+    <Compile Remove="Migrations\20220220013013_tt.cs" />
+    <Compile Remove="Migrations\20220220013013_tt.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

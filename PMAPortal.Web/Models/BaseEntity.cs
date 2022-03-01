@@ -18,7 +18,7 @@ namespace PMAPortal.Web.Models
         //Navigation Properties
         [JsonIgnore]
         [ForeignKey("CreatedBy")]
-        [NotMapped]
+        //[NotMapped]
         public virtual User CreatedByUser { get; set; }
 
         public T Clone<T>() where T : BaseEntity

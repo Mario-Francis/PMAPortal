@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace PMAPortal.Web.Services.Implementations
 {
-    public class BatchService
+    public class BatchService: IBatchService
     {
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IRepository<Batch> batchRepo;
@@ -183,6 +183,10 @@ namespace PMAPortal.Web.Services.Implementations
             {
                 //validate and load data
                 var rows = table.Rows;
+                if(rows.Count <= 1)
+                {
+                    throw new AppException($"Excel is empty!");
+                }
                 for (int i = 1; i < rows.Count; i++)
                 {
                     if (!ValidateDataRow(i, rows[i], out error))
@@ -225,6 +229,15 @@ namespace PMAPortal.Web.Services.Implementations
             return _filePath;
         }
 
+        private void DeleteFile(string filePath)
+        {
+            string fullPath = Path.Combine(hostEnvironment.WebRootPath, filePath);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
+
         public async Task AddCustomerBatch(IFormFile file, DateTimeOffset? dateShared = null)
         {
             if (file == null)
@@ -241,9 +254,49 @@ namespace PMAPortal.Web.Services.Implementations
                 {
                     var currentUser = accessor.HttpContext.GetUserSession();
                     var customers = ExtractData(file).ToList();
+
+                    // check for duplicate account number
+                    var duplicateAccsOnExcel = customers.GroupBy(c => c.AccountNumber).Where(g => g.Count() > 1).Select(g => g.Key);
+                    if(duplicateAccsOnExcel.Count() > 0)
+                    {
+                        throw new AppException($"Duplicate account numbers detected: {string.Join(", ", duplicateAccsOnExcel)}");
+                    }
+
+                    var duplicateEmailsOnExcel = customers.GroupBy(c => c.Email).Where(g => g.Count() > 1).Select(g => g.Key);
+                    if (duplicateEmailsOnExcel.Count() > 0)
+                    {
+                        throw new AppException($"Duplicate emails detected: {string.Join(", ", duplicateEmailsOnExcel)}");
+                    }
+
+                    var duplicatePhonesOnExcel = customers.GroupBy(c => c.PhoneNumber).Where(g => g.Count() > 1).Select(g => g.Key);
+                    if (duplicatePhonesOnExcel.Count() > 0)
+                    {
+                        throw new AppException($"Duplicate phone numbers detected: {string.Join(", ", duplicatePhonesOnExcel)}");
+                    }
+
+
+                    var accs = customers.Select(c => c.AccountNumber);
+                    var duplicateAccsInDb = customerRepo.GetWhere(c => accs.Contains(c.AccountNumber)).Select(c => c.AccountNumber);
+                    if(duplicateAccsInDb.Count() > 0)
+                    {
+                        throw new AppException($"One or more accounts already exist: {string.Join(", ", duplicateAccsInDb)}");
+                    }
+
+                    var emails = customers.Select(c => c.Email.ToLower());
+                    var duplicateEmailsInDb = customerRepo.GetWhere(c => accs.Contains(c.Email.ToLower())).Select(c => c.Email);
+                    if (duplicateEmailsInDb.Count() > 0)
+                    {
+                        throw new AppException($"One or more emails already exist: {string.Join(", ", duplicateEmailsInDb)}");
+                    }
+
+                    var phones = customers.Select(c => c.PhoneNumber);
+                    var duplicatePhonesInDb = customerRepo.GetWhere(c => accs.Contains(c.PhoneNumber)).Select(c => c.PhoneNumber);
+                    if (duplicatePhonesInDb.Count() > 0)
+                    {
+                        throw new AppException($"One or more phone numbers already exist: {string.Join(", ", duplicatePhonesInDb)}");
+                    }
+
                     var filePah = SaveFile(file);
-
-
                     // update customers
                     customers.ForEach((c) =>
                     {
@@ -278,7 +331,7 @@ namespace PMAPortal.Web.Services.Implementations
 
         public IEnumerable<Batch> GetBatches()
         {
-            return batchRepo.GetAll();
+            return batchRepo.GetAll().OrderByDescending(b=>b.Id);
         }
 
         // delete batch - only when customers haven't been processed
@@ -290,11 +343,24 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException($"Invalid batch id");
             }
 
-            // check if ay customer is processed
+            // check if any customer is processed
+            if(batch.Customers.Any(c=> c.Surveys.Count() > 0 || c.Installations.Count() > 0))
+            {
+                throw new AppException($"Batch cannot be deleted as one or more customers are been processed");
+            }
+
+            var currentUser = accessor.HttpContext.GetUserSession();
 
             // delete batch and customers
+            var path = batch.Clone<Batch>().FilePath;
+            var fileName = batch.Clone<Batch>().FileName;
+            await batchRepo.Delete(id, false);
 
             // log action
+            await logger.LogActivity(ActivityActionType.DELETE_BATCH, currentUser.Email,
+                        $"Deleted batch with file name {fileName}");
+
+            DeleteFile(path);
         }
 
         //public byte[] ExportBatchToExcel(int id)

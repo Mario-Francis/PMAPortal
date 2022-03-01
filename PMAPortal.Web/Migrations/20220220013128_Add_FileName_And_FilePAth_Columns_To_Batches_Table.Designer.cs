@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMAPortal.Web.Data;
 
 namespace PMAPortal.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220220013128_Add_FileName_And_FilePAth_Columns_To_Batches_Table")]
+    partial class Add_FileName_And_FilePAth_Columns_To_Batches_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,8 +38,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Appliances");
                 });
@@ -74,8 +74,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Applicants");
                 });
@@ -124,8 +122,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("ApplicantAddresses");
                 });
 
@@ -159,8 +155,6 @@ namespace PMAPortal.Web.Migrations
                     b.HasIndex("ApplicantId");
 
                     b.HasIndex("ApplicationId");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("ApplicantFeedbacks");
                 });
@@ -219,8 +213,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("AssignedBy");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("HouseTypeId");
 
                     b.HasIndex("InstallerId");
@@ -256,8 +248,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("ApplicationAppliances");
                 });
 
@@ -287,8 +277,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("ApplicationPets");
                 });
 
@@ -309,8 +297,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("ApplicationStatuses");
                 });
@@ -346,8 +332,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicationStatusId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("ApplicationStatusLogs");
                 });
 
@@ -368,8 +352,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Areas");
                 });
@@ -404,8 +386,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("ActivityLogs");
                 });
 
@@ -435,8 +415,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ActivityLogId")
                         .IsUnique();
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("AuditLogs");
                 });
@@ -470,8 +448,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("AuditLogId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("AuditLogChanges");
                 });
 
@@ -498,8 +474,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Batches");
                 });
@@ -555,8 +529,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("BatchId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
@@ -600,8 +572,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ActionBy");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("InstallationStatusId");
@@ -635,8 +605,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicantFeedbackId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("FeedbackQuestionId");
 
                     b.ToTable("FeedbackAnswers");
@@ -660,8 +628,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("FeedbackQuestions");
                 });
 
@@ -682,8 +648,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("HouseTypes");
                 });
@@ -756,8 +720,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("AssignedBy");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("InstallationStatusId");
@@ -784,8 +746,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("InstallationStatuses");
 
@@ -870,8 +830,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("Mails");
                 });
 
@@ -907,8 +865,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Meters");
                 });
@@ -948,8 +904,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("Payments");
                 });
 
@@ -977,8 +931,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("PaymentId");
 
                     b.ToTable("PaymentLogs");
@@ -1002,8 +954,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.ToTable("Pets");
                 });
 
@@ -1024,8 +974,6 @@ namespace PMAPortal.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Roles");
 
@@ -1175,8 +1123,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasIndex("AssignedBy");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("SurveyStaffId");
@@ -1229,8 +1175,6 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
@@ -1259,27 +1203,11 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("RoleId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Appliance", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Applicant", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.ApplicantAddress", b =>
@@ -1289,10 +1217,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("ApplicantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.ApplicantFeedback", b =>
@@ -1308,10 +1232,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.Application", b =>
@@ -1332,10 +1252,6 @@ namespace PMAPortal.Web.Migrations
                         .WithMany()
                         .HasForeignKey("AssignedBy")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
 
                     b.HasOne("PMAPortal.Web.Models.HouseType", "HouseType")
                         .WithMany()
@@ -1361,10 +1277,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.ApplicationPet", b =>
@@ -1374,17 +1286,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.ApplicationStatus", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.ApplicationStatusLog", b =>
@@ -1400,24 +1301,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("ApplicationStatusId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Area", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Audit.ActivityLog", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.Audit.AuditLog", b =>
@@ -1427,10 +1310,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("PMAPortal.Web.Models.Audit.AuditLog", "ActivityLogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.Audit.AuditLogChange", b =>
@@ -1440,17 +1319,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("AuditLogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Batch", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.Customer", b =>
@@ -1460,10 +1328,6 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("BatchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.CustomerStatusLog", b =>
@@ -1472,10 +1336,6 @@ namespace PMAPortal.Web.Migrations
                         .WithMany()
                         .HasForeignKey("ActionBy")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
 
                     b.HasOne("PMAPortal.Web.Models.Customer", "Customer")
                         .WithMany("CustomerStatusLogs")
@@ -1497,29 +1357,11 @@ namespace PMAPortal.Web.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
                     b.HasOne("PMAPortal.Web.Models.FeedbackQuestion", "FeedbackQuestion")
                         .WithMany()
                         .HasForeignKey("FeedbackQuestionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.FeedbackQuestion", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.HouseType", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.Installation", b =>
@@ -1528,10 +1370,6 @@ namespace PMAPortal.Web.Migrations
                         .WithMany()
                         .HasForeignKey("AssignedBy")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
 
                     b.HasOne("PMAPortal.Web.Models.Customer", "Customer")
                         .WithMany("Installations")
@@ -1551,27 +1389,6 @@ namespace PMAPortal.Web.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
                 });
 
-            modelBuilder.Entity("PMAPortal.Web.Models.InstallationStatus", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Mail", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Meter", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
             modelBuilder.Entity("PMAPortal.Web.Models.Payment", b =>
                 {
                     b.HasOne("PMAPortal.Web.Models.Application", "Application")
@@ -1579,37 +1396,15 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.PaymentLog", b =>
                 {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
                     b.HasOne("PMAPortal.Web.Models.Payment", "Payment")
                         .WithMany("PaymentLogs")
                         .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Pet", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
-            modelBuilder.Entity("PMAPortal.Web.Models.Role", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.Survey", b =>
@@ -1618,10 +1413,6 @@ namespace PMAPortal.Web.Migrations
                         .WithMany()
                         .HasForeignKey("AssignedBy")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
 
                     b.HasOne("PMAPortal.Web.Models.Customer", "Customer")
                         .WithMany("Surveys")
@@ -1635,19 +1426,8 @@ namespace PMAPortal.Web.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
                 });
 
-            modelBuilder.Entity("PMAPortal.Web.Models.User", b =>
-                {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-                });
-
             modelBuilder.Entity("PMAPortal.Web.Models.UserRole", b =>
                 {
-                    b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
                     b.HasOne("PMAPortal.Web.Models.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")

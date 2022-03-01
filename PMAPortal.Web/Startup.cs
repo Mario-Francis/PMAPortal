@@ -78,6 +78,7 @@ namespace PMAPortal.Web
             services.AddScoped<IApplianceService, ApplianceService>();
             services.AddScoped<IPetService, PetService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IBatchService, BatchService>();
 
             // ui services
             services.AddScoped<ISessionService, SessionService>();
