@@ -10,12 +10,7 @@ namespace PMAPortal.Web.Models
     public class Survey:BaseEntity, IUpdatable
     {
         public long CustomerId { get; set; }
-        public string BU { get; set; }
-        public string UT { get; set; }
-        public string Feeder { get; set; }
-        public string DT { get; set; }
-        public string Tariff { get; set; }
-        public string MeteredStatus { get; set; }
+       
         public string ReadyToPay { get; set; }
         public string OccupierPhoneNumber { get; set; }
         public string TypeOfApartment { get; set; }
@@ -33,6 +28,7 @@ namespace PMAPortal.Web.Models
         public string SurveryCompany { get; set; }
         public long? SurveyStaffId { get; set; }
         public long? AssignedBy { get; set; }
+        public DateTimeOffset? ScheduleDate { get; set; }
         public DateTimeOffset SurveyDate { get; set; }
         public string SurveyRemark { get; set; } // meter ready || not meter ready
         public string MAP { get; set; }

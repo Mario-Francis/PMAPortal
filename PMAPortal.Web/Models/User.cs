@@ -16,7 +16,7 @@ namespace PMAPortal.Web.Models
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public string PasswordRecoveryToken { get; set; }
-
+        public string CompanyName { get; set; }
         public bool IsActive { get; set; }
         public long? UpdatedBy { get; set; }
         public DateTimeOffset UpdatedDate { get; set; } = DateTimeOffset.Now;
