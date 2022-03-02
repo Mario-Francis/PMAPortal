@@ -84,6 +84,12 @@
                         <a class="nav-link @(service.ControllerName.ToLower()=="dashboard"?"active":"")" asp-controller="Dashboard" asp-action="Index">
                             <i class="fas fa-tachometer-alt"></i> &nbsp; Dashboard
                         </a>
+                        <a class="nav-link @(service.ControllerName.ToLower()=="batches"?"active":"")" asp-controller="Batches" asp-action="Index">
+                            <i class="fas fa-layer-group"></i> &nbsp; Batches
+                        </a>
+                        <a class="nav-link @(service.ControllerName.ToLower()=="customers"?"active":"")" asp-controller="Customers" asp-action="Index">
+                            <i class="fas fa-users"></i> &nbsp; Customers
+                        </a>
                         @if (User.IsInRole(Constants.ROLE_ADMIN))
                         {
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">

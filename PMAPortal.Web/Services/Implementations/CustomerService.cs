@@ -57,6 +57,11 @@ namespace PMAPortal.Web.Services.Implementations
             }
             else
             {
+                if(customer.Surveys.Count() > 0 || customer.Installations.Count() > 0)
+                {
+                    throw new AppException($"Customer cannot be deleted as customer is been processed");
+                }
+
                 var _customer = customer.Clone<Customer>();
                 await customerRepo.Delete(customerId, false);
 

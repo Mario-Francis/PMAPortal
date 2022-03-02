@@ -23,7 +23,7 @@ namespace PMAPortal.Web.Services.Implementations
         private readonly IOptionsSnapshot<AppSettings> appSettingsDelegate;
         private readonly IHttpContextAccessor accessor;
         private readonly ILoggerService<BatchService> logger;
-        private string[] headers = new string[] { "SN", "Account Number", "ARN", "Customer Name", "CIS Name", "Email", "Phone Number", "Address", "CIS Address", "Landmark" };
+        private string[] headers = new string[] { "SN", "Date Shared", "Batch", "Account Number", "ARN", "Customer Name", "CIS Name", "Email", "Phone Number", "Address", "CIS Address", "Landmark", "BU","UT", "Feeder", "DT", "Tariff", "Metered Status" };
 
         public BatchService(
             IWebHostEnvironment hostEnvironment,
@@ -101,22 +101,26 @@ namespace PMAPortal.Web.Services.Implementations
         {
             var err = "";
             var isValid = true;
-            if (row[1] == null || Convert.ToString(row[1]).Trim().Length != 11)
+            if (row[0] == null || Convert.ToString(row[0]).Trim().Length == 0)
             {
                 isValid = false;
-                err = $"Invalid value for {headers[1]} at row {index}. 11 character value expected.";
+                err = $"Invalid value for {headers[0]} at row {index}. Field is required.";
+            }else if (row[1] == null || !DateTimeOffset.TryParse(Convert.ToString(row[1]).Trim(), out _))
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[1]} at row {index}. A valid date in the format YYYY-MM-DD is required.";
             }
-            else if (row[2] == null || Convert.ToString(row[2]).Trim() == "")
+            else if (row[2] == null || Convert.ToString(row[2]).Trim().Length == 0)
             {
                 isValid = false;
                 err = $"Invalid value for {headers[2]} at row {index}. Field is required.";
             }
-            else if (row[3] == null || Convert.ToString(row[3]).Trim().Length == 0)
+            else if (row[3] == null || Convert.ToString(row[3]).Trim().Length != 11)
             {
                 isValid = false;
-                err = $"Invalid value for {headers[3]} at row {index}. Field is required.";
+                err = $"Invalid value for {headers[3]} at row {index}. 11 character value expected.";
             }
-            else if (row[4] == null || Convert.ToString(row[4]).Trim().Length == 0)
+            else if (row[4] == null || Convert.ToString(row[4]).Trim() == "")
             {
                 isValid = false;
                 err = $"Invalid value for {headers[4]} at row {index}. Field is required.";
@@ -141,11 +145,51 @@ namespace PMAPortal.Web.Services.Implementations
                 isValid = false;
                 err = $"Invalid value for {headers[8]} at row {index}. Field is required.";
             }
-            //else if (row[9] == null || Convert.ToString(row[9]).Trim().Length == 0)
-            //{
-            //    isValid = false;
-            //    err = $"Invalid value for {headers[9]} at row {index}. Value is required.";
-            //}
+            else if (row[9] == null || Convert.ToString(row[9]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[9]} at row {index}. Field is required.";
+            }
+            else if (row[10] == null || Convert.ToString(row[10]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[10]} at row {index}. Field is required.";
+            }
+            else if (row[11] == null || Convert.ToString(row[11]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[11]} at row {index}. Value is required.";
+            }
+            else if (row[12] == null || Convert.ToString(row[12]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[12]} at row {index}. Value is required.";
+            }
+            else if (row[13] == null || Convert.ToString(row[13]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[13]} at row {index}. Value is required.";
+            }
+            else if (row[14] == null || Convert.ToString(row[14]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[14]} at row {index}. Value is required.";
+            }
+            else if (row[15] == null || Convert.ToString(row[15]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[15]} at row {index}. Value is required.";
+            }
+            else if (row[16] == null || Convert.ToString(row[16]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[16]} at row {index}. Value is required.";
+            }
+            else if (row[17] == null || Convert.ToString(row[17]).Trim().Length == 0)
+            {
+                isValid = false;
+                err = $"Invalid value for {headers[17]} at row {index}. Value is required.";
+            }
 
             errorMessage = err;
             return isValid;
@@ -197,15 +241,24 @@ namespace PMAPortal.Web.Services.Implementations
                     {
                         var customer = new Customer()
                         {
-                            AccountNumber = Convert.ToString(rows[i][1]),
-                            ARN = Convert.ToString(rows[i][2]),
-                            CustomerName = Convert.ToString(rows[i][3]),
-                            CISName = Convert.ToString(rows[i][4]),
-                            Email = Convert.ToString(rows[i][5]),
-                            PhoneNumber = rows[i][0] == null ? null : Convert.ToString(rows[i][6]),
-                            Address = Convert.ToString(rows[i][7]),
-                            CISAddress = Convert.ToString(rows[i][8]),
-                            Landmark = Convert.ToString(rows[i][9])
+                            SN = Convert.ToString(rows[i][0]),
+                            DateShared = DateTimeOffset.Parse(Convert.ToString(rows[i][1])),
+                            BatchNumber = Convert.ToString(rows[i][2]),
+                            AccountNumber = Convert.ToString(rows[i][3]),
+                            ARN = Convert.ToString(rows[i][4]),
+                            CustomerName = Convert.ToString(rows[i][5]),
+                            CISName = Convert.ToString(rows[i][6]),
+                            Email = Convert.ToString(rows[i][7]),
+                            PhoneNumber = rows[i][8] == null ? null : Convert.ToString(rows[i][8]),
+                            Address = Convert.ToString(rows[i][9]),
+                            CISAddress = Convert.ToString(rows[i][10]),
+                            Landmark = Convert.ToString(rows[i][11]),
+                            BU = Convert.ToString(rows[i][12]),
+                            UT = Convert.ToString(rows[i][13]),
+                            Feeder = Convert.ToString(rows[i][14]),
+                            DT = Convert.ToString(rows[i][15]),
+                            Tariff = Convert.ToString(rows[i][16]),
+                            MeteredStatus = Convert.ToString(rows[i][17]),
                         };
 
                         customers.Add(customer);
@@ -295,6 +348,7 @@ namespace PMAPortal.Web.Services.Implementations
                     {
                         throw new AppException($"One or more phone numbers already exist: {string.Join(", ", duplicatePhonesInDb)}");
                     }
+
 
                     var filePah = SaveFile(file);
                     // update customers

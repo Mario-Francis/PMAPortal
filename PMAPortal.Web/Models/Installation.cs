@@ -11,6 +11,7 @@ namespace PMAPortal.Web.Models
     {
         public long CustomerId { get; set; }
         public long InstallationStatusId { get; set; }
+        public DateTimeOffset? ScheduleDate { get; set; }
         public long? InstallerId { get; set; }
         public long? AssignedBy { get; set; }
         public string MeterType { get; set; }

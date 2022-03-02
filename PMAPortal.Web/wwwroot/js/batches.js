@@ -28,13 +28,13 @@ $(() => {
                     "filter": "Id",
                     "display": "id"
                 }, "orderable": false, "render": function (data, type, row, meta) {
-                    let status = row.isActive;
+                    //let status = row.isActive;
                     return '<div class="dropdown f14">'
                         + '<button type="button" class="btn px-3 f12" data-toggle="dropdown">'
                         + '<i class="fa fa-ellipsis-v"></i>'
                         + '</button>'
                         + '<div class="dropdown-menu f14">'
-                        + `<a class="dropdown-item edit" href="#">View Customers</a>`
+                        + `<a class="dropdown-item edit" href="${$base}batches/${data}">View Customers</a>`
                         + `<a class="dropdown-item delete" href="javascript:void(0)" uid="${row.id}">Delete</a>`
                         + `<a class="dropdown-item edit" href="${$base}${row.filePath}" download>Download batch file</a>`
                         + '</div>'

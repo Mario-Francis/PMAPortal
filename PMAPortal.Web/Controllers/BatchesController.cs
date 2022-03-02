@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PMAPortal.Web.DTOs;
+using PMAPortal.Web.Extensions;
 using PMAPortal.Web.Services;
 using PMAPortal.Web.ViewModels;
 using System;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace PMAPortal.Web.Controllers
 {
+    [Route("[controller]")]
     public class BatchesController : Controller
     {
         private readonly IBatchService batchService;
@@ -28,12 +30,13 @@ namespace PMAPortal.Web.Controllers
             this.appSettingsDelegate = appSettingsDelegate;
             this.logger = logger;
         }
+       
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("BatchesDataTable")]
         public IActionResult BatchesDataTable()
         {
             var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
@@ -48,7 +51,7 @@ namespace PMAPortal.Web.Controllers
             return Ok(parser.Parse());
         }
 
-        [HttpPost]
+        [HttpPost("UploadBatch")]
         public async Task<IActionResult> UploadBatch(IFormFile file, DateTimeOffset? dateShared)
         {
             try
@@ -64,11 +67,11 @@ namespace PMAPortal.Web.Controllers
             {
                 logger.LogException(ex, "An error was encountered while uploading a new batch");
 
-                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
+                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
             }
         }
 
-
+        [HttpGet("DeleteBatch/{id}")]
         public async Task<IActionResult> DeleteBatch(long? id)
         {
             try
@@ -94,7 +97,7 @@ namespace PMAPortal.Web.Controllers
                 return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
             }
         }
-
+        [HttpGet("GetBatch/{id}")]
         public async Task<IActionResult> GetBatch(long? id)
         {
             try
@@ -120,5 +123,42 @@ namespace PMAPortal.Web.Controllers
                 return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
             }
         }
+
+        [HttpGet("{batchId}")]
+        public async Task<IActionResult> BatchCustomers(long? batchId)
+        {
+            if (batchId == null)
+            {
+                return NotFound();
+            }
+            var batch = await batchService.GetBatch(batchId.Value);
+            if (batch == null)
+            {
+                return NotFound();
+            }
+            return View(BatchVM.FromBatch(batch));
+        }
+
+        [HttpPost("{batchId}/CustomersDataTable")]
+        public async Task<IActionResult> BatchCustomersDataTable(long? batchId)
+        {
+            if (batchId == null)
+            {
+                return NotFound();
+            }
+
+            var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
+                appSettingsDelegate.Value.DefaultTimeZoneOffset : Convert.ToInt32(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]);
+
+            var batch = await batchService.GetBatch(batchId.Value);
+            var customers = batch.Customers.Select(c => CustomerVM.FromCustomer(c, clientTimeOffset));
+
+            var parser = new Parser<CustomerVM>(Request.Form, customers.AsQueryable())
+                   .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                   .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
+
+            return Ok(parser.Parse());
+        }
+
     }
 }
