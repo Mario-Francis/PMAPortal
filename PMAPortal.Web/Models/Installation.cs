@@ -16,6 +16,9 @@ namespace PMAPortal.Web.Models
         public long? AssignedBy { get; set; }
         public string MeterType { get; set; }
         public string MeterNumber { get; set; }
+        public string LocationFrontViewImagePath { get; set; }
+        public string MeterPointBeforeInstallationImagePath { get; set; }
+        public string CustomerBillImagePath { get; set; }
         public string MeterNamePlateImagePath { get; set; }
         public string InProgessImagePath { get; set; }
         public string MeterSealImagePath { get; set; }

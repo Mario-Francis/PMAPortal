@@ -49,7 +49,17 @@ namespace PMAPortal.Web
 
         CREATE_CUSTOMER,
         UPDATE_CUSTOMER,
-        DELETE_CUSTOMER
+        DELETE_CUSTOMER,
+
+        ASSIGN_SURVEY_TASK,
+        ASSIGN_SURVEY_TASKS,
+        REASSIGN_SURVEY_TASK,
+        REASSIGN_SURVEY_TASKS,
+        UNASSIGN_SURVEY_TASK,
+        UNASSIGN_SURVEY_TASKS,
+        SCHEDULE_SURVEY,
+        COMPLETE_SURVEY,
+        UPDATE_SURVEY
 
     }
 
@@ -75,11 +85,15 @@ namespace PMAPortal.Web
         public const string ROLE_SUPERVISOR = "Supervisor";
         public const string ROLE_DISCO = "Disco Personnel";
         public const string ROLE_INSTALLER = "Installer";
+        public const string ROLE_SURVEY_STAFF = "Survey Staff";
 
         public const string USER_TYPE_USER = "User";
         public const string USER_TYPE_APPLICANT = "Applicant";
 
         public const string CLIENT_TIMEOFFSET_COOKIE_ID = "clientTimeZoneOffset";
         public static string[] IGNORED_COLUMNS = new string[] { "Id", "CreatedBy", "CreatedDate" };
+
+        public const string SURVEY_REMARK_METER_READY = "METER READY";
+        public const string SURVEY_REMARK_NOT_METER_READY = "NOT METER READY";
     }
 }

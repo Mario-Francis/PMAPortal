@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMAPortal.Web.Data;
 
 namespace PMAPortal.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220302234255_Move_image_fields_in_survey_table_to_installation_table")]
+    partial class Move_image_fields_in_survey_table_to_installation_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1117,9 +1119,6 @@ namespace PMAPortal.Web.Migrations
                     b.Property<long?>("AssignedBy")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("BedroomCount")
-                        .HasColumnType("int");
-
                     b.Property<long?>("CreatedBy")
                         .HasColumnType("bigint");
 
@@ -1171,7 +1170,7 @@ namespace PMAPortal.Web.Migrations
                     b.Property<string>("SurveryCompany")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset?>("SurveyDate")
+                    b.Property<DateTimeOffset>("SurveyDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("SurveyRemark")
@@ -1198,8 +1197,6 @@ namespace PMAPortal.Web.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("SurveyStaffId");
-
-                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Surveys");
                 });
@@ -1252,9 +1249,7 @@ namespace PMAPortal.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy")
-                        .IsUnique()
-                        .HasFilter("[CreatedBy] IS NOT NULL");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex("Email")
                         .IsUnique()
@@ -1658,17 +1653,13 @@ namespace PMAPortal.Web.Migrations
                         .WithMany()
                         .HasForeignKey("SurveyStaffId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("PMAPortal.Web.Models.User", "UpdatedByUser")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.User", b =>
                 {
                     b.HasOne("PMAPortal.Web.Models.User", "CreatedByUser")
-                        .WithOne("UpdatedByUser")
-                        .HasForeignKey("PMAPortal.Web.Models.User", "CreatedBy");
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
                 });
 
             modelBuilder.Entity("PMAPortal.Web.Models.UserRole", b =>

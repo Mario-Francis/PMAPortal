@@ -13,6 +13,7 @@ namespace PMAPortal.Web.Models
        
         public string ReadyToPay { get; set; }
         public string OccupierPhoneNumber { get; set; }
+        public int? BedroomCount { get; set; }
         public string TypeOfApartment { get; set; }
         public string ExistingMeterType { get; set; }
         public string ExistingMeterNumber { get; set; }
@@ -29,20 +30,18 @@ namespace PMAPortal.Web.Models
         public long? SurveyStaffId { get; set; }
         public long? AssignedBy { get; set; }
         public DateTimeOffset? ScheduleDate { get; set; }
-        public DateTimeOffset SurveyDate { get; set; }
+        public DateTimeOffset? SurveyDate { get; set; }
         public string SurveyRemark { get; set; } // meter ready || not meter ready
         public string MAP { get; set; }
         public string AdditionalComment { get; set; }
-        public string LocationFrontViewImagePath { get; set; }
-        public string MeterPointBeforeInstallationImagePath { get; set; }
-        public string CustomerBillImagePath { get; set; }
         public long? UpdatedBy { get; set; }
         public DateTimeOffset UpdatedDate { get; set; } = DateTimeOffset.Now;
 
 
         // naviagtion
         [JsonIgnore]
-        [NotMapped]
+        //[NotMapped]
+        [ForeignKey("UpdatedBy")]
         public virtual User UpdatedByUser { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual User SurveyStaff { get; set; }

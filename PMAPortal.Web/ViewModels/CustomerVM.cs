@@ -32,6 +32,15 @@ namespace PMAPortal.Web.ViewModels
         public string SurveyStatus { get; set; } // pending | Meter ready | Not Meter Ready
         public string InstallationStatus { get; set; } // Not Eligible | Pending | Assigned | Scheduled | In-Progress | Rejected | Completed | Disco Rejected | Disco Approved
 
+        // if  assigned
+        public long? SurveyId { get; set; }
+        public long? SurveyStaffId { get; set; }
+        public long? AssignedById { get; set; }
+        public string AssignedBy { get; set; }
+        public string SurveyStaff { get; set; }
+        public DateTimeOffset? ScheduleDate { get; set; }
+
+
         public string CreatedBy { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public string FormattedCreatedDate
@@ -51,7 +60,7 @@ namespace PMAPortal.Web.ViewModels
          
         public static CustomerVM FromCustomer(Customer customer, int? clientTimeOffset = null)
         {
-            return new CustomerVM
+            var _customer =  new CustomerVM
             {
                 Id = customer.Id,
                 AccountNumber = customer.AccountNumber,
@@ -78,6 +87,18 @@ namespace PMAPortal.Web.ViewModels
                 SurveyStatus = GetSurveyStatus(customer),
                 InstallationStatus = GetInstallationStatus(customer)
             };
+
+            if(customer.Surveys.Count() > 0)
+            {
+                var survey = customer.Surveys.First();
+                _customer.SurveyId = survey.Id;
+                _customer.SurveyStaffId = survey.SurveyStaffId;
+                _customer.AssignedById = survey.AssignedBy;
+                _customer.AssignedBy = survey.AssignedByUser == null ? null : $"{survey.AssignedByUser.FirstName} {survey.AssignedByUser.LastName} ({survey.AssignedByUser.Email})";
+                _customer.SurveyStaff = survey.SurveyStaff == null ? null : $"{survey.SurveyStaff.FirstName} {survey.SurveyStaff.LastName} ({survey.SurveyStaff.Email})";
+                _customer.ScheduleDate = clientTimeOffset == null ? survey.ScheduleDate : survey.ScheduleDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
+            }
+            return _customer;
         }
 
         public static string GetSurveyStatus(Customer customer)
