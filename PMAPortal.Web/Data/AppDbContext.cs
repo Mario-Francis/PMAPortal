@@ -196,12 +196,12 @@ namespace PMAPortal.Web.Data
             modelBuilder.Entity<UserRole>()
                .HasOne(x => x.User)
                .WithMany(x=>x.UserRoles)
-               .OnDelete(DeleteBehavior.NoAction);
+               .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserRole>()
               .HasOne(x => x.Role)
               .WithMany(x => x.UserRoles)
-              .OnDelete(DeleteBehavior.NoAction);
+              .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CustomerStatusLog>()
               .HasOne(x => x.Customer)
@@ -218,6 +218,18 @@ namespace PMAPortal.Web.Data
               .WithMany()
               .HasForeignKey(x=>x.ActionBy)
               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+                .HasOne(x => x.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+               .HasOne(x => x.UpdatedByUser)
+               .WithMany()
+               .HasForeignKey(x => x.UpdatedBy)
+               .OnDelete(DeleteBehavior.NoAction);
 
             SeeData(modelBuilder);
         }

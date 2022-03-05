@@ -1,0 +1,175 @@
+﻿@inject ISessionService service;
+@inject IDropdownService dropdownService;
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Surveys";
+}
+
+
+<h2 class="mt-4">Surveys</h2>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
+    <li class="breadcrumb-item active">Surveys</li>
+</ol>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50 active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Unassigned</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50" id="home2-tab" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" aria-selected="true">Assigned</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Completed</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active p-2 p-md-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <p class="my-2">
+                            <button type="button" disabled id="assignBtn" class="btn btn-primary btn-sm">Assign survey(s) staff</button>
+                        </p>
+                        <div class="table-responsive">
+                            <table id="unassignedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-2 p-md-3" id="home2" role="tabpanel" aria-labelledby="home2-tab">
+                        <div class="table-responsive">
+                            <table id="assignedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Survey&nbsp;Staff</th>
+                                        <th>Assigned&nbsp;By</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-2 p-md-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="table-responsive">
+                            <table id="completedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Assigned&nbsp;To</th>
+                                        <th>Assigned&nbsp;By</th>
+                                        <th>Survey&nbsp;Remark</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Survey&nbsp;Date</th>
+                                        <th>Survey&nbsp;Date</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                   
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Assign modal-->
+<div class="modal fade" id="assignModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Survey(s) to Staff</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post">
+                <fieldset>
+                    <div class="modal-body">
+                        <div class="row mt-2">
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="surveyStaffId" class="f14">* Survey Staff</label>
+                                    <select id="surveyStaffId" class="custom-select form-control" asp-items="@dropdownService.GetSurveyStaffs()" required></select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                        <button type="submit" id="assignSubmitBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-check-circle"></i> &nbsp;Assign</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    <script>
+
+    </script>
+    <script src="~/js/admin_surveys.js" asp-append-version="true"></script>
+
+}

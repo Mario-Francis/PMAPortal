@@ -27,7 +27,9 @@
                                 <th>&nbsp;</th>
                                 <th>Full&nbsp;Name</th>
                                 <th>Email</th>
+                                <th>Roles</th>
                                 <th>Code</th>
+                                <th>Company&nbsp;Name</th>
                                 <th>Phone&nbsp;Number</th>
                                 <th>Status</th>
                                 <th>Date&nbsp;Created</th>
@@ -84,8 +86,14 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="code" class="f14">Code</label>
+                                    <label for="code" class="f14">Code <span class="small text-muted">(Required for survey staffs/installers)</span></label>
                                     <input id="code" type="text" class="form-control integer" placeholder="Enter user code" maxlength="15" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="companyName" class="f14">Company Name <span class="small text-muted">(Required for survey staffs/installers)</span></label>
+                                    <input id="companyName" type="text" class="form-control" placeholder="Enter user company name" />
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -96,9 +104,17 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="role" class="f14">* Role</label>
-                                    <select id="role" class="custom-select form-control" asp-items="@dropdownService.GetRoles()">
-                                    </select>
+                                    <label for="" class="f14">* Roles</label>
+                                    <div class="">
+                                        @foreach (var r in dropdownService.GetRoles().Skip(1))
+                                        {
+                                            <div class="form-group form-check-inline">
+                                                <input type="checkbox" class="form-check-input role-chbx" name="role" value="@r.Value" id="role_@r.Value" rname="@r.Text">
+                                                <label class="form-check-label f14" for="role_@r.Value">@r.Text</label>
+                                            </div>
+                                        }
+
+                                    </div>
                                 </div>
                             </div>
 
@@ -161,15 +177,29 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="e_companyName" class="f14">Company Name <span class="small text-muted">(Required for survey staffs/installers)</span></label>
+                                    <input id="e_companyName" type="text" class="form-control" placeholder="Enter user company name" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="e_phone" class="f14">* Phone Number</label>
                                     <input id="e_phone" type="text" class="form-control integer" placeholder="Enter user phone number" maxlength="15" required />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="e_role" class="f14">* Role</label>
-                                    <select id="e_role" class="custom-select form-control" asp-items="@dropdownService.GetRoles()">
-                                    </select>
+                                    <label for="" class="f14">* Roles</label>
+                                    <div class="">
+                                        @foreach (var r in dropdownService.GetRoles().Skip(1))
+                                        {
+                                            <div class="form-group form-check-inline">
+                                                <input type="checkbox" class="form-check-input erole-chbx" name="erole" value="@r.Value" id="erole_@r.Value" rname="@r.Text">
+                                                <label class="form-check-label f14" for="erole_@r.Value">@r.Text</label>
+                                            </div>
+                                        }
+
+                                    </div>
                                 </div>
                             </div>
 

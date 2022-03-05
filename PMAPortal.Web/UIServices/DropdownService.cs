@@ -90,5 +90,14 @@ namespace PMAPortal.Web.UIServices
             return installers;
         }
 
+        public IEnumerable<SelectListItem> GetSurveyStaffs(string value = null, string emptyText = null)
+        {
+            List<SelectListItem> surveystaffs = userService.GetUsers().Where(u => u.UserRoles.Any(ur => ur.RoleId == (int)AppRoles.SURVEY_STAFF)).OrderBy(u => u.FirstName)
+                .Select(u => new SelectListItem { Text = $"{u.FirstName} {u.LastName} ({u.Email})", Value = u.Id.ToString(), Selected = u.Id.ToString() == value }).ToList();
+            surveystaffs.Insert(0, new SelectListItem { Text = emptyText ?? "- Select survey staff -", Value = "" });
+
+            return surveystaffs;
+        }
+
     }
 }

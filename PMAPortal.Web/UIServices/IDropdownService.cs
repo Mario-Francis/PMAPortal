@@ -13,5 +13,6 @@ namespace PMAPortal.Web.UIServices
         IEnumerable<SelectListItem> GetRoles(string value = null);
         IEnumerable<SelectListItem> GetApplicationStatuses(string value = null, string emptyText = null);
         IEnumerable<SelectListItem> GetInstallers(string value = null, string emptyText = null);
+        IEnumerable<SelectListItem> GetSurveyStaffs(string value = null, string emptyText = null);
     }
 }

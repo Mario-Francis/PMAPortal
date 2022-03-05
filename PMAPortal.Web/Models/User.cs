@@ -23,7 +23,6 @@ namespace PMAPortal.Web.Models
 
         //Navigation Properties
         [JsonIgnore]
-        [NotMapped]
         public virtual User UpdatedByUser { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }

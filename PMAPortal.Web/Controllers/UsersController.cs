@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PMAPortal.Web.DTOs;
+using PMAPortal.Web.Extensions;
 using PMAPortal.Web.Services;
 using PMAPortal.Web.ViewModels;
 using System;
@@ -71,13 +72,13 @@ namespace PMAPortal.Web.Controllers
             }
             catch (AppException ex)
             {
-                return StatusCode(400, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
+                return StatusCode(400, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
             }
             catch (Exception ex)
             {
                 logger.LogException(ex, "An error was encountered while creating a new user");
 
-                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
+                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
             }
         }
 

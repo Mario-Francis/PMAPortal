@@ -170,8 +170,8 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException($"You cannot unassign the Administartor role from yourself. You can make another user an administrator and then the user can unassign the role from you");
             }
 
-           await  userRoleRepo.DeleteWhere(x => x.UserId == _user.Id && !user.UserRoles.Any(r => r.RoleId == x.RoleId));
-            var userRolesToAdd = user.UserRoles.Where(r => !userRoleRepo.Any(r => r.RoleId == r.RoleId));
+           await  userRoleRepo.DeleteWhere(x => x.UserId == _user.Id && !user.UserRoles.Select(ur=>ur.RoleId).Contains(x.RoleId));
+            var userRolesToAdd = user.UserRoles.Where(r => !userRoleRepo.Any(_r => _r.RoleId == r.RoleId));
             await userRoleRepo.InsertRange(userRolesToAdd);
 
             _user.FirstName = user.FirstName;
@@ -179,6 +179,7 @@ namespace PMAPortal.Web.Services.Implementations
             _user.PhoneNumber = user.PhoneNumber;
             _user.Email = user.Email;
             _user.Code = user.Code;
+            _user.CompanyName = user.CompanyName;
 
             _user.UpdatedBy = currentUser.Id;
             _user.UpdatedDate = DateTimeOffset.Now;

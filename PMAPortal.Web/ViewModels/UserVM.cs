@@ -19,6 +19,7 @@ namespace PMAPortal.Web.ViewModels
         [Required]
         public string PhoneNumber { get; set; }
         public string Code { get; set; }
+        public string CompanyName { get; set; }
         [Required]
         public IEnumerable<ItemVM> Roles { get; set; }
 
@@ -55,6 +56,7 @@ namespace PMAPortal.Web.ViewModels
                 Email = Email,
                 PhoneNumber = PhoneNumber,
                 Code = Code,
+                CompanyName=CompanyName,
                 IsActive = IsActive,
                 CreatedDate = DateTimeOffset.Now,
                 UpdatedDate = DateTimeOffset.Now,
@@ -77,6 +79,7 @@ namespace PMAPortal.Web.ViewModels
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Code = user.Code ?? "",
+                CompanyName = user.CompanyName ?? "",
                 IsActive = user.IsActive,
                 Roles = user.UserRoles.Select(ur=> ItemVM.FromUserRole(ur)),
                 UpdatedBy = user.UpdatedByUser == null ? null : $"{user.UpdatedByUser.FirstName} {user.UpdatedByUser.LastName} ({user.UpdatedByUser.Email})",

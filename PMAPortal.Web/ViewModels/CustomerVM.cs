@@ -57,7 +57,14 @@ namespace PMAPortal.Web.ViewModels
                 return DateShared?.ToString("MMM d, yyyy 'at' hh:mmtt");
             }
         }
-         
+        public string FormattedScheduleDate
+        {
+            get
+            {
+                return ScheduleDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
+            }
+        }
+
         public static CustomerVM FromCustomer(Customer customer, int? clientTimeOffset = null)
         {
             var _customer =  new CustomerVM

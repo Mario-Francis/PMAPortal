@@ -55,14 +55,27 @@ $(() => {
                     "filter": "Email",
                     "display": "email"
                 }, "render": function (data, type, row, meta) {
-                    return `${data} <br />${getRoleBadge(row.roleId)}`;
+                    return data;
                 }
             },
-
+            {
+                data: {
+                    "filter": "Roles",
+                    "display": "roles"
+                }, "render": function (data, type, row, meta) {
+                    return data?Array.from(data).map(r => getRoleBadge(r.id)):'';
+                }
+            },
             {
                 data: {
                     "filter": "Code",
                     "display": "code"
+                }
+            },
+            {
+                data: {
+                    "filter": "CompanyName",
+                    "display": "companyName"
                 }
             },
             {
@@ -93,7 +106,7 @@ $(() => {
                 data: {
                     "filter": "FormattedCreatedDate",
                     "display": "formattedCreatedDate"
-                }, orderData: 7
+                }, orderData: 9
             },
             {
                 data: {
@@ -111,7 +124,7 @@ $(() => {
                 data: {
                     "filter": "FormattedUpdatedDate",
                     "display": "formattedUpdatedDate"
-                }, orderData: 10
+                }, orderData: 12
             },
            
         ]
@@ -131,24 +144,30 @@ $(() => {
             if (validateForm(form)) {
                 let firstName = $.trim($('#fname').val());
                 let lastName = $.trim($('#lname').val());
-                let roleId = $('#role').val();
                 let email = $.trim($('#email').val());
                 let code = $.trim($('#code').val());
+                let companyName = $.trim($('#companyName').val());
                 let phoneNumber = $.trim($('#phone').val());
+                let roles = Array.from($('.role-chbx')).filter(chbx => $(chbx).prop('checked')).map(chbx => ({ id: $(chbx).val(), name: $(chbx).attr('rname')}));
                 let __RequestVerificationToken = $($('input[name=__RequestVerificationToken]')[0]).val();
 
-                if (firstName == '' || lastName == '' || roleId == '' || email == '' || phoneNumber=='') {
+                if (firstName == '' || lastName == '' || email == '' || phoneNumber == '') {
                     notify('Fields with asteriks (*) are required', 'warning');
-                } else {
+                } else if (roles.length == 0) {
+                    notify('At least one role is requited', 'warning');
+                } else if (roles.some(r => r.id == 4 || r.id == 5) && (code == '' || companyName=='')) {
+                    notify('User code and company name is required', 'warning');
+                }else {
                     $('fieldset').prop('disabled', true);
                     btn.html('<i class="fa fa-circle-notch fa-spin"></i> Adding user...');
                     let url = $base + 'users/AddUser';
                     let data = {
                         firstName,
                         lastName,
-                        roleId,
+                        roles,
                         email,
                         code,
+                        companyName,
                         phoneNumber,
                         __RequestVerificationToken
                     };
@@ -201,9 +220,13 @@ $(() => {
             $('#e_fname').val(user.firstName);
             $('#e_lname').val(user.lastName);
             $('#e_code').val(user.code);
+            $('#e_companyName').val(user.companyName);
             $('#e_phone').val(user.phoneNumber);
             $('#e_email').val(user.email);
-            $('#e_role').val(user.roleId);
+            $('.erole-chbx').prop('checked', false);
+            Array.from(user.roles).forEach(r => {
+                $('#erole_' + r.id).prop('checked', true);
+            });
 
             $('#updateBtn').attr('uid', uid);
 
@@ -228,14 +251,19 @@ $(() => {
             if (validateForm(form)) {
                 let firstName = $.trim($('#e_fname').val());
                 let lastName = $.trim($('#e_lname').val());
-                let roleId = $('#e_role').val();
                 let email = $.trim($('#e_email').val());
                 let code = $.trim($('#e_code').val());
+                let companyName = $.trim($('#e_companyName').val());
                 let phoneNumber = $.trim($('#e_phone').val());
+                let roles = Array.from($('.erole-chbx')).filter(chbx => $(chbx).prop('checked')).map(chbx => ({ id: $(chbx).val(), name: $(chbx).attr('rname') }));
                 let __RequestVerificationToken = $($('input[name=__RequestVerificationToken]')[1]).val();
 
-                if (firstName == '' || lastName == '' || roleId == '' || email == '' || phoneNumber == '') {
+                if (firstName == '' || lastName == '' || email == '' || phoneNumber == '') {
                     notify('Fields with asteriks (*) are required', 'warning');
+                } else if (roles.length == 0) {
+                    notify('At least one role is requited', 'warning');
+                } else if (roles.some(r => r.id == 4 || r.id == 5) && (code == '' || companyName == '')) {
+                    notify('User code and company name is required', 'warning');
                 } else {
                     $('fieldset').prop('disabled', true);
                     btn.html('<i class="fa fa-circle-notch fa-spin"></i> Updating user...');
@@ -244,9 +272,10 @@ $(() => {
                         id: uid,
                         firstName,
                         lastName,
-                        roleId,
+                        roles,
                         email,
                         code,
+                        companyName,
                         phoneNumber,
                         __RequestVerificationToken
                     };
@@ -306,8 +335,10 @@ $(() => {
                         usersTable.ajax.reload();
                     } catch (ex) {
                         loader.hide();
-                        console.error(ex);
-                        notify(ex + '.', 'danger');
+                        if (ex != null) {
+                            console.error(ex);
+                            notify(ex + '.', 'danger');
+                        }
                     }
                 }
             }
@@ -392,7 +423,6 @@ $(() => {
         });
     });
 
-
 });
 
 
@@ -448,6 +478,7 @@ function deleteUser(id) {
                     },
                     error: (req, status, err) => {
                         ajaxErrorHandler(req, status, err, {});
+                        reject(null);
                     }
                 });
             }
@@ -534,11 +565,13 @@ function getRoleBadge(role) {
     if (role == 1) {
         return `<span class="badge bg-primary text-white badge-sm rounded-pill px-2 py-1">Administrator</span>`;
     } else if (role == 2) {
-        return `<span class="badge bg-secondary badge-sm rounded-pill px-2 py-1">Supervisor</span>`;
+        return `<span class="badge bg-secondary badge-sm rounded-pill px-2 py-1 text-white">Supervisor</span>`;
     } else if (role == 3) {
-        return `<span class="badge bg-info text-white badge-sm rounded-pill px-2 py-1">Disco Personnel</span>`;
+        return `<span class="badge bg-info text-white badge-sm rounded-pill px-2 py-1">Disco&nbsp;Personnel</span>`;
     }else if (role == 4) {
         return `<span class="badge bg-success text-white badge-sm rounded-pill px-2 py-1">Installer</span>`;
+    } else if (role == 5) {
+        return `<span class="badge bg-light border text-dark badge-sm rounded-pill px-2 py-1">Survey&nbsp;Staff</span>`;
     } else {
         return '';
     }

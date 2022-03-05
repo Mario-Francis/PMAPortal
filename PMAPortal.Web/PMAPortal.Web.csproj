@@ -16,6 +16,12 @@
     <Compile Remove="Migrations\20220219121747_Add_New_Tables_Survey_Installations_Customers_InstallationStatuses_UseRoles_CustomerStatusLog_Batch.Designer.cs" />
     <Compile Remove="Migrations\20220220013013_tt.cs" />
     <Compile Remove="Migrations\20220220013013_tt.Designer.cs" />
+    <Compile Remove="Migrations\20220305133611_Remove_unique_constraint_from_createdby_in_users_table.cs" />
+    <Compile Remove="Migrations\20220305133611_Remove_unique_constraint_from_createdby_in_users_table.Designer.cs" />
+    <Compile Remove="Migrations\20220305133754_Remove_unique_constraint_from_createdby_in_users_table.cs" />
+    <Compile Remove="Migrations\20220305133754_Remove_unique_constraint_from_createdby_in_users_table.Designer.cs" />
+    <Compile Remove="Migrations\20220305135319_Remove_unique_constraint_from_createdby_in_users_table2.cs" />
+    <Compile Remove="Migrations\20220305135319_Remove_unique_constraint_from_createdby_in_users_table2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
