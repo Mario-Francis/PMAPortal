@@ -38,7 +38,10 @@ namespace PMAPortal.Web.ViewModels
         public long? AssignedById { get; set; }
         public string AssignedBy { get; set; }
         public string SurveyStaff { get; set; }
+        public string SurveyRemark { get; set; }
         public DateTimeOffset? ScheduleDate { get; set; }
+        public DateTimeOffset? SurveyDate { get; set; }
+        
 
 
         public string CreatedBy { get; set; }
@@ -62,6 +65,13 @@ namespace PMAPortal.Web.ViewModels
             get
             {
                 return ScheduleDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
+            }
+        }
+        public string FormattedSurveyDate
+        {
+            get
+            {
+                return SurveyDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
             }
         }
 
@@ -101,9 +111,11 @@ namespace PMAPortal.Web.ViewModels
                 _customer.SurveyId = survey.Id;
                 _customer.SurveyStaffId = survey.SurveyStaffId;
                 _customer.AssignedById = survey.AssignedBy;
+                _customer.SurveyRemark = survey.SurveyRemark;
                 _customer.AssignedBy = survey.AssignedByUser == null ? null : $"{survey.AssignedByUser.FirstName} {survey.AssignedByUser.LastName} ({survey.AssignedByUser.Email})";
                 _customer.SurveyStaff = survey.SurveyStaff == null ? null : $"{survey.SurveyStaff.FirstName} {survey.SurveyStaff.LastName} ({survey.SurveyStaff.Email})";
                 _customer.ScheduleDate = clientTimeOffset == null ? survey.ScheduleDate : survey.ScheduleDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
+                _customer.SurveyDate = clientTimeOffset == null ? survey.SurveyDate : survey.SurveyDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
             }
             return _customer;
         }

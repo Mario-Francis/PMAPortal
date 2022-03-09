@@ -46,7 +46,9 @@ namespace PMAPortal.Web.Controllers
 
             var parser = new Parser<CustomerVM>(Request.Form, customers.AsQueryable())
                    .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
-                    .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
+                    .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                    .SetConverter(x => x.ScheduleDate, x => x.ScheduleDate == null ? "" : x.ScheduleDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                    .SetConverter(x => x.SurveyDate, x => x.SurveyDate == null ? "" : x.SurveyDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
 
             return Ok(parser.Parse());
         }
@@ -61,7 +63,9 @@ namespace PMAPortal.Web.Controllers
 
             var parser = new Parser<CustomerVM>(Request.Form, customers.AsQueryable())
                    .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
-                    .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
+                    .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                    .SetConverter(x => x.ScheduleDate, x => x.ScheduleDate == null ? "" : x.ScheduleDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                    .SetConverter(x => x.SurveyDate, x => x.SurveyDate == null ? "" : x.SurveyDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
 
             return Ok(parser.Parse());
         }
@@ -71,11 +75,11 @@ namespace PMAPortal.Web.Controllers
             var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
                 appSettingsDelegate.Value.DefaultTimeZoneOffset : Convert.ToInt32(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]);
 
-            var surveys = surveyService.GetAssigned(surveyStaffId).Select(s => SurveyVM.FromSurvey(s, clientTimeOffset));
+            var customers = surveyService.GetAssigned(surveyStaffId).Select(c => CustomerVM.FromCustomer(c.Customer, clientTimeOffset));
 
-            var parser = new Parser<SurveyVM>(Request.Form, surveys.AsQueryable())
+            var parser = new Parser<CustomerVM>(Request.Form, customers.AsQueryable())
                    .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
-                    .SetConverter(x => x.UpdatedDate, x => x.UpdatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                    .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
                     .SetConverter(x => x.ScheduleDate, x => x.ScheduleDate == null ? "" : x.ScheduleDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
                     .SetConverter(x => x.SurveyDate, x => x.SurveyDate == null ? "" : x.SurveyDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
 
@@ -88,11 +92,11 @@ namespace PMAPortal.Web.Controllers
             var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
                 appSettingsDelegate.Value.DefaultTimeZoneOffset : Convert.ToInt32(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]);
 
-            var surveys = surveyService.GetCompleted().Select(s => SurveyVM.FromSurvey(s, clientTimeOffset));
+            var customers = surveyService.GetCompleted().Select(c => CustomerVM.FromCustomer(c.Customer, clientTimeOffset));
 
-            var parser = new Parser<SurveyVM>(Request.Form, surveys.AsQueryable())
+            var parser = new Parser<CustomerVM>(Request.Form, customers.AsQueryable())
                    .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
-                    .SetConverter(x => x.UpdatedDate, x => x.UpdatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                    .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
                     .SetConverter(x => x.ScheduleDate, x => x.ScheduleDate == null ? "" : x.ScheduleDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
                     .SetConverter(x => x.SurveyDate, x => x.SurveyDate == null ? "" : x.SurveyDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
 
@@ -105,11 +109,11 @@ namespace PMAPortal.Web.Controllers
             var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
                 appSettingsDelegate.Value.DefaultTimeZoneOffset : Convert.ToInt32(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]);
 
-            var surveys = surveyService.GetCompleted(surveyStaffId).Select(s => SurveyVM.FromSurvey(s, clientTimeOffset));
+            var customers = surveyService.GetCompleted(surveyStaffId).Select(c => CustomerVM.FromCustomer(c.Customer, clientTimeOffset));
 
-            var parser = new Parser<SurveyVM>(Request.Form, surveys.AsQueryable())
+            var parser = new Parser<CustomerVM>(Request.Form, customers.AsQueryable())
                    .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
-                    .SetConverter(x => x.UpdatedDate, x => x.UpdatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"))
+                    .SetConverter(x => x.DateShared, x => x.DateShared == null ? "" : x.DateShared.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
                     .SetConverter(x => x.ScheduleDate, x => x.ScheduleDate == null ? "" : x.ScheduleDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"))
                     .SetConverter(x => x.SurveyDate, x => x.SurveyDate == null ? "" : x.SurveyDate.Value.ToString("MMM d, yyyy 'at' hh:mmtt"));
 
@@ -260,6 +264,37 @@ namespace PMAPortal.Web.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> ScheduleSurveys(IEnumerable<long> surveyIds, DateTimeOffset? scheduleDate)
+        {
+            try
+            {
+                if(surveyIds==null || surveyIds.Count() == 0)
+                {
+                    return StatusCode(400, new { IsSuccess = false, Message = "Survey ids are required", ErrorItems = new string[] { } });
+                }
+                else if (scheduleDate == null)
+                {
+                    return StatusCode(400, new { IsSuccess = false, Message = "Invalid schedule date", ErrorItems = new string[] { } });
+                }
+                else
+                {
+                    await surveyService.ScheduleSurveys(surveyIds, scheduleDate.Value);
+                    return Ok(new { IsSuccess = true, Message = "Surveys scheduled successfully", ErrorItems = new string[] { } });
+                }
+            }
+            catch (AppException ex)
+            {
+                return StatusCode(400, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, "An error was encountered while scheduling surveys");
+
+                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> UpdateRemark(long? surveyId, string remark)
         {
             try
@@ -336,7 +371,7 @@ namespace PMAPortal.Web.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, "An error was encountered while creating a new area");
+                logger.LogException(ex, "An error was encountered while submitting survey");
 
                 return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
             }
@@ -354,7 +389,7 @@ namespace PMAPortal.Web.Controllers
                 else
                 {
                     var survey = await surveyService.GetSurvey(id.Value);
-                    return Ok(new { IsSuccess = true, Message = "Survey retrieved successfully", Data=survey, ErrorItems = new string[] { } });
+                    return Ok(new { IsSuccess = true, Message = "Survey retrieved successfully", Data=SurveyVM.FromSurvey(survey), ErrorItems = new string[] { } });
                 }
             }
             catch (AppException ex)

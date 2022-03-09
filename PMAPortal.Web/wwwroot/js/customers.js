@@ -2,136 +2,136 @@
 
 $(() => {
     // initialize datatable
-    customersTable = $('#customersTable').DataTable({
-        serverSide: true,
-        processing: true,
-        ajax: {
-            url: $base + 'customers/CustomersDataTable',
-            type: "POST"
-        },
-        "order": [[5, "asc"]],
-        "lengthMenu": [10, 20, 30, 50, 100],
-        "paging": true,
-        autoWidth: false,
-        //rowId: 'id',
-        columns: [
-            {
-                data: {
-                    "filter": "Id",
-                    "display": "id"
-                }, "orderable": true, "render": function (data, type, row, meta) {
-                    return (meta.row + 1 + meta.settings._iDisplayStart) + '.';
-                }
+        customersTable = $('#customersTable').DataTable({
+            serverSide: true,
+            processing: true,
+            ajax: {
+                url: $base + 'customers/CustomersDataTable',
+                type: "POST"
             },
-            {
-                data: {
-                    "filter": "Id",
-                    "display": "id"
-                }, "orderable": false, "render": function (data, type, row, meta) {
-                    return '<div class="dropdown f14">'
-                        + '<button type="button" class="btn px-3 f12" data-toggle="dropdown">'
-                        + '<i class="fa fa-ellipsis-v"></i>'
-                        + '</button>'
-                        + '<div class="dropdown-menu f14">'
-                        + `<a class="dropdown-item detail" href="javascript:void(0)" uid="${row.id}">Details</a>`
-                        //+ `<a class="dropdown-item delete" href="javascript:void(0)" uid="${row.id}">Delete</a>`
-                        + `<a class="dropdown-item" href="#" download>Survey</a>`
-                        + `<a class="dropdown-item" href="#" download>Installation Info</a>`
-                        + '</div>'
-                        + '</div>';
-                }
-            },
-            {
-                data: {
-                    "filter": "BatchNumber",
-                    "display": "batchNumber"
+            "order": [[5, "asc"]],
+            "lengthMenu": [10, 20, 30, 50, 100],
+            "paging": true,
+            autoWidth: false,
+            //rowId: 'id',
+            columns: [
+                {
+                    data: {
+                        "filter": "Id",
+                        "display": "id"
+                    }, "orderable": true, "render": function (data, type, row, meta) {
+                        return (meta.row + 1 + meta.settings._iDisplayStart) + '.';
+                    }
                 },
-                visible: true,
-                render: (data, type, row, meta) => {
-                    return data?'#' +data:'';
+                {
+                    data: {
+                        "filter": "Id",
+                        "display": "id"
+                    }, "orderable": false, "render": function (data, type, row, meta) {
+                        return '<div class="dropdown f14">'
+                            + '<button type="button" class="btn px-3 f12" data-toggle="dropdown">'
+                            + '<i class="fa fa-ellipsis-v"></i>'
+                            + '</button>'
+                            + '<div class="dropdown-menu f14">'
+                            + `<a class="dropdown-item detail" href="javascript:void(0)" uid="${row.id}">Details</a>`
+                            //+ `<a class="dropdown-item delete" href="javascript:void(0)" uid="${row.id}">Delete</a>`
+                            + `<a class="dropdown-item" href="#" download>Survey</a>`
+                            + `<a class="dropdown-item" href="#" download>Installation Info</a>`
+                            + '</div>'
+                            + '</div>';
+                    }
+                },
+                {
+                    data: {
+                        "filter": "BatchNumber",
+                        "display": "batchNumber"
+                    },
+                    visible: true,
+                    render: (data, type, row, meta) => {
+                        return data ? '#' + data : '';
+                    }
+                },
+                {
+                    data: {
+                        "filter": "AccountNumber",
+                        "display": "accountNumber"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "ARN",
+                        "display": "arn"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "CustomerName",
+                        "display": "customerName"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "CISName",
+                        "display": "cisName"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "Email",
+                        "display": "email"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "PhoneNumber",
+                        "display": "phoneNumber"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "SurveyStatus",
+                        "display": "surveyStatus"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "InstallationStatus",
+                        "display": "installationStatus"
+                    }, visible: true
+                },
+                {
+                    data: {
+                        "filter": "DateShared",
+                        "display": "dateShared"
+                    }, visible: false
+                },
+                {
+                    data: {
+                        "filter": "FormattedDateShared",
+                        "display": "formattedDateShared"
+                    }, orderData: 11
+                },
+                {
+                    data: {
+                        "filter": "CreatedBy",
+                        "display": "createdBy"
+                    }
+                },
+                {
+                    data: {
+                        "filter": "CreatedDate",
+                        "display": "createdDate"
+                    }, visible: false
+                },
+                {
+                    data: {
+                        "filter": "FormattedCreatedDate",
+                        "display": "formattedCreatedDate"
+                    }, orderData: 14
                 }
-            },
-            {
-                data: {
-                    "filter": "AccountNumber",
-                    "display": "accountNumber"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "ARN",
-                    "display": "arn"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "CustomerName",
-                    "display": "customerName"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "CISName",
-                    "display": "cisName"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "Email",
-                    "display": "email"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "PhoneNumber",
-                    "display": "phoneNumber"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "SurveyStatus",
-                    "display": "surveyStatus"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "InstallationStatus",
-                    "display": "installationStatus"
-                }, visible: true
-            },
-            {
-                data: {
-                    "filter": "DateShared",
-                    "display": "dateShared"
-                }, visible: false
-            },
-            {
-                data: {
-                    "filter": "FormattedDateShared",
-                    "display": "formattedDateShared"
-                }, orderData: 11
-            },
-            {
-                data: {
-                    "filter": "CreatedBy",
-                    "display": "createdBy"
-                }
-            },
-            {
-                data: {
-                    "filter": "CreatedDate",
-                    "display": "createdDate"
-                }, visible: false
-            },
-            {
-                data: {
-                    "filter": "FormattedCreatedDate",
-                    "display": "formattedCreatedDate"
-                }, orderData: 14
-            }
-        ]
-    });
-
+            ]
+        });
+    
     //$('#addBtn').on('click', (e) => {
     //    $('#addModal').modal({ backdrop: 'static', keyboard: false }, 'show');
     //});

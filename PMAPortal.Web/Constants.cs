@@ -58,6 +58,7 @@ namespace PMAPortal.Web
         UNASSIGN_SURVEY_TASK,
         UNASSIGN_SURVEY_TASKS,
         SCHEDULE_SURVEY,
+        SCHEDULE_SURVEYS,
         COMPLETE_SURVEY,
         UPDATE_SURVEY
 

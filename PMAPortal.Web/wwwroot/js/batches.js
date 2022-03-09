@@ -203,8 +203,10 @@ $(() => {
                         batchesTable.ajax.reload();
                     } catch (ex) {
                         loader.hide();
-                        console.error(ex);
-                        notify(ex + '.', 'danger');
+                        if (ex != null) {
+                            console.error(ex);
+                            notify(ex + '.', 'danger');
+                        }
                     }
                 }
             }
@@ -271,6 +273,7 @@ function deleteBatch(id) {
                     },
                     error: (req, status, err) => {
                         ajaxErrorHandler(req, status, err, {});
+                        reject(null);
                     }
                 });
             }

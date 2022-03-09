@@ -6,7 +6,7 @@
 }
 
 
-<h2 class="mt-4">Surveys</h2>
+<h2 class="mt-4">Metering Eligibility Surveys</h2>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
     <li class="breadcrumb-item active">Surveys</li>
@@ -16,80 +16,171 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
+                <input type="hidden" id="userId" value="@service.UserSession.Id" />
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link text-black-50 active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Unassigned</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link text-black-50" id="home2-tab" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" aria-selected="true">Assigned</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link text-black-50" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Completed</a>
-                    </li>
+                    @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR))
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-black-50 active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Unassigned</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-black-50" id="home2-tab" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" aria-selected="true">Assigned</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-black-50" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Completed</a>
+                        </li>
+                    }
+                    @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SURVEY_STAFF))
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-black-50" id="home3-tab" data-toggle="tab" href="#home3" role="tab" aria-controls="home3" aria-selected="true">My Pending Surveys</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-black-50" id="profile2-tab" data-toggle="tab" href="#profile2" role="tab" aria-controls="profile" aria-selected="false">My Completed Surveys</a>
+                        </li>
+                    }
+
+
                 </ul>
                 <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active p-2 p-md-3" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <p class="my-2">
-                            <button type="button" disabled id="assignBtn" class="btn btn-primary btn-sm">Assign survey(s) staff</button>
-                        </p>
-                        <div class="table-responsive">
-                            <table id="unassignedTable" class="table table-striped table-bordered f14">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>#</th>
-                                        <th>&nbsp;</th>
-                                        <th>Batch</th>
-                                        <th>Account&nbsp;Number</th>
-                                        <th>ARN</th>
-                                        <th>Customer&nbsp;Name</th>
-                                        <th>Email</th>
-                                        <th>Phone&nbsp;Number</th>
-                                        <th>Date&nbsp;Shared</th>
-                                        <th>Date&nbsp;Shared</th>
-                                        <th>Created&nbsp;By</th>
-                                        <th>Date&nbsp;Created</th>
-                                        <th>Date&nbsp;Created</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                    @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR))
+                    {
+                        <div class="tab-pane fade show active p-2 p-md-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <p class="my-2">
+                                <button type="button" disabled id="assignBtn" class="btn btn-primary btn-sm">Assign survey(s) to staff</button>
+                            </p>
+                            <div class="table-responsive">
+                                <table id="unassignedTable" class="table table-striped table-bordered f14">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>&nbsp;</th>
+                                            <th>Batch</th>
+                                            <th>Account&nbsp;Number</th>
+                                            <th>ARN</th>
+                                            <th>Customer&nbsp;Name</th>
+                                            <th>Email</th>
+                                            <th>Phone&nbsp;Number</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Created&nbsp;By</th>
+                                            <th>Date&nbsp;Created</th>
+                                            <th>Date&nbsp;Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade p-2 p-md-3" id="home2" role="tabpanel" aria-labelledby="home2-tab">
-                        <div class="table-responsive">
-                            <table id="assignedTable" class="table table-striped table-bordered f14">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>#</th>
-                                        <th>&nbsp;</th>
-                                        <th>Batch</th>
-                                        <th>Account&nbsp;Number</th>
-                                        <th>ARN</th>
-                                        <th>Customer&nbsp;Name</th>
-                                        <th>Email</th>
-                                        <th>Phone&nbsp;Number</th>
-                                        <th>Survey&nbsp;Staff</th>
-                                        <th>Assigned&nbsp;By</th>
-                                        <th>Schedule&nbsp;Date</th>
-                                        <th>Schedule&nbsp;Date</th>
-                                        <th>Date&nbsp;Shared</th>
-                                        <th>Date&nbsp;Shared</th>
-                                        <th>Created&nbsp;By</th>
-                                        <th>Date&nbsp;Created</th>
-                                        <th>Date&nbsp;Created</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                        <div class="tab-pane fade p-2 p-md-3" id="home2" role="tabpanel" aria-labelledby="home2-tab">
+                            <p class="my-2">
+                                <button type="button" disabled id="reassignBtn" class="btn btn-primary btn-sm">Reassign survey(s) to staff</button>
+                            </p>
+                            <div class="table-responsive">
+                                <table id="assignedTable" class="table table-striped table-bordered f14">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>&nbsp;</th>
+                                            <th>Batch</th>
+                                            <th>Account&nbsp;Number</th>
+                                            <th>ARN</th>
+                                            <th>Customer&nbsp;Name</th>
+                                            <th>Email</th>
+                                            <th>Phone&nbsp;Number</th>
+                                            <th>Survey&nbsp;Staff</th>
+                                            <th>Assigned&nbsp;By</th>
+                                            <th>Schedule&nbsp;Date</th>
+                                            <th>Schedule&nbsp;Date</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Created&nbsp;By</th>
+                                            <th>Date&nbsp;Created</th>
+                                            <th>Date&nbsp;Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade p-2 p-md-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                        <div class="tab-pane fade p-2 p-md-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="table-responsive">
+                                <table id="completedTable" class="table table-striped table-bordered f14">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>&nbsp;</th>
+                                            <th>Batch</th>
+                                            <th>Account&nbsp;Number</th>
+                                            <th>ARN</th>
+                                            <th>Customer&nbsp;Name</th>
+                                            <th>Email</th>
+                                            <th>Phone&nbsp;Number</th>
+                                            <th>Assigned&nbsp;To</th>
+                                            <th>Assigned&nbsp;By</th>
+                                            <th>Survey&nbsp;Remark</th>
+                                            <th>Schedule&nbsp;Date</th>
+                                            <th>Schedule&nbsp;Date</th>
+                                            <th>Survey&nbsp;Date</th>
+                                            <th>Survey&nbsp;Date</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Created&nbsp;By</th>
+                                            <th>Date&nbsp;Created</th>
+                                            <th>Date&nbsp;Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+
+                    @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SURVEY_STAFF))
+                    {
+                        <div class="tab-pane fade p-2 p-md-3" id="home3" role="tabpanel" aria-labelledby="home3-tab">
+                            <p class="my-2">
+                                <button type="button" disabled id="scheduleBtn" class="btn btn-primary btn-sm">Schedule survey(s)</button>
+                            </p>
+                            <div class="table-responsive">
+                                <table id="myPendingTable" class="table table-striped table-bordered f14">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>&nbsp;</th>
+                                            <th>Batch</th>
+                                            <th>Account&nbsp;Number</th>
+                                            <th>ARN</th>
+                                            <th>Customer&nbsp;Name</th>
+                                            <th>Email</th>
+                                            <th>Phone&nbsp;Number</th>
+                                            <th>Assigned&nbsp;By</th>
+                                            <th>Schedule&nbsp;Date</th>
+                                            <th>Schedule&nbsp;Date</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Date&nbsp;Shared</th>
+                                            <th>Created&nbsp;By</th>
+                                            <th>Date&nbsp;Created</th>
+                                            <th>Date&nbsp;Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    <div class="tab-pane fade p-2 p-md-3" id="profile2" role="tabpanel" aria-labelledby="profile2-tab">
                         <div class="table-responsive">
-                            <table id="completedTable" class="table table-striped table-bordered f14">
+                            <table id="myCompletedTable" class="table table-striped table-bordered f14">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -101,7 +192,6 @@
                                         <th>Customer&nbsp;Name</th>
                                         <th>Email</th>
                                         <th>Phone&nbsp;Number</th>
-                                        <th>Assigned&nbsp;To</th>
                                         <th>Assigned&nbsp;By</th>
                                         <th>Survey&nbsp;Remark</th>
                                         <th>Schedule&nbsp;Date</th>
@@ -120,7 +210,7 @@
                             </table>
                         </div>
                     </div>
-                   
+                    }
                 </div>
 
             </div>
@@ -138,6 +228,7 @@
             </div>
             <form method="post">
                 <fieldset>
+                    <input type="hidden" id="assignType" value="multiple" />
                     <div class="modal-body">
                         <div class="row mt-2">
 
@@ -160,6 +251,823 @@
     </div>
 </div>
 
+<!--Reassign modal-->
+<div class="modal fade" id="reassignModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reassign Survey(s) to Staff</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post">
+                <fieldset>
+                    <input type="hidden" id="reassignType" value="multiple" />
+                    <div class="modal-body">
+                        <div class="row mt-2">
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="r_surveyStaffId" class="f14">* Survey Staff</label>
+                                    <select id="r_surveyStaffId" class="custom-select form-control" asp-items="@dropdownService.GetSurveyStaffs()" required></select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                        <button type="submit" id="reassignSubmitBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-check-circle"></i> &nbsp;Reassign</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Schedule modal-->
+<div class="modal fade" id="scheduleModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Schedule Survey(s)</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post">
+                <fieldset>
+                    <input type="hidden" id="scheduleType" value="multiple" />
+                    <div class="modal-body">
+                        <div class="row mt-2">
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="scheduleDate" class="f14">* Schedule Date</label>
+                                    <input type="text" id="scheduleDate" class="form-control date" placeholder="YYYY-MM-DD" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                        <button type="submit" id="scheduleSubmitBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-check-circle"></i> &nbsp;Schedule</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Survey modal-->
+<div class="modal fade" id="surveyModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <p class="f14 text-secondary"><span id="s_cname">Mario</span> | <span id="s_accno">009988776655</span></p>
+                    <h5 class="modal-title">Metering Eligibility Survey</h5>
+                </div>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" id="surveyForm">
+                    <fieldset>
+                        <div class="row mt-2">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_readyToPay" class="f14">* Ready to Pay?</label>
+                                    <select id="s_readyToPay" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_occupierPhone" class="f14">* Occupier Phone No.</label>
+                                    <input type="text" id="s_occupierPhone" class="form-control form-control-sm" required placeholder="Occupier phone number" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_bedroomCount" class="f14">* No. of Bedrooms</label>
+                                    <select id="s_bedroomCount" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        @for (var i = 1; i <= 20; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_typeOfApartment" class="f14">* Type of Apartment</label>
+                                    <select id="s_typeOfApartment" class="custom-select custom-select-sm form-control form-control-sm" required asp-items="@dropdownService.GetHouseTypes(emptyText: "Select apartment type")">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_existingMeterType" class="f14">* Existing Meter Type</label>
+                                    <select id="s_existingMeterType" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose meter type -</option>
+                                        <option value="1 Phase">1 Phase</option>
+                                        <option value="3 Phase">3 Phase</option>
+                                        <option value="NA">Not Applicable</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" id="s_existingMeterNoDiv" style="display:none;">
+                                <div class="form-group">
+                                    <label for="s_existingMeterNo" class="f14">** Existing Meter No.</label>
+                                    <input type="text" id="s_existingMeterNo" class="form-control form-control-sm integer" required placeholder="Existing meter number" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_customerBillMatchUploadData" class="f14">* Does customer bill match uploaded data?</label>
+                                    <select id="s_customerBillMatchUploadData" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                        <option value="NA">Not Applicable</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_estimatedTotalLoad" class="f14">* Estimated Total Load (Amps)</label>
+                                    <input type="number" min="1" step=".01" id="s_estimatedTotalLoad" class="form-control form-control-sm" required placeholder="Estimated total load" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_recommendedMeterType" class="f14">* Recommended Meter Type</label>
+                                    <select id="s_recommendedMeterType" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose meter type -</option>
+                                        <option value="1 Phase">1 Phase</option>
+                                        <option value="3 Phase">3 Phase</option>
+                                        <option value="Nil">Nil</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_installationMode" class="f14">* Installation Mode</label>
+                                    <select id="s_installationMode" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose mode -</option>
+                                        <option value="High Wall">High Wall</option>
+                                        <option value="Pole Mounted">Pole Mounted</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_loadWireSeparationRequired" class="f14">* Load wire separation required?</label>
+                                    <select id="s_loadWireSeparationRequired" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_accountSeparationRequired" class="f14">* Account separation required?</label>
+                                    <select id="s_accountSeparationRequired" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" id="s_noOf1QRequiredDiv" style="display:none;">
+                                <div class="form-group">
+                                    <label for="s_noOf1QRequired" class="f14">** No. of 1Q required for account seperation</label>
+                                    <select id="s_noOf1QRequired" class="custom-select custom-select-sm form-control form-control-sm">
+                                        <option value="">- Choose option -</option>
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" id="s_noOf3QRequiredDiv" style="display:none;">
+                                <div class="form-group">
+                                    <label for="s_noOf3QRequired" class="f14">** No. of 3Q required for account seperation</label>
+                                    <select id="s_noOf3QRequired" class="custom-select custom-select-sm form-control form-control-sm">
+                                        <option value="">- Choose option -</option>
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_map" class="f14">* MAP</label>
+                                    <input type="text" id="s_map" class="form-control form-control-sm" required placeholder="MaP" value="Eraskorp" readonly />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_surveyRemark" class="f14">* Survey Remark</label>
+                                    <select id="s_surveyRemark" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="@Constants.SURVEY_REMARK_METER_READY">@Constants.SURVEY_REMARK_METER_READY</option>
+                                        <option value="@Constants.SURVEY_REMARK_NOT_METER_READY">@Constants.SURVEY_REMARK_NOT_METER_READY</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="s_comment" class="f14">Additional Comment</label>
+                                    <textarea id="s_comment" class="form-control form-control-sm" placeholder="Enter additional comment"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal" form="surveyForm"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                <button type="submit" id="surveySubmitBtn" class="btn btn-primary btn-sm px-4 py-2 f12" form="surveyForm"><i class="fa fa-check-circle"></i> &nbsp;Submit</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--Edit Survey modal-->
+<div class="modal fade" id="editSurveyModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <p class="f14 text-secondary"><span id="es_cname">Mario</span> | <span id="es_accno">009988776655</span></p>
+                    <h5 class="modal-title">Edit Metering Eligibility Survey</h5>
+                </div>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" id="esurveyForm">
+                    <fieldset>
+                        <div class="row mt-2">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_readyToPay" class="f14">* Ready to Pay?</label>
+                                    <select id="es_readyToPay" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_occupierPhone" class="f14">* Occupier Phone No.</label>
+                                    <input type="text" id="es_occupierPhone" class="form-control form-control-sm" required placeholder="Occupier phone number" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_bedroomCount" class="f14">* No. of Bedrooms</label>
+                                    <select id="es_bedroomCount" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        @for (var i = 1; i <= 20; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_typeOfApartment" class="f14">* Type of Apartment</label>
+                                    <select id="es_typeOfApartment" class="custom-select custom-select-sm form-control form-control-sm" required asp-items="@dropdownService.GetHouseTypes(emptyText: "Select apartment type")">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_existingMeterType" class="f14">* Existing Meter Type</label>
+                                    <select id="es_existingMeterType" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose meter type -</option>
+                                        <option value="1 Phase">1 Phase</option>
+                                        <option value="3 Phase">3 Phase</option>
+                                        <option value="NA">Not Applicable</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" id="es_existingMeterNoDiv" style="display:none;">
+                                <div class="form-group">
+                                    <label for="es_existingMeterNo" class="f14">** Existing Meter No.</label>
+                                    <input type="text" id="es_existingMeterNo" class="form-control form-control-sm integer" required placeholder="Existing meter number" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_customerBillMatchUploadData" class="f14">* Does customer bill match uploaded data?</label>
+                                    <select id="es_customerBillMatchUploadData" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                        <option value="NA">Not Applicable</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_estimatedTotalLoad" class="f14">* Estimated Total Load (Amps)</label>
+                                    <input type="number" min="1" step=".01" id="es_estimatedTotalLoad" class="form-control form-control-sm" required placeholder="Estimated total load" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_recommendedMeterType" class="f14">* Recommended Meter Type</label>
+                                    <select id="es_recommendedMeterType" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose meter type -</option>
+                                        <option value="1 Phase">1 Phase</option>
+                                        <option value="3 Phase">3 Phase</option>
+                                        <option value="Nil">Nil</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_installationMode" class="f14">* Installation Mode</label>
+                                    <select id="es_installationMode" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose mode -</option>
+                                        <option value="High Wall">High Wall</option>
+                                        <option value="Pole Mounted">Pole Mounted</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_loadWireSeparationRequired" class="f14">* Load wire separation required?</label>
+                                    <select id="es_loadWireSeparationRequired" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_accountSeparationRequired" class="f14">* Account separation required?</label>
+                                    <select id="es_accountSeparationRequired" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="YES">Yes</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" id="es_noOf1QRequiredDiv" style="display:none;">
+                                <div class="form-group">
+                                    <label for="es_noOf1QRequired" class="f14">** No. of 1Q required for account seperation</label>
+                                    <select id="es_noOf1QRequired" class="custom-select custom-select-sm form-control form-control-sm">
+                                        <option value="">- Choose option -</option>
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" id="es_noOf3QRequiredDiv" style="display:none;">
+                                <div class="form-group">
+                                    <label for="es_noOf3QRequired" class="f14">** No. of 3Q required for account seperation</label>
+                                    <select id="es_noOf3QRequired" class="custom-select custom-select-sm form-control form-control-sm">
+                                        <option value="">- Choose option -</option>
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_map" class="f14">* MAP</label>
+                                    <input type="text" id="es_map" class="form-control form-control-sm" required placeholder="MaP" value="Eraskorp" readonly />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_surveyRemark" class="f14">* Survey Remark</label>
+                                    <select id="es_surveyRemark" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="@Constants.SURVEY_REMARK_METER_READY">@Constants.SURVEY_REMARK_METER_READY</option>
+                                        <option value="@Constants.SURVEY_REMARK_NOT_METER_READY">@Constants.SURVEY_REMARK_NOT_METER_READY</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="es_comment" class="f14">Additional Comment</label>
+                                    <textarea id="es_comment" class="form-control form-control-sm" placeholder="Enter additional comment"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal" form="esurveyForm"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                <button type="submit" id="surveyUpdateBtn" class="btn btn-primary btn-sm px-4 py-2 f12" form="esurveyForm"><i class="fa fa-check-circle"></i> &nbsp;Update</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--Edit Survey Remark modal-->
+<div class="modal fade" id="editSurveyRemarkModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <p class="f14 text-secondary"><span id="ers_cname"></span> | <span id="ers_accno"></span></p>
+                    <h5 class="modal-title">Edit Metering Eligibility Survey Remark</h5>
+                </div>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" id="ersurveyForm">
+                    <fieldset>
+                        <div class="row mt-2">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="ers_surveyRemark" class="f14">* Survey Remark</label>
+                                    <select id="ers_surveyRemark" class="custom-select custom-select-sm form-control form-control-sm" required>
+                                        <option value="">- Choose option -</option>
+                                        <option value="@Constants.SURVEY_REMARK_METER_READY">@Constants.SURVEY_REMARK_METER_READY</option>
+                                        <option value="@Constants.SURVEY_REMARK_NOT_METER_READY">@Constants.SURVEY_REMARK_NOT_METER_READY</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal" form="ersurveyForm"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                <button type="submit" id="surveyRemarkUpdateBtn" class="btn btn-primary btn-sm px-4 py-2 f12" form="ersurveyForm"><i class="fa fa-check-circle"></i> &nbsp;Update</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="cname_sp">Customer Name</span>'s Details </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row mt-2 f14">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <p class="mini-bold col-5">Batch Number:</p>
+                            <p class="col-7" id="batchno_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Account Number:</p>
+                            <p class="col-7" id="accno_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">ARN:</p>
+                            <p class="col-7" id="arn_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Customer Name:</p>
+                            <p class="col-7" id="cusname_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">CIS Name:</p>
+                            <p class="col-7" id="cisname_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Email:</p>
+                            <p class="col-7" id="email_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Phone Number:</p>
+                            <p class="col-7" id="phone_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Address:</p>
+                            <p class="col-7" id="adres_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">CIS Address:</p>
+                            <p class="col-7" id="cisadres_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Ladmark:</p>
+                            <p class="col-7" id="landmark_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Business Unit (BU):</p>
+                            <p class="col-7" id="bu_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Under Taken (UT):</p>
+                            <p class="col-7" id="ut_p">099</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Feeder:</p>
+                            <p class="col-7" id="feeder_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Distribution Transformer (DT):</p>
+                            <p class="col-7" id="dt_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Tariff:</p>
+                            <p class="col-7" id="tariff_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Metered Status:</p>
+                            <p class="col-7" id="metered_status_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Survey Status:</p>
+                            <p class="col-7" id="survey_status_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Installation Status:</p>
+                            <p class="col-7" id="installation_status_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Date Shared:</p>
+                            <p class="col-7" id="date_shared_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Created By:</p>
+                            <p class="col-7" id="created_by_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Date Created:</p>
+                            <p class="col-7" id="date_created_p">099</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-check-circle"></i> &nbsp;Okay</button>
+                @*<button type="submit" id="uploadBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-upload"></i> &nbsp;Upload</button>*@
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Survey Details Modal -->
+<div class="modal fade" id="surveyDetailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="s_cname_sp">Customer Name</span>'s Details </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header p-1" id="headingOne">
+                            <h6 class="mb-0">
+                                <a class="btn btn-link btn-block text-left text-dark collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                   Customer Details
+                                </a>
+                            </h6>
+                        </div>
+
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="row mt-2 f14">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <p class="mini-bold col-5">Batch Number:</p>
+                                            <p class="col-7" id="s_batchno_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Account Number:</p>
+                                            <p class="col-7" id="s_accno_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">ARN:</p>
+                                            <p class="col-7" id="s_arn_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Customer Name:</p>
+                                            <p class="col-7" id="s_cusname_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">CIS Name:</p>
+                                            <p class="col-7" id="s_cisname_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Email:</p>
+                                            <p class="col-7" id="s_email_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Phone Number:</p>
+                                            <p class="col-7" id="s_phone_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Address:</p>
+                                            <p class="col-7" id="s_adres_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">CIS Address:</p>
+                                            <p class="col-7" id="s_cisadres_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Ladmark:</p>
+                                            <p class="col-7" id="s_landmark_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Business Unit (BU):</p>
+                                            <p class="col-7" id="s_bu_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Under Taken (UT):</p>
+                                            <p class="col-7" id="s_ut_p">099</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Feeder:</p>
+                                            <p class="col-7" id="s_feeder_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Distribution Transformer (DT):</p>
+                                            <p class="col-7" id="s_dt_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Tariff:</p>
+                                            <p class="col-7" id="s_tariff_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Metered Status:</p>
+                                            <p class="col-7" id="s_metered_status_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Survey Status:</p>
+                                            <p class="col-7" id="s_survey_status_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Installation Status:</p>
+                                            <p class="col-7" id="s_installation_status_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Date Shared:</p>
+                                            <p class="col-7" id="s_date_shared_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Created By:</p>
+                                            <p class="col-7" id="s_created_by_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-5">Date Created:</p>
+                                            <p class="col-7" id="s_date_created_p">099</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header p-1" id="headingTwo">
+                            <h2 class="mb-0">
+                                <a class="btn btn-link btn-block text-left text-dark" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Metering Eligibility Survey Response
+                                </a>
+                            </h2>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="row mt-2 f14">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <p class="mini-bold col-7">Ready to pay?</p>
+                                            <p class="col-5" id="s_readyToPay_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Occupier Phone Number:</p>
+                                            <p class="col-5" id="s_occupierPhone_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Number of Bedroom:</p>
+                                            <p class="col-5" id="s_bedroomCount_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Apartment Type:</p>
+                                            <p class="col-5" id="s_typeOfApartment_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Existing Meter Type:</p>
+                                            <p class="col-5" id="s_existingMeterType_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Existing Meter Number:</p>
+                                            <p class="col-5" id="s_existingMeterNo_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Customer bill match upload data?</p>
+                                            <p class="col-5" id="s_customerBillMatchUploadData_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Estimated Total Load (amps):</p>
+                                            <p class="col-5" id="s_estimatedTotalLoad_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Recommended Meter Type:</p>
+                                            <p class="col-5" id="s_recommendedMeterType_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Installation Mode:</p>
+                                            <p class="col-5" id="s_installationMode_p">099</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Load wire seperation required?:</p>
+                                            <p class="col-5" id="s_loadWireSeparationRequired_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Account seperation required:</p>
+                                            <p class="col-5" id="s_accountSeparationRequired_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Number of 1Q required:</p>
+                                            <p class="col-5" id="s_noOf1QRequired_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Number of 3Q required:</p>
+                                            <p class="col-5" id="s_noOf3QRequired_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">MAP:</p>
+                                            <p class="col-5" id="s_map_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Survey remark:</p>
+                                            <p class="col-5" id="s_surveyRemark_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Additional comment:</p>
+                                            <p class="col-5" id="s_comment_p">099</p>
+                                        </div>
+                                        <div class="row my-1">
+                                            <p class="mini-bold col-7">Survey date:</p>
+                                            <p class="col-5" id="s_survey_date_p">099</p>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-check-circle"></i> &nbsp;Okay</button>
+                @*<button type="submit" id="uploadBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-upload"></i> &nbsp;Upload</button>*@
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section css{
     <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
 }
@@ -170,6 +1078,6 @@
     <script>
 
     </script>
-    <script src="~/js/admin_surveys.js" asp-append-version="true"></script>
+    <script src="~/js/surveys.js" asp-append-version="true"></script>
 
 }

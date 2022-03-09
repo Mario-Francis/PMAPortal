@@ -94,24 +94,28 @@ namespace PMAPortal.Web.UIServices
 
         public string DisplayRoles
         {
+
             get
             {
                 var session = UserSession;
                 if (session.Roles.Contains(Constants.ROLE_ADMIN))
                 {
                     return Constants.ROLE_ADMIN;
-                }
-                else if(session.Roles.Contains(Constants.ROLE_INSTALLER))
+                }else if (session.Roles.Contains(Constants.ROLE_SUPERVISOR))
                 {
-                    return Constants.ROLE_INSTALLER;
+                    return Constants.ROLE_SUPERVISOR;
                 }
-                else if(session.Roles.Contains(Constants.ROLE_DISCO))
+                else if (session.Roles.Contains(Constants.ROLE_DISCO))
                 {
                     return Constants.ROLE_DISCO;
                 }
+                else if(session.Roles.Contains(Constants.ROLE_SURVEY_STAFF))
+                {
+                    return Constants.ROLE_SURVEY_STAFF;
+                }
                 else
                 {
-                    return Constants.ROLE_SUPERVISOR;
+                    return Constants.ROLE_INSTALLER;
                 }
             }
         }
@@ -143,6 +147,14 @@ namespace PMAPortal.Web.UIServices
             get
             {
                 return accessor.HttpContext.User.IsInRole(Constants.ROLE_SUPERVISOR);
+            }
+        }
+
+        public bool IsSurveyStaff
+        {
+            get
+            {
+                return accessor.HttpContext.User.IsInRole(Constants.ROLE_SURVEY_STAFF);
             }
         }
 

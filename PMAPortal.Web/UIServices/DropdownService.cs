@@ -47,11 +47,11 @@ namespace PMAPortal.Web.UIServices
             return areas;
         }
 
-        public IEnumerable<SelectListItem> GetHouseTypes(string value = null)
+        public IEnumerable<SelectListItem> GetHouseTypes(string value = null, string emptyText = null)
         {
             List<SelectListItem> houseTypes = listService.GetHouseTypes()
                 .Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString(), Selected = c.Id.ToString() == value }).ToList();
-            houseTypes.Insert(0, new SelectListItem { Text = "- Select house type -", Value = "" });
+            houseTypes.Insert(0, new SelectListItem { Text = emptyText ?? "- Select house type -", Value = "" });
 
             return houseTypes;
         }

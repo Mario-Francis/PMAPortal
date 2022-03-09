@@ -32,6 +32,10 @@ namespace PMAPortal.Web.UIServices
         {
             get;
         }
+        public bool IsSurveyStaff
+        {
+            get;
+        }
         public string PaystackPKey { get; }
         public string Culture { get; }
 

@@ -258,10 +258,16 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException($"Survey id is invalid");
             }
 
+            var currentUser = accessor.HttpContext.GetUserSession();
+            if (survey.SurveyStaffId != currentUser.Id)
+            {
+                throw new AppException($"Survey cannot be scheduled as you are not assigned to it");
+            }
+
             var isReschedule = survey.ScheduleDate != null;
             var oldSurvey = survey.Clone<Survey>();
 
-            var currentUser = accessor.HttpContext.GetUserSession();
+            
             survey.ScheduleDate = scheduleDate;
             survey.UpdatedBy = currentUser.Id;
             survey.UpdatedDate = DateTimeOffset.Now;
@@ -272,7 +278,40 @@ namespace PMAPortal.Web.Services.Implementations
             await logger.LogActivity(ActivityActionType.SCHEDULE_SURVEY, currentUser.Email, surveyRepo.TableName, oldSurvey, survey,
                 $"Scheduled survey for {scheduleDate.ToString("yyyy-MM-dd")}");
         }
+        public async Task ScheduleSurveys(IEnumerable<long> surveyIds, DateTimeOffset scheduleDate)
+        {
+            surveyIds = surveyIds.Distinct();
+            var invalidSurveyIds = surveyIds.Where(id => !surveyRepo.Any(s => s.Id == id));
+            if (invalidSurveyIds.Count() > 0)
+            {
+                throw new AppException($"Survey id(s) '{string.Join(", ", surveyIds)}' are invalid");
+            }
 
+            var currentUser = accessor.HttpContext.GetUserSession();
+
+            var surveys = surveyRepo.GetWhere(s => surveyIds.Contains(s.Id)).ToList();
+            if(surveys.Any(s=> s.SurveyStaffId != currentUser.Id))
+            {
+                throw new AppException($"One or more surveys cannot be scheduled as you are not assigned to them");
+            }
+
+            var surveysForReschedule = surveys.Where(s => s.ScheduleDate != null);
+            var surveysForSchedule = surveys.Where(s => s.ScheduleDate == null);
+
+            surveys.ForEach(s =>
+            {
+                s.ScheduleDate = scheduleDate;
+                s.UpdatedBy = currentUser.Id;
+                s.UpdatedDate = DateTimeOffset.Now;
+            });
+
+            await surveyRepo.UpdateRange(surveys, false);
+
+            // log activity
+            await logger.LogActivity(ActivityActionType.SCHEDULE_SURVEYS, currentUser.Email,
+                $"Scheduled surveys with ids {string.Join(", ", surveys.Select(s => s.Id))} for {scheduleDate.ToString("yyyy-MM-dd")}");
+        }
+        
         public async Task UpdateSurvey(Survey survey)
         {
             var _survey = await surveyRepo.GetById(survey.Id);
@@ -298,16 +337,11 @@ namespace PMAPortal.Web.Services.Implementations
             _survey.OccupierPhoneNumber = survey.OccupierPhoneNumber;
             _survey.ReadyToPay = survey.ReadyToPay;
             _survey.RecommendedMeterType = survey.RecommendedMeterType;
-            _survey.ScheduleDate = survey.ScheduleDate;
-            _survey.SurveyDate = survey.SurveyDate;
             _survey.SurveyRemark = survey.SurveyRemark;
             _survey.TypeOfApartment = survey.TypeOfApartment;
             _survey.BedroomCount = survey.BedroomCount;
             _survey.UpdatedBy = currentUser.Id;
             _survey.UpdatedDate = DateTimeOffset.Now;
-            _survey.SurveyStaffId = survey.SurveyStaffId;
-            _survey.AssignedBy = survey.AssignedBy;
-            _survey.SurveryCompany = survey.SurveryCompany;
 
             await surveyRepo.Update(_survey, false);
 
@@ -327,7 +361,7 @@ namespace PMAPortal.Web.Services.Implementations
             var oldSurvey = _survey.Clone<Survey>();
             var currentUser = accessor.HttpContext.GetUserSession();
 
-            if(currentUser.Id != survey.SurveyStaffId && !currentUser.Roles.Contains(Constants.ROLE_ADMIN))
+            if(currentUser.Id != _survey.SurveyStaffId && !currentUser.Roles.Contains(Constants.ROLE_ADMIN))
             {
                 throw new AppException($"You cannot submit this survey as it was not assigned to you");
             }

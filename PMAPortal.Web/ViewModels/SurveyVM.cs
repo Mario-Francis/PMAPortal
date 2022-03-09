@@ -45,6 +45,7 @@ namespace PMAPortal.Web.ViewModels
         public  UserVM UpdatedByUser { get; set; }
         public UserVM SurveyStaff { get; set; }
 
+
         public string FormattedCreatedDate
         {
             get
@@ -79,6 +80,7 @@ namespace PMAPortal.Web.ViewModels
         {
             return new Survey
             {
+                Id=Id,
                 AccountSeparationRequired = AccountSeparationRequired,
                 AdditionalComment = AdditionalComment,
                 AssignedBy = AssignedById,
