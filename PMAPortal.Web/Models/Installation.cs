@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace PMAPortal.Web.Models
 {
     public class Installation:BaseEntity, IUpdatable
     {
         public long CustomerId { get; set; }
+        public long? SurveyId { get; set; }
         public long InstallationStatusId { get; set; }
         public DateTimeOffset? ScheduleDate { get; set; }
         public long? InstallerId { get; set; }
@@ -41,5 +39,6 @@ namespace PMAPortal.Web.Models
         public virtual User Installer { get; set; }
         public virtual User AssignedByUser { get; set; }
         public virtual InstallationStatus InstallationStatus { get; set; }
+        public virtual Survey Survey { get; set; }
     }
 }

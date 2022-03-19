@@ -44,6 +44,9 @@ namespace PMAPortal.Web.Data
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<CustomerStatusLog> CustomerStatusLogs { get; set; }
 
+        public DbSet<InstallationBatch> InstallationBatches { get; set; }
+        public DbSet<InstallationBatchItem> InstallationBatchItems { get; set; }
+
         //===== Audit ====
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
@@ -230,6 +233,13 @@ namespace PMAPortal.Web.Data
                .WithMany()
                .HasForeignKey(x => x.UpdatedBy)
                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<InstallationBatchItem>()
+              .HasOne(x => x.Customer)
+              .WithMany()
+              .HasPrincipalKey(x=>x.AccountNumber)
+              .OnDelete(DeleteBehavior.NoAction);
+
 
             SeeData(modelBuilder);
         }
