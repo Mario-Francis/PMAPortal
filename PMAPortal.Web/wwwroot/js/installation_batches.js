@@ -6,7 +6,7 @@ $(() => {
         serverSide: true,
         processing: true,
         ajax: {
-            url: $base + 'batches/BatchesDataTable',
+            url: $base + 'installationBatches/BatchesDataTable',
             type: "POST"
         },
         "order": [[2, "desc"]],
@@ -34,7 +34,7 @@ $(() => {
                         + '<i class="fa fa-ellipsis-v"></i>'
                         + '</button>'
                         + '<div class="dropdown-menu f14">'
-                        + `<a class="dropdown-item edit" href="${$base}batches/${data}">View Customers</a>`
+                        + `<a class="dropdown-item edit" href="${$base}installationBatches/${data}">View Customers</a>`
                         + `<a class="dropdown-item delete" href="javascript:void(0)" uid="${row.id}">Delete</a>`
                         + `<a class="dropdown-item edit" href="${$base}${row.filePath}" download>Download batch file</a>`
                         + '</div>'
@@ -48,7 +48,7 @@ $(() => {
                 },
                 visible: true,
                 render: (data, type, row, meta) => {
-                    return '#'+pad('000000', data, true);
+                    return '#' + pad('000000', data, true);
                 }
             },
             {
@@ -136,12 +136,12 @@ $(() => {
 
                 if (files.length == 0) {
                     notify('No file selected', 'warning');
-                } else if (dateShared=='') {
+                } else if (dateShared == '') {
                     notify('Date shared is required', 'warning');
-                }else {
+                } else {
                     $('fieldset').prop('disabled', true);
                     btn.html('<i class="fa fa-circle-notch fa-spin"></i> Uploading batch...');
-                    let url = $base + 'batches/UploadBatch';
+                    let url = $base + 'installationBatches/UploadBatch';
                     let data = new FormData();
                     data.append('dateShared', dateShared);
                     data.append('file', files[0]);
@@ -228,7 +228,7 @@ function getBatch(id) {
             if (id == undefined || id == '' || id == 0) {
                 reject('Invalid batch id');
             } else {
-                let url = $base + 'batches/GetBatch/' + id;
+                let url = $base + 'installationBatches/GetBatch/' + id;
                 $.ajax({
                     type: 'GET',
                     url: url,
@@ -260,7 +260,7 @@ function deleteBatch(id) {
             if (id == undefined || id == '' || id == 0) {
                 reject('Invalid batch id');
             } else {
-                let url = $base + 'batches/DeleteBatch/' + id;
+                let url = $base + 'installationBatches/DeleteBatch/' + id;
                 $.ajax({
                     type: 'GET',
                     url: url,

@@ -48,5 +48,19 @@ namespace PMAPortal.Web.ViewModels
                 DateShared = clientTimeOffset == null ? batch.DateShared : batch.DateShared.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value))
             };
         }
+
+        public static BatchVM FromInstallationBatch(InstallationBatch batch, int? clientTimeOffset = null)
+        {
+            return new BatchVM
+            {
+                Id = batch.Id,
+                FileName = batch.FileName,
+                FilePath = batch.FilePath,
+                CustomerCount = batch.InstallationBatchItems.Count(),
+                CreatedBy = batch.CreatedByUser == null ? null : $"{batch.CreatedByUser.FirstName} {batch.CreatedByUser.LastName} ({batch.CreatedByUser.Email})",
+                CreatedDate = clientTimeOffset == null ? batch.CreatedDate : batch.CreatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value)),
+                DateShared = clientTimeOffset == null ? batch.DateShared : batch.DateShared.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value))
+            };
+        }
     }
 }

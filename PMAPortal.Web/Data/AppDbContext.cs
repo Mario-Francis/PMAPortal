@@ -237,6 +237,7 @@ namespace PMAPortal.Web.Data
             modelBuilder.Entity<InstallationBatchItem>()
               .HasOne(x => x.Customer)
               .WithMany()
+              .HasForeignKey(x=>x.AccountNumber)
               .HasPrincipalKey(x=>x.AccountNumber)
               .OnDelete(DeleteBehavior.NoAction);
 

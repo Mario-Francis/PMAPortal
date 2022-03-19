@@ -260,10 +260,10 @@ namespace PMAPortal.Web.Services.Implementations
                     }
 
                     // check that customer with account is meter ready
-                    var notMeterReady = accs.Where(acc => !customerRepo.Any(c => c.AccountNumber == acc && c.Surveys.Count() > 0 && c.Surveys.First().SurveyRemark==Constants.SURVEY_REMARK_METER_READY);
-                    if (duplicateAccsInDb.Count() > 0)
+                    var notMeterReady = accs.Where(acc => !customerRepo.Any(c => c.AccountNumber == acc && c.Surveys.Count() > 0 && c.Surveys.FirstOrDefault().SurveyRemark==Constants.SURVEY_REMARK_METER_READY));
+                    if (notMeterReady.Count() > 0)
                     {
-                        throw new AppException($"One or more accounts already exist: {string.Join(", ", duplicateAccsInDb)}");
+                        throw new AppException($"One or more accounts are not meter ready: {string.Join(", ", notMeterReady)}");
                     }
 
 
@@ -271,11 +271,11 @@ namespace PMAPortal.Web.Services.Implementations
 
                     var installations = new List<Installation>();
                     // update batch items
-                    batchItems.ForEach((c) =>
-                    {   c.CreatedBy = currentUser.Id;
-                        c.CreatedDate = DateTimeOffset.Now;
+                    batchItems.ForEach((b) =>
+                    {   b.CreatedBy = currentUser.Id;
+                        b.CreatedDate = DateTimeOffset.Now;
 
-                        var customer = customerRepo.GetWhere(c => c.AccountNumber == c.AccountNumber).FirstOrDefault();
+                        var customer = customerRepo.GetWhere(c => c.AccountNumber == b.AccountNumber).FirstOrDefault();
                         var installation = new Installation()
                         {
                             CustomerId = customer.Id,
@@ -336,8 +336,8 @@ namespace PMAPortal.Web.Services.Implementations
             var currentUser = accessor.HttpContext.GetUserSession();
 
             // delete batch 
-            var path = batch.Clone<Batch>().FilePath;
-            var fileName = batch.Clone<Batch>().FileName;
+            var path = batch.Clone<InstallationBatch>().FilePath;
+            var fileName = batch.Clone<InstallationBatch>().FileName;
             var installationIds = batch.InstallationBatchItems.Select(b => b.Customer.Installations.First().Id);
             await installationRepo.DeleteRange(installationIds, false);
             await batchRepo.Delete(id, false);
@@ -345,7 +345,7 @@ namespace PMAPortal.Web.Services.Implementations
             DeleteFile(batch.FilePath);
 
             // log action
-            await logger.LogActivity(ActivityActionType.DELETE_INSTALLATION_BATCH, currentUser.Email,
+            await logger.LogActivity(ActivityActionType.DELETE_INSTALLATION_BATCH, currentUser.Email, batchRepo.TableName, batch, new InstallationBatch(),
                         $"Deleted installation batch with file name {fileName}");
 
             DeleteFile(path);
