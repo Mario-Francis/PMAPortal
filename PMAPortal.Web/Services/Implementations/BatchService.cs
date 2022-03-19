@@ -409,6 +409,7 @@ namespace PMAPortal.Web.Services.Implementations
             var path = batch.Clone<Batch>().FilePath;
             var fileName = batch.Clone<Batch>().FileName;
             await batchRepo.Delete(id, false);
+            DeleteFile(batch.FilePath);
 
             // log action
             await logger.LogActivity(ActivityActionType.DELETE_BATCH, currentUser.Email,

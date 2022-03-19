@@ -47,6 +47,10 @@ namespace PMAPortal.Web
         CREATE_BATCH,
         DELETE_BATCH,
 
+        CREATE_INSTALLATION_BATCH,
+        DELETE_INSTALLATION_BATCH,
+
+
         CREATE_CUSTOMER,
         UPDATE_CUSTOMER,
         DELETE_CUSTOMER,
@@ -68,6 +72,17 @@ namespace PMAPortal.Web
     {
         Pending=1,
         Submitted,
+        Scheduled_for_Installation,
+        Installation_In_Progress,
+        Installation_Failed,
+        Installation_Completed,
+        Disco_Confirmation_Failed,
+        Disco_Confirmation_Successful
+    }
+
+    public enum InstallationStatuses
+    {
+        Pending = 1,
         Scheduled_for_Installation,
         Installation_In_Progress,
         Installation_Failed,
