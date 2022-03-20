@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -40,5 +42,6 @@ namespace PMAPortal.Web.Models
         public virtual User AssignedByUser { get; set; }
         public virtual InstallationStatus InstallationStatus { get; set; }
         public virtual Survey Survey { get; set; }
+        public virtual ICollection<InstallationLog> InstallationLogs { get; set; }
     }
 }

@@ -24,6 +24,8 @@
     <Compile Remove="Migrations\20220305135319_Remove_unique_constraint_from_createdby_in_users_table2.Designer.cs" />
     <Compile Remove="Migrations\20220319082400_Add_models_for_InstallationBatch_InstallationBatchItem.cs" />
     <Compile Remove="Migrations\20220319082400_Add_models_for_InstallationBatch_InstallationBatchItem.Designer.cs" />
+    <Compile Remove="Migrations\20220319211246_Add_relationship_between_Installation_table_and_InstallationLogs_Table.cs" />
+    <Compile Remove="Migrations\20220319211246_Add_relationship_between_Installation_table_and_InstallationLogs_Table.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

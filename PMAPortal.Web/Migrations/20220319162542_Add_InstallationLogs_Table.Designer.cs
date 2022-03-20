@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMAPortal.Web.Data;
 
 namespace PMAPortal.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220319162542_Add_InstallationLogs_Table")]
+    partial class Add_InstallationLogs_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -907,6 +909,9 @@ namespace PMAPortal.Web.Migrations
                     b.Property<long>("InstallationId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("InstallationId1")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("InstallationStatusId")
                         .HasColumnType("bigint");
 
@@ -917,6 +922,8 @@ namespace PMAPortal.Web.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("InstallationId");
+
+                    b.HasIndex("InstallationId1");
 
                     b.HasIndex("InstallationStatusId");
 
@@ -1735,10 +1742,14 @@ namespace PMAPortal.Web.Migrations
                         .HasForeignKey("CreatedBy");
 
                     b.HasOne("PMAPortal.Web.Models.Installation", "Installation")
-                        .WithMany("InstallationLogs")
+                        .WithMany()
                         .HasForeignKey("InstallationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("PMAPortal.Web.Models.Installation", null)
+                        .WithMany("InstallationLogs")
+                        .HasForeignKey("InstallationId1");
 
                     b.HasOne("PMAPortal.Web.Models.InstallationStatus", "InstallationStatus")
                         .WithMany()

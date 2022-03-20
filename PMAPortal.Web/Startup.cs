@@ -82,6 +82,7 @@ namespace PMAPortal.Web
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ISurveyService, SurveyService>();
             services.AddScoped<IInstallationBatchService, InstallationBatchService>();
+            services.AddScoped<IInstallationService, InstallationService>();
 
             // ui services
             services.AddScoped<ISessionService, SessionService>();

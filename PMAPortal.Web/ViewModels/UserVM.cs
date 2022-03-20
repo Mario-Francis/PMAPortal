@@ -71,7 +71,7 @@ namespace PMAPortal.Web.ViewModels
 
         public static UserVM FromUser(User user, int? clientTimeOffset = null)
         {
-            return new UserVM
+            return user==null?null: new UserVM
             {
                 Id = user.Id,
                 FirstName = user.FirstName,

@@ -56,5 +56,15 @@ namespace PMAPortal.Web.Extensions
                }.Contains(type) ||
                (Convert.GetTypeCode(type) != TypeCode.Object);
         }
+   
+        public static void SetProperty<T>(this T obj, string propertyName, object value)
+        {
+            obj.GetType().GetProperty(propertyName).SetValue(obj, value, null);
+        }
+
+        public static object GetProperty<T>(this T obj, string propertyName)
+        {
+            return obj.GetType().GetProperty(propertyName).GetValue(obj);
+        }
     }
 }

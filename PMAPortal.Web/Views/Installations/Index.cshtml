@@ -1,0 +1,447 @@
+﻿@inject ISessionService service;
+@inject IDropdownService dropdownService;
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Installations";
+}
+
+
+<h2 class="mt-4">Installations</h2>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
+    <li class="breadcrumb-item active">Installations</li>
+</ol>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <input type="hidden" id="userId" value="@service.UserSession.Id" />
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50 active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Unassigned</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50" id="home2-tab" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" aria-selected="true">Assigned</a>
+                    </li>
+                    <li class="nav-item d-none" role="presentation">
+                        <a class="nav-link text-black-50" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Rejected</a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50" id="home3-tab" data-toggle="tab" href="#home3" role="tab" aria-controls="home3" aria-selected="true">Completed</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50" id="profile2-tab" data-toggle="tab" href="#profile2" role="tab" aria-controls="profile2" aria-selected="false">Disco Rejected</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link text-black-50" id="profile3-tab" data-toggle="tab" href="#profile3" role="tab" aria-controls="profile3" aria-selected="false">Disco Approved</a>
+                    </li>
+
+
+                </ul>
+                <div class="tab-content" id="myTabContent">
+
+                    <div class="tab-pane fade show active p-2 p-md-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <p class="my-2">
+                            <button type="button" disabled id="assignBtn" class="btn btn-primary btn-sm">Assign installations(s) to installer</button>
+                        </p>
+                        <div class="table-responsive">
+                            <table id="unassignedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-2 p-md-3" id="home2" role="tabpanel" aria-labelledby="home2-tab">
+                        <p class="my-2">
+                            <button type="button" disabled id="reassignBtn" class="btn btn-primary btn-sm">Reassign installations(s) to installer</button>
+                        </p>
+                        <div class="table-responsive">
+                            <table id="assignedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Installer</th>
+                                        <th>Assigned&nbsp;By</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade p-2 p-md-3 d-none" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="table-responsive">
+                            <table id="rejectedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Assigned&nbsp;To</th>
+                                        <th>Assigned&nbsp;By</th>
+                                        <th>Comment</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade p-2 p-md-3" id="home3" role="tabpanel" aria-labelledby="home3-tab">
+                        @*<p class="my-2">
+                                <button type="button" disabled id="scheduleBtn" class="btn btn-primary btn-sm">Schedule survey(s)</button>
+                            </p>*@
+                        <div class="table-responsive">
+                            <table id="completedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Assigned&nbsp;To</th>
+                                        <th>Assigned&nbsp;By</th>
+                                        <th>Meter&nbsp;Type</th>
+                                        <th>Meter&nbsp;Number</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade p-2 p-md-3" id="profile2" role="tabpanel" aria-labelledby="profile2-tab">
+                        <div class="table-responsive">
+                            <table id="discoRejectedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Assigned&nbsp;To</th>
+                                        <th>Assigned&nbsp;By</th>
+                                        <th>Meter&nbsp;Type</th>
+                                        <th>Meter&nbsp;Number</th>
+                                        <th>Comment</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-2 p-md-3" id="profile3" role="tabpanel" aria-labelledby="profile3-tab">
+                        <div class="table-responsive">
+                            <table id="discoApprovedTable" class="table table-striped table-bordered f14">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>&nbsp;</th>
+                                        <th>Batch</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>ARN</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Email</th>
+                                        <th>Phone&nbsp;Number</th>
+                                        <th>Assigned&nbsp;To</th>
+                                        <th>Assigned&nbsp;By</th>
+                                        <th>Meter&nbsp;Type</th>
+                                        <th>Meter&nbsp;Number</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Schedule&nbsp;Date</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Date&nbsp;Shared</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Date&nbsp;Created</th>
+                                        <th>Date&nbsp;Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Assign modal-->
+<div class="modal fade" id="assignModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Installation(s) to Staff</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post">
+                <fieldset>
+                    <input type="hidden" id="assignType" value="multiple" />
+                    <div class="modal-body">
+                        <div class="row mt-2">
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="surveyStaffId" class="f14">* Installer</label>
+                                    <select id="surveyStaffId" class="custom-select form-control" asp-items="@dropdownService.GetInstallers()" required></select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                        <button type="submit" id="assignSubmitBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-check-circle"></i> &nbsp;Assign</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Reassign modal-->
+<div class="modal fade" id="reassignModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reassign Installation(s) to Staff</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post">
+                <fieldset>
+                    <input type="hidden" id="reassignType" value="multiple" />
+                    <div class="modal-body">
+                        <div class="row mt-2">
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="r_surveyStaffId" class="f14">* Installer</label>
+                                    <select id="r_surveyStaffId" class="custom-select form-control" asp-items="@dropdownService.GetInstallers()" required></select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-light border text-dark px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                        <button type="submit" id="reassignSubmitBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-check-circle"></i> &nbsp;Reassign</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="cname_sp">Customer Name</span>'s Details </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row mt-2 f14">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <p class="mini-bold col-5">Batch Number:</p>
+                            <p class="col-7" id="batchno_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Account Number:</p>
+                            <p class="col-7" id="accno_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">ARN:</p>
+                            <p class="col-7" id="arn_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Customer Name:</p>
+                            <p class="col-7" id="cusname_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">CIS Name:</p>
+                            <p class="col-7" id="cisname_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Email:</p>
+                            <p class="col-7" id="email_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Phone Number:</p>
+                            <p class="col-7" id="phone_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Address:</p>
+                            <p class="col-7" id="adres_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">CIS Address:</p>
+                            <p class="col-7" id="cisadres_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Ladmark:</p>
+                            <p class="col-7" id="landmark_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Business Unit (BU):</p>
+                            <p class="col-7" id="bu_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Under Taken (UT):</p>
+                            <p class="col-7" id="ut_p">099</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Feeder:</p>
+                            <p class="col-7" id="feeder_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Distribution Transformer (DT):</p>
+                            <p class="col-7" id="dt_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Tariff:</p>
+                            <p class="col-7" id="tariff_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Metered Status:</p>
+                            <p class="col-7" id="metered_status_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Survey Status:</p>
+                            <p class="col-7" id="survey_status_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Installation Status:</p>
+                            <p class="col-7" id="installation_status_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Date Shared:</p>
+                            <p class="col-7" id="date_shared_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Created By:</p>
+                            <p class="col-7" id="created_by_p">099</p>
+                        </div>
+                        <div class="row my-1">
+                            <p class="mini-bold col-5">Date Created:</p>
+                            <p class="col-7" id="date_created_p">099</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm px-4 py-2 f12" data-dismiss="modal"><i class="fa fa-check-circle"></i> &nbsp;Okay</button>
+                @*<button type="submit" id="uploadBtn" class="btn btn-primary btn-sm px-4 py-2 f12"><i class="fa fa-upload"></i> &nbsp;Upload</button>*@
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    <script>
+
+    </script>
+    <script src="~/js/installations.js" asp-append-version="true"></script>
+
+}

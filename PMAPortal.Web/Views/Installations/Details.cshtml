@@ -1,0 +1,335 @@
+﻿@model InstallationVM;
+@inject ISessionService service;
+@inject IDropdownService dropdownService;
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = $"Installation Details for {Model.Customer.CustomerName} ({Model.Customer.AccountNumber})";
+    var customer = Model.Customer;
+    var survey = Model.Survey;
+    var isReject = Model.InstallationStatusId == (long)InstallationStatuses.Disco_Confirmation_Failed || Model.InstallationStatusId == (long)InstallationStatuses.Installation_Failed;
+    var isRejectByDisco = Model.InstallationStatusId == (long)InstallationStatuses.Disco_Confirmation_Failed;
+}
+
+<h2 class="mt-4"> @ViewData["Title"]</h2>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
+    <li class="breadcrumb-item">Installations</li>
+    <li class="breadcrumb-item active">@($"{Model.Customer.CustomerName} ({Model.Customer.AccountNumber})")</li>
+</ol>
+<input type="hidden" id="installationId" value="@Model.Id" />
+@if (isReject)
+{
+    <div class="alert alert-danger my-2">
+        <h6 class="f14 mb-0"><i class="fa fa-exclamation-circle"></i> @(isRejectByDisco?"Disco":"Installer") rejection comment</h6>
+        <hr class="my-2" />
+        <p class="ml-3 f14">@customer.Comment</p>
+    </div>
+}
+<div class="row">
+    <div class="col-md-7">
+        <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header p-1" id="headingOne">
+                    <h6 class="mb-0">
+                        <a class="btn btn-link btn-block text-left text-dark collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Customer Details
+                        </a>
+                    </h6>
+                </div>
+
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+                    <div class="card-body">
+                        <div class="row mt-2 f14">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <p class="mini-bold col-5">Batch Number:</p>
+                                    <p class="col-7" id="s_batchno_p">@customer.BatchNumber</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Account Number:</p>
+                                    <p class="col-7" id="s_accno_p">@customer.AccountNumber</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">ARN:</p>
+                                    <p class="col-7" id="s_arn_p">@customer.ARN</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Customer Name:</p>
+                                    <p class="col-7" id="s_cusname_p">@customer.CustomerName</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">CIS Name:</p>
+                                    <p class="col-7" id="s_cisname_p">@customer.CISName</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Email:</p>
+                                    <p class="col-7" id="s_email_p">@customer.Email</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Phone Number:</p>
+                                    <p class="col-7" id="s_phone_p">@customer.PhoneNumber</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Address:</p>
+                                    <p class="col-7" id="s_adres_p">@customer.Address</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">CIS Address:</p>
+                                    <p class="col-7" id="s_cisadres_p">@customer.CISAddress</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Ladmark:</p>
+                                    <p class="col-7" id="s_landmark_p">@customer.Landmark</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Business Unit (BU):</p>
+                                    <p class="col-7" id="s_bu_p">@customer.BU</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Under Taken (UT):</p>
+                                    <p class="col-7" id="s_ut_p">@customer.UT</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Feeder:</p>
+                                    <p class="col-7" id="s_feeder_p">@customer.Feeder</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Distribution Transformer (DT):</p>
+                                    <p class="col-7" id="s_dt_p">@customer.DT</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Tariff:</p>
+                                    <p class="col-7" id="s_tariff_p">@customer.Tariff</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Metered Status:</p>
+                                    <p class="col-7" id="s_metered_status_p">@customer.MeteredStatus</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Survey Status:</p>
+                                    <p class="col-7" id="s_survey_status_p">@customer.SurveyStatus</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Installation Status:</p>
+                                    <p class="col-7" id="s_installation_status_p">@customer.InstallationStatus</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Date Shared:</p>
+                                    <p class="col-7" id="s_date_shared_p">@customer.FormattedDateShared</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Created By:</p>
+                                    <p class="col-7" id="s_created_by_p">@customer.CreatedBy</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-5">Date Created:</p>
+                                    <p class="col-7" id="s_date_created_p">@customer.FormattedCreatedDate</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header p-1" id="headingTwo">
+                    <h2 class="mb-0">
+                        <a class="btn btn-link btn-block text-left text-dark" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Metering Eligibility Survey
+                        </a>
+                    </h2>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="row mt-2 f14">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <p class="mini-bold col-7">Ready to pay?</p>
+                                    <p class="col-5" id="s_readyToPay_p">@survey.ReadyToPay</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Occupier Phone Number:</p>
+                                    <p class="col-5" id="s_occupierPhone_p">@survey.OccupierPhoneNumber</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Number of Bedroom:</p>
+                                    <p class="col-5" id="s_bedroomCount_p">@survey.BedroomCount</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Apartment Type:</p>
+                                    <p class="col-5" id="s_typeOfApartment_p">@survey.TypeOfApartment</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Existing Meter Type:</p>
+                                    <p class="col-5" id="s_existingMeterType_p">@survey.ExistingMeterType</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Existing Meter Number:</p>
+                                    <p class="col-5" id="s_existingMeterNo_p">@survey.ExistingMeterNumber</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Customer bill match upload data?</p>
+                                    <p class="col-5" id="s_customerBillMatchUploadData_p">@survey.CustomerBillMatchUploadedData</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Estimated Total Load (amps):</p>
+                                    <p class="col-5" id="s_estimatedTotalLoad_p">@survey.EstimatedTotalLoadInAmps</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Recommended Meter Type:</p>
+                                    <p class="col-5" id="s_recommendedMeterType_p">@survey.RecommendedMeterType</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Installation Mode:</p>
+                                    <p class="col-5" id="s_installationMode_p">@survey.InstallationMode</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Load wire seperation required?:</p>
+                                    <p class="col-5" id="s_loadWireSeparationRequired_p">@survey.LoadWireSeparationRequired</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Account seperation required:</p>
+                                    <p class="col-5" id="s_accountSeparationRequired_p">@survey.AccountSeparationRequired</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Number of 1Q required:</p>
+                                    <p class="col-5" id="s_noOf1QRequired_p">@survey.NumberOf1QRequired</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Number of 3Q required:</p>
+                                    <p class="col-5" id="s_noOf3QRequired_p">@survey.NumberOf3QRequired</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">MAP:</p>
+                                    <p class="col-5" id="s_map_p">@survey.MAP</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Survey remark:</p>
+                                    <p class="col-5" id="s_surveyRemark_p">@survey.SurveyRemark</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Additional comment:</p>
+                                    <p class="col-5" id="s_comment_p">@survey.AdditionalComment</p>
+                                </div>
+                                <div class="row my-1">
+                                    <p class="mini-bold col-7">Survey date:</p>
+                                    <p class="col-5" id="s_survey_date_p">@survey.FormattedSurveyDate</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card mt-md-0 mt-4">
+            <div class="card-header">
+                <h6 class="m-0">Meter Installation</h6>
+            </div>
+            <div class="card-body">
+
+                @if (Model.MeterType != null)
+                {
+                    <h6 class="m-0 mt-2">Meter assigned to customer</h6>
+                    <hr class="my-2" />
+                    <div class="f14">
+                        <p><b class="mini-bold">Meter Type: </b>@Model.MeterType</p>
+                        <p class="mt-2"><b class="mini-bold">Meter Number: </b>@Model.MeterNumber</p>
+                    </div>
+                }
+
+                @if (Model.MeterType != null)
+                {
+                    <h6 class="m-0 mt-4">Installation images</h6>
+                    <hr class="my-2" />
+                    <div class="f12">
+                        <div id="imgLoader" class="p-5" style="display:none;">
+                            <p class="text-center text-secondary"><i class="fa fa-circle-notch fa-spin fa-5x"></i></p>
+                            <p class="text-center mt-3">Loading images...</p>
+                        </div>
+                        <div id="imagesDiv">
+
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="m-0">Installation Logs</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover f14">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Action&nbsp;By</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ var cnt = 1;}
+                            @foreach (var log in Model.InstallationLogs)
+                            {
+                                <tr>
+                                    <td>@(cnt).</td>
+                                    <td>@log.ActionBy</td>
+                                    <td><span class="badge badge-info badge-pill py-1 px-2">@log.InstallationStatus</span></td>
+                                    <td>@log.Description</td>
+                                    <td>@log.Comment</td>
+                                    <td>@log.FormattedCreatedDate</td>
+                                </tr>
+                                cnt += 1;
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Image modal-->
+<div class="modal fade" id="imageModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header p-2 f12">
+                <p id="modalCaption">svsrvws</p>
+                <button type="button" class="close f18" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body p-0">
+                <img class="img-fluid w-100 img-thumbnail" id="modalImg" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    <script>
+
+    </script>
+    <script src="~/js/installation_details.js" asp-append-version="true"></script>
+
+}

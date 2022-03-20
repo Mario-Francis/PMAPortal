@@ -138,7 +138,7 @@ namespace PMAPortal.Web.Services.Implementations
             var invalidCustomerIds = customerIds.Where(id => !customerRepo.Any(c => c.Id == id));
             if(invalidCustomerIds.Count() > 0)
             {
-                throw new AppException($"Customer id(s) '{string.Join(", ", customerIds)}' are invalid");
+                throw new AppException($"Customer id(s) '{string.Join(", ", invalidCustomerIds)}' are invalid");
             }
 
             if (!surveyStaff.UserRoles.Any(ur => ur.RoleId == (long)AppRoles.SURVEY_STAFF))
@@ -176,7 +176,7 @@ namespace PMAPortal.Web.Services.Implementations
             var invalidSurveyIds = surveyIds.Where(id => !surveyRepo.Any(s => s.Id == id));
             if (invalidSurveyIds.Count() > 0)
             {
-                throw new AppException($"Survey id(s) '{string.Join(", ", surveyIds)}' are invalid");
+                throw new AppException($"Survey id(s) '{string.Join(", ", invalidSurveyIds)}' are invalid");
             }
 
             if (!surveyStaff.UserRoles.Any(ur => ur.RoleId == (long)AppRoles.SURVEY_STAFF))

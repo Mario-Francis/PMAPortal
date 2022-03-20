@@ -46,6 +46,8 @@ namespace PMAPortal.Web.Data
 
         public DbSet<InstallationBatch> InstallationBatches { get; set; }
         public DbSet<InstallationBatchItem> InstallationBatchItems { get; set; }
+        public DbSet<InstallationLog> InstallationLogs { get; set; }
+
 
         //===== Audit ====
         public DbSet<ActivityLog> ActivityLogs { get; set; }
@@ -241,6 +243,23 @@ namespace PMAPortal.Web.Data
               .HasPrincipalKey(x=>x.AccountNumber)
               .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<InstallationLog>()
+               .HasOne(x => x.ActionByUser)
+               .WithMany()
+               .HasForeignKey(x => x.ActionBy)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<InstallationLog>()
+               .HasOne(x => x.InstallationStatus)
+               .WithMany()
+               .HasForeignKey(x => x.InstallationStatusId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<InstallationLog>()
+            //   .HasOne(x => x.Installation)
+            //   .WithMany(x=>x.InstallationLogs)
+            //   .HasForeignKey(x => x.InstallationId)
+            //   .OnDelete(DeleteBehavior.NoAction);
 
             SeeData(modelBuilder);
         }

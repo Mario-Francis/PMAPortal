@@ -171,7 +171,7 @@ namespace PMAPortal.Web.Services.Implementations
             }
 
            await  userRoleRepo.DeleteWhere(x => x.UserId == _user.Id && !user.UserRoles.Select(ur=>ur.RoleId).Contains(x.RoleId));
-            var userRolesToAdd = user.UserRoles.Where(r => !userRoleRepo.Any(_r => _r.RoleId == r.RoleId));
+            var userRolesToAdd = user.UserRoles.Where(r => !userRoleRepo.Any(_r => _r.UserId==user.Id && _r.RoleId == r.RoleId));
             await userRoleRepo.InsertRange(userRolesToAdd);
 
             _user.FirstName = user.FirstName;

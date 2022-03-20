@@ -41,8 +41,18 @@ namespace PMAPortal.Web.ViewModels
         public string SurveyRemark { get; set; }
         public DateTimeOffset? ScheduleDate { get; set; }
         public DateTimeOffset? SurveyDate { get; set; }
-        
-
+        //============
+        // for installation
+        public long? InstallationId { get; set; }
+        public long? InstallerId { get; set; }
+        public long? IAssignedById { get; set; }
+        public string IAssignedBy { get; set; }
+        public string Installer { get; set; }
+        public DateTimeOffset? IScheduleDate { get; set; }
+        public string MeterType { get; set; }
+        public string MeterNumber { get; set; }
+        public string Comment { get; set; }
+        //===========
 
         public string CreatedBy { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
@@ -72,6 +82,13 @@ namespace PMAPortal.Web.ViewModels
             get
             {
                 return SurveyDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
+            }
+        }
+        public string FormattedIScheduleDate
+        {
+            get
+            {
+                return IScheduleDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
             }
         }
 
@@ -117,6 +134,28 @@ namespace PMAPortal.Web.ViewModels
                 _customer.ScheduleDate = clientTimeOffset == null ? survey.ScheduleDate : survey.ScheduleDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
                 _customer.SurveyDate = clientTimeOffset == null ? survey.SurveyDate : survey.SurveyDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
             }
+
+            if(customer.Installations.Count() > 0)
+            {
+                var installation = customer.Installations.First();
+                _customer.InstallationId = installation.Id;
+                _customer.InstallerId = installation.InstallerId;
+                _customer.IAssignedById = installation.AssignedBy;
+                _customer.MeterType = installation.MeterType;
+                _customer.MeterNumber = installation.MeterNumber;
+                _customer.IAssignedBy= installation.AssignedByUser == null ? null : $"{installation.AssignedByUser.FirstName} {installation.AssignedByUser.LastName} ({installation.AssignedByUser.Email})";
+                _customer.Installer= installation.AssignedByUser == null ? null : $"{installation.Installer.FirstName} {installation.Installer.LastName} ({installation.Installer.Email})";
+                _customer.IScheduleDate = clientTimeOffset == null ? installation.ScheduleDate : installation.ScheduleDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
+
+
+                if (installation.InstallationLogs.Count() > 0)
+                {
+                    var log = installation.InstallationLogs.OrderByDescending(l => l.Id).First();
+                    _customer.Comment = log.Comment;
+                }
+            }
+
+            
             return _customer;
         }
 
