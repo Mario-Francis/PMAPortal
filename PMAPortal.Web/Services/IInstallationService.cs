@@ -29,6 +29,7 @@ namespace PMAPortal.Web.Services
         IEnumerable<Installation> GetDiscoRejected(long installerId);
         IEnumerable<Installation> GetDiscoApproved(long installerId);
         Task<Installation> GetInstallation(long installationId);
+        IEnumerable<Installation> GetInstallations();
         Task UpdateMeterInfo(long installationId, string meterType, string meterNo);
         Task<string> UploadImage(long installationId, string imageFieldName, IFormFile file);
         Task DeleteImage(long installationId, string imageFieldName);

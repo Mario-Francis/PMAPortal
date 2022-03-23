@@ -408,6 +408,10 @@ namespace PMAPortal.Web.Services.Implementations
         {
             return await installationRepo.GetById(installationId);
         }
+        public IEnumerable<Installation> GetInstallations()
+        {
+            return installationRepo.GetAll();
+        }
 
         // update installation meter info
         public async Task UpdateMeterInfo(long installationId, string meterType, string meterNo)

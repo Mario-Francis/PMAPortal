@@ -438,5 +438,10 @@ namespace PMAPortal.Web.Services.Implementations
         {
             return await surveyRepo.GetById(surveyId);
         }
+
+        public IEnumerable<Survey> GetSurveys()
+        {
+            return surveyRepo.GetAll();
+        }
     }
 }

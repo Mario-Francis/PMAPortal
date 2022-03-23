@@ -17,6 +17,7 @@ namespace PMAPortal.Web.Services.Implementations
         private readonly IRepository<Pet> petRepo;
         private readonly IHttpContextAccessor contextAccessor;
         private readonly IRepository<ApplicationStatus> applicatioStatusRepo;
+        private readonly IRepository<InstallationStatus> installationStatusRepo;
 
         public ListService(IRepository<Appliance> applianceRepo,
             IRepository<Area> areaRepo,
@@ -25,7 +26,8 @@ namespace PMAPortal.Web.Services.Implementations
             IRepository<Meter> meterRepo,
             IRepository<Pet> petRepo,
             IHttpContextAccessor contextAccessor,
-            IRepository<ApplicationStatus> applicatioStatusRepo)
+            IRepository<ApplicationStatus> applicatioStatusRepo,
+            IRepository<InstallationStatus> installationStatusRepo)
         {
             this.applianceRepo = applianceRepo;
             this.areaRepo = areaRepo;
@@ -35,6 +37,7 @@ namespace PMAPortal.Web.Services.Implementations
             this.petRepo = petRepo;
             this.contextAccessor = contextAccessor;
             this.applicatioStatusRepo = applicatioStatusRepo;
+            this.installationStatusRepo = installationStatusRepo;
         }
 
         public IEnumerable<Role> GetRoles()
@@ -94,6 +97,12 @@ namespace PMAPortal.Web.Services.Implementations
                 statuses = statuses.Where(s => ids.Contains(s.Id));
             }
 
+            return statuses.OrderBy(p => p.Id);
+        }
+
+        public IEnumerable<InstallationStatus> GetInstallationStatuses()
+        {
+            var statuses = installationStatusRepo.GetAll();
             return statuses.OrderBy(p => p.Id);
         }
     }

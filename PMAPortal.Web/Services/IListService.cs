@@ -12,5 +12,6 @@ namespace PMAPortal.Web.Services
         IEnumerable<Meter> GetMeters();
         IEnumerable<Pet> GetPets();
         IEnumerable<ApplicationStatus> GetApplicationStatuses();
+        IEnumerable<InstallationStatus> GetInstallationStatuses();
     }
 }

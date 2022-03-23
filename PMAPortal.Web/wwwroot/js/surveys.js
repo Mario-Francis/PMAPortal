@@ -1330,7 +1330,7 @@ $(() => {
         let uid = $(e.currentTarget).attr('cid');
         try {
             loader = bootLoaderDialog('Fetching customer details...');
-            let customer = (await getSurvey(uid)).customer;
+            let customer = (await getCustomer(uid));
             loader.hide();
 
             //console.log(customer);
@@ -1808,7 +1808,37 @@ function updateRemark(surveyId, remark, token = null) {
     return promise;
 }
 
+function getCustomer(id) {
+    var promise = new Promise((resolve, reject) => {
+        try {
+            if (id == undefined || id == '' || id == 0) {
+                reject('Invalid customer id');
+            } else {
+                let url = $base + 'customers/GetCustomer/' + id;
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: (response) => {
+                        if (response.isSuccess) {
+                            resolve(response.data);
+                        } else {
+                            reject(response.message);
+                        }
+                    },
+                    error: (req, status, err) => {
+                        ajaxErrorHandler(req, status, err, {});
+                    }
+                });
+            }
 
+        } catch (ex) {
+            console.error(ex);
+            //notify(ex.message, 'danger');
+            reject(ex.message);
+        }
+    });
+    return promise;
+}
 function refreshTables() {
     if (unassignedTable) {
         unassignedTable.ajax.reload();

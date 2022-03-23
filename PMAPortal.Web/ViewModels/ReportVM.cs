@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PMAPortal.Web.ViewModels
 {
-    public class CustomerVM
+    public class ReportVM
     {
         public long Id { get; set; }
         public long BatchId { get; set; }
@@ -36,24 +36,25 @@ namespace PMAPortal.Web.ViewModels
         public long? SurveyId { get; set; }
         public long? SurveyStaffId { get; set; }
         public long? AssignedById { get; set; }
-        public string AssignedBy { get; set; }
-        public string SurveyStaff { get; set; }
-        public string SurveyCompany { get; set; }
+        public string AssignedBy { get; set; } = "";
+        public string SurveyStaff { get; set; } = "";
+        public string SurveyCompany { get; set; } = "";
 
-        public string SurveyRemark { get; set; }
+        public string SurveyRemark { get; set; } = "";
         public DateTimeOffset? ScheduleDate { get; set; }
         public DateTimeOffset? SurveyDate { get; set; }
         //============
         // for installation
         public long? InstallationId { get; set; }
         public long? InstallerId { get; set; }
+        public long? InstallationStatusId { get; set; }
         public long? IAssignedById { get; set; }
-        public string IAssignedBy { get; set; }
-        public string Installer { get; set; }
-        public string InstallerCompany { get; set; }
+        public string IAssignedBy { get; set; } = "";
+        public string Installer { get; set; } = "";
+        public string InstallerCompany { get; set; } = "";
         public DateTimeOffset? IScheduleDate { get; set; }
-        public string MeterType { get; set; }
-        public string MeterNumber { get; set; }
+        public string MeterType { get; set; } = "";
+        public string MeterNumber { get; set; } = "";
         public string Comment { get; set; }
         //===========
 
@@ -70,34 +71,34 @@ namespace PMAPortal.Web.ViewModels
         {
             get
             {
-                return DateShared?.ToString("MMM d, yyyy 'at' hh:mmtt");
+                return DateShared?.ToString("MMM d, yyyy 'at' hh:mmtt") ?? "";
             }
         }
         public string FormattedScheduleDate
         {
             get
             {
-                return ScheduleDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
+                return ScheduleDate?.ToString("MMM d, yyyy 'at' hh:mmtt") ?? "";
             }
         }
         public string FormattedSurveyDate
         {
             get
             {
-                return SurveyDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
+                return SurveyDate?.ToString("MMM d, yyyy 'at' hh:mmtt") ?? "";
             }
         }
         public string FormattedIScheduleDate
         {
             get
             {
-                return IScheduleDate?.ToString("MMM d, yyyy 'at' hh:mmtt");
+                return IScheduleDate?.ToString("MMM d, yyyy 'at' hh:mmtt") ?? "";
             }
         }
 
-        public static CustomerVM FromCustomer(Customer customer, int? clientTimeOffset = null)
+        public static ReportVM FromCustomer(Customer customer, int? clientTimeOffset = null)
         {
-            var _customer =  new CustomerVM
+            var _customer = new ReportVM
             {
                 Id = customer.Id,
                 AccountNumber = customer.AccountNumber,
@@ -125,31 +126,32 @@ namespace PMAPortal.Web.ViewModels
                 InstallationStatus = GetInstallationStatus(customer)
             };
 
-            if(customer.Surveys.Count() > 0)
+            if (customer.Surveys.Count() > 0)
             {
                 var survey = customer.Surveys.First();
                 _customer.SurveyId = survey.Id;
                 _customer.SurveyStaffId = survey.SurveyStaffId;
                 _customer.AssignedById = survey.AssignedBy;
-                _customer.SurveyRemark = survey.SurveyRemark;
-                _customer.SurveyCompany = survey.SurveryCompany;
-                _customer.AssignedBy = survey.AssignedByUser == null ? null : $"{survey.AssignedByUser.FirstName} {survey.AssignedByUser.LastName} ({survey.AssignedByUser.Email})";
-                _customer.SurveyStaff = survey.SurveyStaff == null ? null : $"{survey.SurveyStaff.FirstName} {survey.SurveyStaff.LastName} ({survey.SurveyStaff.Email})";
+                _customer.SurveyRemark = survey.SurveyRemark ?? "";
+                _customer.SurveyCompany = survey.SurveryCompany ?? "";
+                _customer.AssignedBy = survey.AssignedByUser == null ? "" : $"{survey.AssignedByUser.FirstName} {survey.AssignedByUser.LastName} ({survey.AssignedByUser.Email})";
+                _customer.SurveyStaff = survey.SurveyStaff == null ? "" : $"{survey.SurveyStaff.FirstName} {survey.SurveyStaff.LastName} ({survey.SurveyStaff.Email})";
                 _customer.ScheduleDate = clientTimeOffset == null ? survey.ScheduleDate : survey.ScheduleDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
                 _customer.SurveyDate = clientTimeOffset == null ? survey.SurveyDate : survey.SurveyDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
             }
 
-            if(customer.Installations.Count() > 0)
+            if (customer.Installations.Count() > 0)
             {
                 var installation = customer.Installations.First();
+                _customer.InstallationStatusId = installation.InstallationStatusId;
                 _customer.InstallationId = installation.Id;
                 _customer.InstallerId = installation.InstallerId;
                 _customer.IAssignedById = installation.AssignedBy;
-                _customer.MeterType = installation.MeterType;
-                _customer.MeterNumber = installation.MeterNumber;
-                _customer.IAssignedBy= installation.AssignedByUser == null ? null : $"{installation.AssignedByUser.FirstName} {installation.AssignedByUser.LastName} ({installation.AssignedByUser.Email})";
-                _customer.Installer= installation.Installer == null ? null : $"{installation.Installer.FirstName} {installation.Installer.LastName} ({installation.Installer.Email})";
-                _customer.InstallerCompany = installation.Installer == null ? null : $"{installation.Installer.CompanyName}";
+                _customer.MeterType = installation.MeterType ?? "";
+                _customer.MeterNumber = installation.MeterNumber ?? "";
+                _customer.IAssignedBy = installation.AssignedByUser == null ? "" : $"{installation.AssignedByUser.FirstName} {installation.AssignedByUser.LastName} ({installation.AssignedByUser.Email})";
+                _customer.Installer = installation.Installer == null ? "" : $"{installation.Installer.FirstName} {installation.Installer.LastName} ({installation.Installer.Email})";
+                _customer.InstallerCompany = installation.Installer == null ? "" : $"{installation.Installer.CompanyName}";
                 _customer.IScheduleDate = clientTimeOffset == null ? installation.ScheduleDate : installation.ScheduleDate?.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value));
 
 
@@ -160,20 +162,21 @@ namespace PMAPortal.Web.ViewModels
                 }
             }
 
-            
+
             return _customer;
         }
 
         public static string GetSurveyStatus(Customer customer)
         {
             var status = "Pending";
-            if(customer.Surveys.Count() > 0)
+            if (customer.Surveys.Count() > 0)
             {
                 var survey = customer.Surveys.First();
-                if(survey.SurveyStaffId!=null && survey.ScheduleDate==null && survey.SurveyRemark == null)
+                if (survey.SurveyStaffId != null && survey.ScheduleDate == null && survey.SurveyRemark == null)
                 {
                     status = "Assigned";
-                }else if(survey.ScheduleDate != null && survey.SurveyRemark == null)
+                }
+                else if (survey.ScheduleDate != null && survey.SurveyRemark == null)
                 {
                     status = "Scheduled";
                 }
@@ -197,3 +200,4 @@ namespace PMAPortal.Web.ViewModels
         }
     }
 }
+

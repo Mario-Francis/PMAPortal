@@ -189,6 +189,22 @@
     {
       "library": "chosen@1.8.7",
       "destination": "wwwroot/lib/chosen/"
+    },
+    {
+      "library": "datatables.net-buttons-bs4@2.2.0",
+      "destination": "wwwroot/lib/datatables.net-buttons-bs4/"
+    },
+    {
+      "library": "datatables-buttons@2.2.0",
+      "destination": "wwwroot/lib/datatables-buttons/"
+    },
+    {
+      "library": "jszip@3.7.1",
+      "destination": "wwwroot/lib/jszip/"
+    },
+    {
+      "library": "pdfmake@0.2.4",
+      "destination": "wwwroot/lib/pdfmake/"
     }
   ]
 }

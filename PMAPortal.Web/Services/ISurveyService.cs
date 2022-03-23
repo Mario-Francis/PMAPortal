@@ -25,5 +25,6 @@ namespace PMAPortal.Web.Services
         IEnumerable<Survey> GetAssigned(long surveyStaffId);
         IEnumerable<Survey> GetCompleted(long surveyStaffId);
         Task<Survey> GetSurvey(long surveyId);
+        IEnumerable<Survey> GetSurveys();
     }
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMAPortal.Web", "PMAPortal.Web\PMAPortal.Web.csproj", "{8DCD1F77-60A7-42A2-A710-A949AC3D06B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMAPortal.Web", "PMAPortal.Web\PMAPortal.Web.csproj", "{8DCD1F77-60A7-42A2-A710-A949AC3D06B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

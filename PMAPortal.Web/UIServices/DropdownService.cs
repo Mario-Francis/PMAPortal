@@ -50,7 +50,7 @@ namespace PMAPortal.Web.UIServices
         public IEnumerable<SelectListItem> GetHouseTypes(string value = null, string emptyText = null)
         {
             List<SelectListItem> houseTypes = listService.GetHouseTypes()
-                .Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString(), Selected = c.Id.ToString() == value }).ToList();
+                .Select(c => new SelectListItem { Text = c.Name, Value = c.Name.ToString(), Selected = c.Id.ToString() == value }).ToList();
             houseTypes.Insert(0, new SelectListItem { Text = emptyText ?? "- Select house type -", Value = "" });
 
             return houseTypes;
@@ -77,6 +77,15 @@ namespace PMAPortal.Web.UIServices
         {
             List<SelectListItem> statuses = listService.GetApplicationStatuses()
                 .Select(c => new SelectListItem { Text =c.Name, Value = c.Id.ToString(), Selected = c.Id.ToString() == value }).ToList();
+            statuses.Insert(0, new SelectListItem { Text = emptyText ?? "- Select status -", Value = "" });
+
+            return statuses;
+        }
+
+        public IEnumerable<SelectListItem> GetInstallationStatuses(string value = null, string emptyText = null)
+        {
+            List<SelectListItem> statuses = listService.GetInstallationStatuses()
+                .Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString(), Selected = c.Id.ToString() == value }).ToList();
             statuses.Insert(0, new SelectListItem { Text = emptyText ?? "- Select status -", Value = "" });
 
             return statuses;
