@@ -6,8 +6,8 @@
         try {
             let form = $("form")[0];
             if (validateForm(form)) {
-                let applicationId = $.trim($('#applicationId').val());
-                let applicantId = $.trim($('#applicantId').val());
+                let installationId = $.trim($('#installationId').val());
+                let customerId = $.trim($('#customerId').val());
                 let answer1 = $.trim($('#a1').val());
                 let answer2 = $.trim($('#a2').val());
                 let answer3 = $.trim($('#a3').val());
@@ -27,10 +27,10 @@
                 } else {
                     $('fieldset').prop('disabled', true);
                     btn.html('<span class="fa fa-circle-notch fa-spin"></span> Submitting feedback...');
-                    let url = $base + 'applications/Feedback';
+                    let url = $base + 'feedbacks/Feedback';
                     let data = {
-                        applicationId,
-                        applicantId,
+                        installationId,
+                        customerId,
                         answer1,
                         answer2,
                         answer3,

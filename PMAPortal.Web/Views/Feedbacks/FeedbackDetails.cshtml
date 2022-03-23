@@ -1,9 +1,9 @@
-﻿
-@*@inject ISessionService service;
+﻿@model CustomerFeedback;
+@inject ISessionService service;
 @inject IDropdownService dropdownService;
 @{
     Layout = "_DashboardLayout";
-    var title = "Applicant Feedback for Application #" + Model.Application.TrackNumber;
+    var title = "Customer Feedback for Meter Installation #" + Model.Installation.MeterNumber;
     ViewData["Title"] = title;
 }
 
@@ -11,16 +11,16 @@
 <h2 class="mt-4">@title</h2>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
-    <li class="breadcrumb-item">Applications</li>
-    <li class="breadcrumb-item">#@Model.Application.TrackNumber</li>
-    <li class="breadcrumb-item active">Applicant Feedback</li>
+    <li class="breadcrumb-item">Feedbacks</li>
+    <li class="breadcrumb-item">#@Model.Installation.MeterNumber</li>
+    <li class="breadcrumb-item active">Customer Feedback</li>
 </ol>
 
 <div class="row">
     <div class="col-sm-12 col-md-8 col-lg-6">
         <div class="card">
             <div class="card-body">
-                <a asp-controller="Applications" asp-action="ApplicantFeedbacks" class="btn btn-primary btn-sm f12 mb-3"><i class="fa fa-arrow-left"></i> Back to list</a>
+                <a asp-controller="Feedbacks" asp-action="Index" class="btn btn-primary btn-sm f12 mb-3"><i class="fa fa-arrow-left"></i> Back to list</a>
                 <h5>@title</h5>
                 <hr class="mt-2" />
                 <div class="table-responsive">
@@ -53,4 +53,4 @@
 @section js{
     <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
     <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
-}*@
+}

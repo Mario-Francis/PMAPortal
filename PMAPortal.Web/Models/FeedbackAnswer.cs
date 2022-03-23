@@ -12,7 +12,7 @@ namespace PMAPortal.Web.Models
         public int rating { get; set; }
 
         //======
-        public virtual ApplicantFeedback ApplicantFeedback { get; set; }
+        public virtual CustomerFeedback ApplicantFeedback { get; set; }
         public virtual FeedbackQuestion FeedbackQuestion { get; set; }
     }
 }

@@ -43,181 +43,26 @@ namespace PMAPortal.Web.Services.Implementations
             this.hostEnvironment = hostEnvironment;
         }
 
-        // schedule application received mail with track no
-        public async Task ScheduleApplicationReceivedMail(MailObject mail)
+
+        // send mail to  survey staffs on assignment
+        public async Task ScheduleNewAssignmentMailToSurveyStaff(MailObject mail)
         {
-           // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var htmlBody = $@"
-Dear {{name}},
-
-This is to notify you that your application for a prepaid meter on our portal has been received and pending installation. Your application tracking number is {mail.TrackNo}. 
-
-Our installation team will reach out to you in less than 7 business days.
-
-Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
-MOS Team.
-";
             //var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
-            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
-
-            var _mails = new List<Mail>();
-            foreach (var m in mail.Recipients)
-            {
-                var _htmlBody = htmlBody;
-
-                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
-                var _mail = new Mail
-                {
-                    Body = _htmlBody,
-                    CreatedDate = DateTimeOffset.Now,
-                    UpdatedDate = DateTimeOffset.Now,
-                    Email = m.Email,
-                    Subject = $"Application Received - MOS Team"
-                };
-                _mails.Add(_mail);
-            }
-            await mailRepo.InsertBulk(_mails);
-        }
-
-        // schedule installation status update mail to applicant
-        public async Task ScheduleInstallationUpdateMail(MailObject mail)
-        {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
             var htmlBody = $@"
 Dear {{name}},
-
-This is a status update on your prepaid meter installation with tracking number {mail.TrackNo}. Kindly find status below
-
-Status: {mail.ApplicationStatus}.
-
-Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
-MOS Team.
-";
-            //var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
-            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
-
-            var _mails = new List<Mail>();
-            foreach (var m in mail.Recipients)
-            {
-                var _htmlBody = htmlBody;
-
-                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
-                var _mail = new Mail
-                {
-                    Body = _htmlBody,
-                    CreatedDate = DateTimeOffset.Now,
-                    UpdatedDate = DateTimeOffset.Now,
-                    Email = m.Email,
-                    Subject = $"Prepaid Meter Installation Update - MOS Team"
-                };
-                _mails.Add(_mail);
-            }
-            await mailRepo.InsertBulk(_mails);
-        }
-
-        // schedule installation completed mail to applicant with feedback link
-        public async Task ScheduleInstallationCompletedMail(MailObject mail)
-        {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
-            var htmlBody = $@"
-Dear {{name}},
-
-This is to notify you that your prepaid meter installation with tracking number {mail.TrackNo} has been successfully completed. We will appreciate getting a feeback on your experience with us. 
-
-Kindly rate our services and suggest ways you think we can improve using the link below
-
-Feedback link: {baseUrl}Applications/Feedback/{{token}}
-
-Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
-MOS Team.
-";
-            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
-
-            var _mails = new List<Mail>();
-            foreach (var m in mail.Recipients)
-            {
-                var _htmlBody = htmlBody;
-
-                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
-                _htmlBody = _htmlBody.Replace("{token}", m.Token);
-                var _mail = new Mail
-                {
-                    Body = _htmlBody,
-                    CreatedDate = DateTimeOffset.Now,
-                    UpdatedDate = DateTimeOffset.Now,
-                    Email = m.Email,
-                    Subject = $"Prepaid Meter Installation Completed - MOS Team"
-                };
-                _mails.Add(_mail);
-            }
-            await mailRepo.InsertBulk(_mails);
-        }
-        // schedule installation failed with comment
-        public async Task ScheduleInstallationFailedMail(MailObject mail)
-        {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
-            var htmlBody = $@"
-Dear {{name}},
-
-This is to notify you that your prepaid meter installation with tracking number {mail.TrackNo} failed. Kindly find comment from our installation team below
-
-Comment: {mail.Comment}
-
-Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
-MOS Team.
-";
-            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
-
-            var _mails = new List<Mail>();
-            foreach (var m in mail.Recipients)
-            {
-                var _htmlBody = htmlBody;
-
-                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
-                var _mail = new Mail
-                {
-                    Body = _htmlBody,
-                    CreatedDate = DateTimeOffset.Now,
-                    UpdatedDate = DateTimeOffset.Now,
-                    Email = m.Email,
-                    Subject = $"Prepaid Meter Installation Failed - MOS Team"
-                };
-                _mails.Add(_mail);
-            }
-            await mailRepo.InsertBulk(_mails);
-        }
-
-        // schedule mail to installers on new application
-        public async Task ScheduleNewApplicationMailToSupervisors(MailObject mail)
-        {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
-            var htmlBody = $@"
-Dear {{name}},
-
-This is to notify you that there has been a new prepaid meter application pending installation. Kindly find application details below
-
-Applicant Name       : {mail.ApplicantName}
-Applicant Phone No.  : {mail.ApplicantPhoneNo}
-Applicant Email      : {mail.ApplicantEmail}
-Requested Meter Type : {mail.MeterType}
-Tracking Number      : {mail.TrackNo}
-
+<br /><br />
+This is to notify you that a new metering eligibility survey task has been assigned to you by {mail.AssignedByName}. Kindly find customer details below
+<br /><br />
+Customer Name       : {mail.CustomerName}<br />
+Customer Phone No.  : {mail.CustomerPhoneNo}<br />
+Customer Email      : {mail.CustomerEmail}<br />
+Account Number      : {mail.CustomerAccountNumber}
+<br /><br />
 Please attend to the above request as soon as possible.
-
+<br /><br />
 Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
+<br /><br />
+Best regards,<br />
 MOS Team.
 ";
             //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
@@ -234,32 +79,103 @@ MOS Team.
                     CreatedDate = DateTimeOffset.Now,
                     UpdatedDate = DateTimeOffset.Now,
                     Email = m.Email,
-                    Subject = $"New Application Alert - MOS Team"
+                    Subject = $"New Survey Task Assignment Alert - MOS Team"
                 };
                 _mails.Add(_mail);
             }
             await mailRepo.InsertBulk(_mails);
         }
+        // send mail to customer on survey schedule/reschedule
+        public async Task ScheduleSurveyScheduleMailToCustomer(MailObject mail, bool isReschedule=false)
+        {
+            //var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            var htmlBody = $@"
+Dear {{name}},
+<br /><br />
+This is to notify you that your metering eligibility survey is {(isReschedule?"rescheduled":"scheduled")} for {mail.ScheduleDate}. Kindly find our survey staff contact below
+<br /><br />
+Name       : {mail.SurveyStaffName}<br />
+Phone No.  : {mail.SurveyStaffPhoneNo}<br />
+Email      : {mail.SurveyStaffEmail}
+<br /><br />
+Kindly note this is an automated mail, hence, do not reply.
+<br /><br />
+Best regards,<br />
+MOS Team.
+";
+            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
+
+            var _mails = new List<Mail>();
+            foreach (var m in mail.Recipients)
+            {
+                var _htmlBody = htmlBody;
+
+                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
+                var _mail = new Mail
+                {
+                    Body = _htmlBody,
+                    CreatedDate = DateTimeOffset.Now,
+                    UpdatedDate = DateTimeOffset.Now,
+                    Email = m.Email,
+                    Subject = $"Metering Eligibility Survey Schedule Alert - MOS Team"
+                };
+                _mails.Add(_mail);
+            }
+            await mailRepo.InsertBulk(_mails);
+        }
+        // send  mail to customer on survey completion
+        public async Task ScheduleSurveyCompletionMailToCustomer(MailObject mail)
+        {
+            //var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            var htmlBody = $@"
+Dear {{name}},
+<br /><br />
+This is to notify you that your metering eligibility survey has been completed. We will get back to you on the installation process if you are eligible.
+<br /><br />
+Kindly note this is an automated mail, hence, do not reply.
+<br /><br />
+Best regards,<br />
+MOS Team.
+";
+            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
+
+            var _mails = new List<Mail>();
+            foreach (var m in mail.Recipients)
+            {
+                var _htmlBody = htmlBody;
+
+                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
+                var _mail = new Mail
+                {
+                    Body = _htmlBody,
+                    CreatedDate = DateTimeOffset.Now,
+                    UpdatedDate = DateTimeOffset.Now,
+                    Email = m.Email,
+                    Subject = $"Metering Eligibility Survey Completion Alert - MOS Team"
+                };
+                _mails.Add(_mail);
+            }
+            await mailRepo.InsertBulk(_mails);
+        }
+        // send mail to installers on assignment
         public async Task ScheduleNewAssignmentMailToInstaller(MailObject mail)
         {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            //var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
             var htmlBody = $@"
 Dear {{name}},
-
-This is to notify you that a new prepaid meter application has been assigned to you for installation by {mail.AssignedByName}. Kindly find application details below
-
-Applicant Name       : {mail.ApplicantName}
-Applicant Phone No.  : {mail.ApplicantPhoneNo}
-Applicant Email      : {mail.ApplicantEmail}
-Requested Meter Type : {mail.MeterType}
-Tracking Number      : {mail.TrackNo}
-
+<br /><br />
+This is to notify you that a new meter installation task has been assigned to you by {mail.AssignedByName}. Kindly find customer details below
+<br /><br />
+Customer Name       : {mail.CustomerName}<br />
+Customer Phone No.  : {mail.CustomerPhoneNo}<br />
+Customer Email      : {mail.CustomerEmail}<br />
+Account Number      : {mail.CustomerAccountNumber}
+<br /><br />
 Please attend to the above request as soon as possible.
-
+<br /><br />
 Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
+<br /><br />
+Best regards,<br />
 MOS Team.
 ";
             //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
@@ -276,33 +192,28 @@ MOS Team.
                     CreatedDate = DateTimeOffset.Now,
                     UpdatedDate = DateTimeOffset.Now,
                     Email = m.Email,
-                    Subject = $"New Installation Assignment Alert - MOS Team"
+                    Subject = $"New Installation Task Assignment Alert - MOS Team"
                 };
                 _mails.Add(_mail);
             }
             await mailRepo.InsertBulk(_mails);
         }
-        // schedule reminder to installer on pending application
-        public async Task ScheduleReminderMailToSupervisorsAndInstallers(MailObject mail)
+        // send mail to customers on installation schedule
+        public async Task ScheduleInstallationScheduleMailToCustomer(MailObject mail, bool isReschedule = false)
         {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            //var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
             var htmlBody = $@"
 Dear {{name}},
-
-This is a gentle reminder on the prepaid meter application pending installation. Kindly find application details below
-
-Applicant Name       : {mail.ApplicantName}
-Applicant Phone No.  : {mail.ApplicantPhoneNo}
-Applicant Email      : {mail.ApplicantEmail}
-Requested Meter Type : {mail.MeterType}
-Tracking Number      : {mail.TrackNo}
-
-Please attend to the above request as soon as possible.
-
+<br /><br />
+This is to notify you that your meter installation is {(isReschedule ? "rescheduled" : "scheduled")} for {mail.ScheduleDate}. Kindly find our installer contact below
+<br /><br />
+Name       : {mail.InstallerName}<br />
+Phone No.  : {mail.InstallerPhoneNo}<br />
+Email      : {mail.InstallerEmail}
+<br /><br />
 Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
+<br /><br />
+Best regards,<br />
 MOS Team.
 ";
             //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
@@ -319,35 +230,28 @@ MOS Team.
                     CreatedDate = DateTimeOffset.Now,
                     UpdatedDate = DateTimeOffset.Now,
                     Email = m.Email,
-                    Subject = $"Pending Installation Reminder - MOS Team"
+                    Subject = $"Meter Installation Schedule Alert - MOS Team"
                 };
                 _mails.Add(_mail);
             }
             await mailRepo.InsertBulk(_mails);
         }
-        // schedule mail to installer on decline from disco with comment
-        public async Task ScheduleDiscoDeclineMailToInstallers(MailObject mail)
+        // send mail to customers on installation status update
+        public async Task ScheduleInstallationStatusUpdateMail(MailObject mail)
         {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
             var htmlBody = $@"
 Dear {{name}},
-
-This is to notify you that the prepaid meter installation which you completed has been declined confirmation by the Disco team. Kindly find application details below
-
-Applicant Name       : {mail.ApplicantName}
-Applicant Email      : {mail.ApplicantEmail}
-Requested Meter Type : {mail.MeterType}
-Tracking Number      : {mail.TrackNo}
-Disco Team's Comment : {mail.Comment}
-
-Please attend to the above and update accordingly.
-
+<br /><br />
+This is a status update on your meter installation. Kindly find status below
+<br /><br />
+Status: {mail.InstallationStatus}.
+<br /><br />
 Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
+<br /><br />
+Best regards,<br />
 MOS Team.
 ";
+            //var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
             //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
 
             var _mails = new List<Mail>();
@@ -362,31 +266,30 @@ MOS Team.
                     CreatedDate = DateTimeOffset.Now,
                     UpdatedDate = DateTimeOffset.Now,
                     Email = m.Email,
-                    Subject = $"Declined Disco Confirmation Alert - MOS Team"
+                    Subject = $"Meter Installation Update - MOS Team"
                 };
                 _mails.Add(_mail);
             }
             await mailRepo.InsertBulk(_mails);
         }
-        // schedule mail to installer on approve from disco with comment
-        public async Task ScheduleDiscoApproveMailToInstallers(MailObject mail)
+
+        // send mail to customer on installation completed with meter info
+        public async Task ScheduleInstallationCompletedMailToCustomer(MailObject mail)
         {
-            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
-            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
             var htmlBody = $@"
 Dear {{name}},
-
-This is to notify you that the prepaid meter installation which you completed has been confirmed by the Disco team. Kindly find application details below
-
-Applicant Name       : {mail.ApplicantName}
-Applicant Email      : {mail.ApplicantEmail}
-Requested Meter Type : {mail.MeterType}
-Tracking Number      : {mail.TrackNo}
-Disco Team's Comment : {mail.Comment ?? "---"}
-
+<br /><br />
+This is to notify you that your meter installation is completed and pending approval from our disco team. We will notify you once it is approved. Kindly find details below
+<br /><br />
+Meter Type           : {mail.MeterType}<br />
+Meter Number         : {mail.MeterNo}<br />
+Installer Name       : {mail.InstallerName}<br />
+Installer Phone No.  : {mail.InstallerPhoneNo}<br />
+Installer Email      : {mail.InstallerEmail}
+<br /><br />
 Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
+<br /><br />
+Best regards,<br />
 MOS Team.
 ";
             //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
@@ -403,32 +306,33 @@ MOS Team.
                     CreatedDate = DateTimeOffset.Now,
                     UpdatedDate = DateTimeOffset.Now,
                     Email = m.Email,
-                    Subject = $"Disco Confirmation Alert - MOS Team"
+                    Subject = $"Meter Installation Completed - MOS Team"
                 };
                 _mails.Add(_mail);
             }
             await mailRepo.InsertBulk(_mails);
         }
-        // schedule mail to disco on installation completed by installers
+        // send mail to disco on installation completion for review
         public async Task ScheduleInstallationCompletedMailToDisco(MailObject mail)
         {
             // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
             var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
             var htmlBody = $@"
 Dear {{name}},
-
-This is to notify you that the prepaid meter installation with tracking number {mail.TrackNo} is completed and pending your confirmation. Kindly find application details below
-
-Applicant Name       : {mail.ApplicantName}
-Applicant Email      : {mail.ApplicantEmail}
-Requested Meter Type : {mail.MeterType}
-Tracking Number      : {mail.TrackNo}
-
+<br /><br />
+This is to notify you that the meter installation with account number {mail.CustomerAccountNumber} is completed and pending your approval. Kindly find details below
+<br /><br />
+Customer Name       : {mail.CustomerName}<br />
+Customer Email      : {mail.CustomerEmail}<br />
+Customer Phone No   : {mail.CustomerPhoneNo}<br />
+Meter Type          : {mail.MeterType}<br />
+Meter Number        : {mail.MeterNo}
+<br /><br />
 Please review and confirm as soon as possible.
-
+<br /><br />
 Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
+<br /><br />
+Best regards,<br />
 MOS Team.
 ";
             //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
@@ -451,7 +355,171 @@ MOS Team.
             }
             await mailRepo.InsertBulk(_mails);
         }
+        // send mail to installer on disco rejection
+        public async Task ScheduleDiscoRejectionMailToInstaller(MailObject mail)
+        {
+            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
+            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            var htmlBody = $@"
+Dear {{name}},
+<br /><br />
+This is to notify you that the meter installation for customer with account number '{mail.CustomerAccountNumber}' which you completed has been rejected by the Disco team. Kindly find details below
+<br /><br />
+Customer Name          : {mail.CustomerName}<br />
+Customer Email         : {mail.CustomerEmail}<br />
+Customer Phone No.     : {mail.CustomerPhoneNo}<br />
+Meter Type             : {mail.MeterType}<br />
+Meter Number           : {mail.MeterNo}<br />
+Disco Team's Comment   : {mail.Comment}
+<br /><br />
+Please attend to the above and update accordingly.
+<br /><br />
+Kindly note this is an automated mail, hence, do not reply.
+<br /><br />
+Best regards,<br />
+MOS Team.
+";
+            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
 
+            var _mails = new List<Mail>();
+            foreach (var m in mail.Recipients)
+            {
+                var _htmlBody = htmlBody;
+
+                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
+                var _mail = new Mail
+                {
+                    Body = _htmlBody,
+                    CreatedDate = DateTimeOffset.Now,
+                    UpdatedDate = DateTimeOffset.Now,
+                    Email = m.Email,
+                    Subject = $"Rejected Installation Alert - MOS Team"
+                };
+                _mails.Add(_mail);
+            }
+            await mailRepo.InsertBulk(_mails);
+        }
+        // send mail to customer on disco rejection
+        public async Task ScheduleDiscoRejectionMailToCustomer(MailObject mail)
+        {
+            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
+            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            var htmlBody = $@"
+Dear {{name}},
+<br /><br />
+This is to notify you that your meter installation with account number {mail.CustomerAccountNumber} was rejected and our installation team will look into it. Kindly find comment from our disco team below
+<br /><br />
+Comment: {mail.Comment}
+<br /><br />
+Kindly note this is an automated mail, hence, do not reply.
+<br /><br />
+Best regards,<br />
+MOS Team.
+";
+            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
+
+            var _mails = new List<Mail>();
+            foreach (var m in mail.Recipients)
+            {
+                var _htmlBody = htmlBody;
+
+                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
+                var _mail = new Mail
+                {
+                    Body = _htmlBody,
+                    CreatedDate = DateTimeOffset.Now,
+                    UpdatedDate = DateTimeOffset.Now,
+                    Email = m.Email,
+                    Subject = $"Prepaid Meter Installation Failed - MOS Team"
+                };
+                _mails.Add(_mail);
+            }
+            await mailRepo.InsertBulk(_mails);
+        }
+        // send mail to installer on disco approval
+        public async Task ScheduleDiscoApprovalMailToInstaller(MailObject mail)
+        {
+            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
+            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            var htmlBody = $@"
+Dear {{name}},
+<br /><br />
+This is to notify you that the meter installation for customer with account number '{mail.CustomerAccountNumber}' which you completed has been approved by the Disco team. Kindly find details below
+<br /><br />
+Customer Name          : {mail.CustomerName}<br />
+Customer Email         : {mail.CustomerEmail}<br />
+Customer Phone No.     : {mail.CustomerPhoneNo}<br />
+Meter Type             : {mail.MeterType}<br />
+Meter Number           : {mail.MeterNo}<br />
+Disco Team's Comment   : {mail.Comment}
+<br /><br />
+Kindly note this is an automated mail, hence, do not reply.
+<br /><br />
+Best regards,<br />
+MOS Team.
+";
+            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
+
+            var _mails = new List<Mail>();
+            foreach (var m in mail.Recipients)
+            {
+                var _htmlBody = htmlBody;
+
+                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
+                var _mail = new Mail
+                {
+                    Body = _htmlBody,
+                    CreatedDate = DateTimeOffset.Now,
+                    UpdatedDate = DateTimeOffset.Now,
+                    Email = m.Email,
+                    Subject = $"Rejected Installation Alert - MOS Team"
+                };
+                _mails.Add(_mail);
+            }
+            await mailRepo.InsertBulk(_mails);
+        }
+        // send mail to customer with feedback link on disco approval
+        public async Task ScheduleInstallationApprovedMailToCustomer(MailObject mail)
+        {
+            // var templatePath = Path.Combine(hostEnvironment.WebRootPath, "templates", "email_verification_template.html");
+            var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
+            var htmlBody = $@"
+Dear {{name}},
+<br /><br />
+This is to notify you that your meter installation has been approved by our disco team. We will appreciate getting a feeback on your experience with us. 
+<br /><br />
+Kindly rate our services and suggest ways you think we can improve using the link below
+<br /><br />
+Feedback link: {baseUrl}Feedbacks/Feedback/{{token}}
+<br /><br />
+Kindly note this is an automated mail, hence, do not reply.
+<br /><br />
+Best regards,<br />
+MOS Team.
+";
+            //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
+
+            var _mails = new List<Mail>();
+            foreach (var m in mail.Recipients)
+            {
+                var _htmlBody = htmlBody;
+
+                _htmlBody = _htmlBody.Replace("{name}", m.FirstName);
+                _htmlBody = _htmlBody.Replace("{token}", m.Token);
+                var _mail = new Mail
+                {
+                    Body = _htmlBody,
+                    CreatedDate = DateTimeOffset.Now,
+                    UpdatedDate = DateTimeOffset.Now,
+                    Email = m.Email,
+                    Subject = $"Meter Installation Approved - MOS Team"
+                };
+                _mails.Add(_mail);
+            }
+            await mailRepo.InsertBulk(_mails);
+        }
+
+        
         // schedule mail for new user
         public async Task ScheduleWelcomeMail(MailObject mail)
         {
@@ -459,18 +527,18 @@ MOS Team.
             var baseUrl = contextAccessor.HttpContext.GetBaseUrl();
             var htmlBody = $@"
 Dear {{name}},
-
+<br /><br />
 You have just been profiled on the MOS Portal by an administrator. Kindly find login credentials below
-
-Email    : {{email}}
+<br /><br />
+Email    : {{email}}<br />
 Password : {{password}}
-
-Use the link below to login to your dashboard
+<br /><br />
+Use the link below to login to your dashboard<br />
 Link: {baseUrl}Dashboard
-
+<br /><br />
 Kindly note this is an automated mail, hence, do not reply.
-
-Best regards,
+<br /><br />
+Best regards,<br />
 MOS Team.
 ";
             //htmlBody = htmlBody.Replace("{base_url}", baseUrl);
@@ -535,6 +603,8 @@ MOS Team.
             }
             await mailRepo.InsertBulk(_mails);
         }
+
+
 
 
         // send mail

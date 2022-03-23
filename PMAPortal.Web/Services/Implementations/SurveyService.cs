@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using PMAPortal.Web.Data.Repositories;
+using PMAPortal.Web.DTOs;
 using PMAPortal.Web.Extensions;
 using PMAPortal.Web.Models;
 using System;
@@ -9,26 +10,29 @@ using System.Threading.Tasks;
 
 namespace PMAPortal.Web.Services.Implementations
 {
-    public class SurveyService: ISurveyService
+    public class SurveyService : ISurveyService
     {
         private readonly IRepository<User> userRepo;
         private readonly IRepository<Survey> surveyRepo;
         private readonly IRepository<Customer> customerRepo;
         private readonly ILoggerService<SurveyService> logger;
         private readonly IHttpContextAccessor accessor;
+        private readonly IMailService mailService;
 
         public SurveyService(
             IRepository<User> userRepo,
             IRepository<Survey> surveyRepo,
              IRepository<Customer> customerRepo,
             ILoggerService<SurveyService> logger,
-            IHttpContextAccessor accessor)
+            IHttpContextAccessor accessor,
+            IMailService mailService)
         {
             this.userRepo = userRepo;
             this.surveyRepo = surveyRepo;
             this.customerRepo = customerRepo;
             this.logger = logger;
             this.accessor = accessor;
+            this.mailService = mailService;
         }
 
         // get customers pending survey
@@ -40,7 +44,7 @@ namespace PMAPortal.Web.Services.Implementations
         // get assigned survey
         public IEnumerable<Customer> GetAssigned()
         {
-            return customerRepo.GetWhere(c => c.Surveys.Count() > 0 && c.Surveys.First().SurveyRemark==null);
+            return customerRepo.GetWhere(c => c.Surveys.Count() > 0 && c.Surveys.First().SurveyRemark == null);
         }
 
         // get customers with completed survey
@@ -85,6 +89,27 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.ASSIGN_SURVEY_TASK, currentUser.Email, surveyRepo.TableName, new Survey(), survey,
                 $"Assigned survey task of {customer.CustomerName} to {surveyStaff.FirstName} {surveyStaff.LastName}");
+
+            var surveystaffMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                {
+                    new Recipient
+                    {
+                        Email=surveyStaff.Email,
+                        FirstName=surveyStaff.FirstName,
+                        LastName=surveyStaff.LastName
+                    }
+                },
+                CustomerEmail = customer.Email,
+                CustomerName = customer.CustomerName,
+                CustomerPhoneNo = customer.PhoneNumber,
+                CustomerAccountNumber = customer.AccountNumber,
+                AssignedByEmail = currentUser.Email,
+                AssignedByName = currentUser.FullName
+            };
+            await mailService.ScheduleNewAssignmentMailToSurveyStaff(surveystaffMail);
+
         }
         public async Task ReassignSurvey(long surveyStaffId, long surveyId)
         {
@@ -104,9 +129,9 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException($"Specified user does not have the '{AppRoles.SURVEY_STAFF.ToString()}' role");
             }
 
-           
+
             var currentUser = accessor.HttpContext.GetUserSession();
-            if(survey.SurveyStaffId != surveyStaffId)
+            if (survey.SurveyStaffId != surveyStaffId)
             {
                 var _oldSurvey = survey.Clone<Survey>();
 
@@ -121,9 +146,31 @@ namespace PMAPortal.Web.Services.Implementations
                 // log activity
                 await logger.LogActivity(ActivityActionType.REASSIGN_SURVEY_TASK, currentUser.Email, surveyRepo.TableName, _oldSurvey, survey,
                     $"Reassigned survey task of {survey.Customer.CustomerName} to {surveyStaff.FirstName} {surveyStaff.LastName}");
+
+
+                var surveystaffMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=surveyStaff.Email,
+                            FirstName=surveyStaff.FirstName,
+                            LastName=surveyStaff.LastName
+                        }
+                    },
+                    CustomerEmail = survey.Customer.Email,
+                    CustomerName = survey.Customer.CustomerName,
+                    CustomerPhoneNo = survey.Customer.PhoneNumber,
+                    CustomerAccountNumber = survey.Customer.AccountNumber,
+                    AssignedByEmail = currentUser.Email,
+                    AssignedByName = currentUser.FullName
+                };
+                await mailService.ScheduleNewAssignmentMailToSurveyStaff(surveystaffMail);
+
             }
 
-           
+
         }
 
         // assign surveys
@@ -136,7 +183,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException($"Survey staff id is invalid");
             }
             var invalidCustomerIds = customerIds.Where(id => !customerRepo.Any(c => c.Id == id));
-            if(invalidCustomerIds.Count() > 0)
+            if (invalidCustomerIds.Count() > 0)
             {
                 throw new AppException($"Customer id(s) '{string.Join(", ", invalidCustomerIds)}' are invalid");
             }
@@ -161,8 +208,32 @@ namespace PMAPortal.Web.Services.Implementations
             await surveyRepo.InsertRange(surveys, false);
 
             // log activity
-            await logger.LogActivity(ActivityActionType.ASSIGN_SURVEY_TASKS, currentUser.Email, 
+            await logger.LogActivity(ActivityActionType.ASSIGN_SURVEY_TASKS, currentUser.Email,
                 $"Assigned {customerIds.Count()} survey tasks to {surveyStaff.FirstName} {surveyStaff.LastName}");
+        
+            foreach(var s in surveys)
+            {
+                var surveystaffMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=surveyStaff.Email,
+                            FirstName=surveyStaff.FirstName,
+                            LastName=surveyStaff.LastName
+                        }
+                    },
+                    CustomerEmail = s.Customer.Email,
+                    CustomerName = s.Customer.CustomerName,
+                    CustomerPhoneNo = s.Customer.PhoneNumber,
+                    CustomerAccountNumber = s.Customer.AccountNumber,
+                    AssignedByEmail = currentUser.Email,
+                    AssignedByName = currentUser.FullName
+                };
+                await mailService.ScheduleNewAssignmentMailToSurveyStaff(surveystaffMail);
+            }
+
         }
 
         public async Task ReassignSurveys(long surveyStaffId, IEnumerable<long> surveyIds)
@@ -200,6 +271,30 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.REASSIGN_SURVEY_TASKS, currentUser.Email,
                 $"Assigned {surveyIds.Count()} survey tasks to {surveyStaff.FirstName} {surveyStaff.LastName}");
+
+            foreach (var s in surveys)
+            {
+                var surveystaffMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=surveyStaff.Email,
+                            FirstName=surveyStaff.FirstName,
+                            LastName=surveyStaff.LastName
+                        }
+                    },
+                    CustomerEmail = s.Customer.Email,
+                    CustomerName = s.Customer.CustomerName,
+                    CustomerPhoneNo = s.Customer.PhoneNumber,
+                    CustomerAccountNumber = s.Customer.AccountNumber,
+                    AssignedByEmail = currentUser.Email,
+                    AssignedByName = currentUser.FullName
+                };
+                await mailService.ScheduleNewAssignmentMailToSurveyStaff(surveystaffMail);
+            }
+
         }
 
 
@@ -212,7 +307,7 @@ namespace PMAPortal.Web.Services.Implementations
                 throw new AppException($"Survey id is invalid");
             }
 
-            if (survey.SurveyRemark!=null)
+            if (survey.SurveyRemark != null)
             {
                 throw new AppException($"Survey cannot be unassigned as it has already been completed");
             }
@@ -220,7 +315,7 @@ namespace PMAPortal.Web.Services.Implementations
             var currentUser = accessor.HttpContext.GetUserSession();
             var _oldSurvey = survey.Clone<Survey>();
 
-            
+
             await surveyRepo.Delete(survey.Id, false);
 
             // log activity
@@ -267,7 +362,7 @@ namespace PMAPortal.Web.Services.Implementations
             var isReschedule = survey.ScheduleDate != null;
             var oldSurvey = survey.Clone<Survey>();
 
-            
+
             survey.ScheduleDate = scheduleDate;
             survey.UpdatedBy = currentUser.Id;
             survey.UpdatedDate = DateTimeOffset.Now;
@@ -277,6 +372,24 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.SCHEDULE_SURVEY, currentUser.Email, surveyRepo.TableName, oldSurvey, survey,
                 $"Scheduled survey for {scheduleDate.ToString("yyyy-MM-dd")}");
+
+            var customerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=survey.Customer.Email,
+                            FirstName=survey.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                SurveyStaffEmail = currentUser.Email,
+                SurveyStaffName=currentUser.FullName,
+                CustomerAccountNumber = survey.Customer.AccountNumber,
+                ScheduleDate=scheduleDate.ToString("MMM d, yyyy 'at' hh:mm")
+            };
+            await mailService.ScheduleSurveyScheduleMailToCustomer(customerMail);
         }
         public async Task ScheduleSurveys(IEnumerable<long> surveyIds, DateTimeOffset scheduleDate)
         {
@@ -290,7 +403,7 @@ namespace PMAPortal.Web.Services.Implementations
             var currentUser = accessor.HttpContext.GetUserSession();
 
             var surveys = surveyRepo.GetWhere(s => surveyIds.Contains(s.Id)).ToList();
-            if(surveys.Any(s=> s.SurveyStaffId != currentUser.Id))
+            if (surveys.Any(s => s.SurveyStaffId != currentUser.Id))
             {
                 throw new AppException($"One or more surveys cannot be scheduled as you are not assigned to them");
             }
@@ -310,8 +423,30 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.SCHEDULE_SURVEYS, currentUser.Email,
                 $"Scheduled surveys with ids {string.Join(", ", surveys.Select(s => s.Id))} for {scheduleDate.ToString("yyyy-MM-dd")}");
-        }
         
+            foreach(var s in surveys)
+            {
+                var customerMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=s.Customer.Email,
+                            FirstName=s.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                    SurveyStaffEmail = currentUser.Email,
+                    SurveyStaffName = currentUser.FullName,
+                    CustomerAccountNumber = s.Customer.AccountNumber,
+                    ScheduleDate = scheduleDate.ToString("MMM d, yyyy 'at' hh:mm")
+                };
+                await mailService.ScheduleSurveyScheduleMailToCustomer(customerMail);
+            }
+
+        }
+
         public async Task UpdateSurvey(Survey survey)
         {
             var _survey = await surveyRepo.GetById(survey.Id);
@@ -361,7 +496,7 @@ namespace PMAPortal.Web.Services.Implementations
             var oldSurvey = _survey.Clone<Survey>();
             var currentUser = accessor.HttpContext.GetUserSession();
 
-            if(currentUser.Id != _survey.SurveyStaffId && !currentUser.Roles.Contains(Constants.ROLE_ADMIN))
+            if (currentUser.Id != _survey.SurveyStaffId && !currentUser.Roles.Contains(Constants.ROLE_ADMIN))
             {
                 throw new AppException($"You cannot submit this survey as it was not assigned to you");
             }
@@ -392,6 +527,23 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.COMPLETE_SURVEY, currentUser.Email, surveyRepo.TableName, oldSurvey, _survey,
                 $"Survey updated");
+
+            var customerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=survey.Customer.Email,
+                            FirstName=survey.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                SurveyStaffEmail = currentUser.Email,
+                SurveyStaffName = currentUser.FullName,
+                CustomerAccountNumber = survey.Customer.AccountNumber
+            };
+            await mailService.ScheduleSurveyCompletionMailToCustomer(customerMail);
         }
 
         // update surevey remark - by supervisor
@@ -425,7 +577,7 @@ namespace PMAPortal.Web.Services.Implementations
         // get assigned for surveystaff
         public IEnumerable<Survey> GetAssigned(long surveyStaffId)
         {
-            return surveyRepo.GetWhere(s =>  s.SurveyRemark == null && s.SurveyStaffId == surveyStaffId);
+            return surveyRepo.GetWhere(s => s.SurveyRemark == null && s.SurveyStaffId == surveyStaffId);
         }
 
         public IEnumerable<Survey> GetCompleted(long surveyStaffId)

@@ -43,5 +43,6 @@ namespace PMAPortal.Web.Models
         public virtual InstallationStatus InstallationStatus { get; set; }
         public virtual Survey Survey { get; set; }
         public virtual ICollection<InstallationLog> InstallationLogs { get; set; }
+        public virtual ICollection<CustomerFeedback> CustomerFeedbacks { get; set; }
     }
 }

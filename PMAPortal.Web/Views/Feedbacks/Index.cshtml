@@ -1,0 +1,57 @@
+﻿@inject ISessionService service;
+@inject IDropdownService dropdownService;
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Customer Feedbacks";
+}
+
+
+<h2 class="mt-4">Customer Feedbacks</h2>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><i class="fa fa-home"></i></li>
+    <li class="breadcrumb-item active">Customer Feedbacks</li>
+</ol>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table id="feedbacksTable" class="table table-striped table-bordered f14">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>&nbsp;</th>
+                                <th>Customer</th>
+                                <th>Account&nbsp;Number</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                                <th>Date&nbsp;Created</th>
+                                <th>Date&nbsp;Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section css{
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/lib/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
+    <script>
+
+    </script>
+    <script src="~/js/customer_feedbacks.js" asp-append-version="true"></script>
+
+}

@@ -6,16 +6,19 @@ namespace PMAPortal.Web.Services
 {
     public interface IMailService
     {
-        Task ScheduleApplicationReceivedMail(MailObject mail);
-        Task ScheduleInstallationUpdateMail(MailObject mail);
-        Task ScheduleInstallationCompletedMail(MailObject mail);
-        Task ScheduleInstallationFailedMail(MailObject mail);
-        Task ScheduleNewApplicationMailToSupervisors(MailObject mail);
+        Task ScheduleNewAssignmentMailToSurveyStaff(MailObject mail);
+        Task ScheduleSurveyScheduleMailToCustomer(MailObject mail, bool isReschedule = false);
+        Task ScheduleSurveyCompletionMailToCustomer(MailObject mail);
         Task ScheduleNewAssignmentMailToInstaller(MailObject mail);
-        Task ScheduleReminderMailToSupervisorsAndInstallers(MailObject mail);
-        Task ScheduleDiscoDeclineMailToInstallers(MailObject mail);
-        Task ScheduleDiscoApproveMailToInstallers(MailObject mail);
+        Task ScheduleInstallationScheduleMailToCustomer(MailObject mail, bool isReschedule = false);
+        Task ScheduleInstallationStatusUpdateMail(MailObject mail);
+        Task ScheduleInstallationCompletedMailToCustomer(MailObject mail);
         Task ScheduleInstallationCompletedMailToDisco(MailObject mail);
+        Task ScheduleDiscoRejectionMailToInstaller(MailObject mail);
+        Task ScheduleDiscoRejectionMailToCustomer(MailObject mail);
+        Task ScheduleDiscoApprovalMailToInstaller(MailObject mail);
+        Task ScheduleInstallationApprovedMailToCustomer(MailObject mail);
+
         Task ScheduleWelcomeMail(MailObject mail);
 
         Task SchedulePasswordResetMail(MailObject mail);

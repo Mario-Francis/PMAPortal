@@ -11,9 +11,9 @@ namespace PMAPortal.Web.ViewModels
     {
         public long Id { get; set; }
         [Required]
-        public long? ApplicantId { get; set; }
+        public long? CustomerId { get; set; }
         [Required]
-        public long? ApplicationId { get; set; }
+        public long? InstallationId { get; set; }
         [Required]
         public long? Question1Id { get; set; }
         [Required]
@@ -39,8 +39,8 @@ namespace PMAPortal.Web.ViewModels
         public DateTimeOffset CreatedDate { get; set; }
 
         public string Rating { get; set; }
-        public string Applicant { get; set; }
-        public string TrackNumber { get; set; }
+        public string Customer { get; set; }
+        public string AccountNumber { get; set; }
 
         public string FormattedCreatedDate
         {
@@ -50,13 +50,13 @@ namespace PMAPortal.Web.ViewModels
             }
         }
 
-        public ApplicantFeedback ToApplicantFeedback()
+        public CustomerFeedback ToCustomerFeedback()
         {
-            return new ApplicantFeedback
+            return new CustomerFeedback
             {
                 Id = Id,
-                ApplicantId = ApplicantId.Value,
-                ApplicationId = ApplicationId.Value,
+                CustomerId = CustomerId.Value,
+                InstallationId = InstallationId.Value,
                 Rating = Math.Round((decimal)((Answer1 + Answer2 + Answer3 + Answer4 + Answer5) / 5), MidpointRounding.AwayFromZero).ToString("N"),
                 Comment = Comment,
                 CreatedDate = DateTimeOffset.Now,
@@ -76,16 +76,16 @@ namespace PMAPortal.Web.ViewModels
             };
         }
 
-        public static FeedbackVM FromApplicantFeedback(ApplicantFeedback feedback, int? clientTimeOffset = null)
+        public static FeedbackVM FromCustomerFeedback(CustomerFeedback feedback, int? clientTimeOffset = null)
         {
-            var applicant = feedback.Application.Applicant;
+            var customer = feedback.Installation.Customer;
             return new FeedbackVM
             {
                 Id = feedback.Id,
-                Applicant = $"{applicant.FirstName} {applicant.LastName} ({applicant.PhoneNumber})",
+                Customer = $"{customer.CustomerName} ({customer.PhoneNumber})",
                 Rating = feedback.Rating,
                 Comment = feedback.Comment ?? "",
-                TrackNumber=feedback.Application.TrackNumber,
+                AccountNumber=customer.AccountNumber,
                 CreatedDate = clientTimeOffset == null ? feedback.CreatedDate : feedback.CreatedDate.ToOffset(TimeSpan.FromMinutes(clientTimeOffset.Value)),
             };
         }

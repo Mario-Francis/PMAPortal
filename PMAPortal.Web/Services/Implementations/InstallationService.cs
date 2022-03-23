@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace PMAPortal.Web.Services.Implementations
 {
-    public class InstallationService: IInstallationService
+    public class InstallationService : IInstallationService
     {
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IRepository<User> userRepo;
@@ -23,6 +23,8 @@ namespace PMAPortal.Web.Services.Implementations
         private readonly ILoggerService<InstallationService> logger;
         private readonly IHttpContextAccessor accessor;
         private readonly IOptionsSnapshot<AppSettings> appSettingsDelegate;
+        private readonly IMailService mailService;
+        private readonly ITokenService tokenService;
 
         public InstallationService(
             IWebHostEnvironment hostEnvironment,
@@ -32,7 +34,9 @@ namespace PMAPortal.Web.Services.Implementations
              IRepository<Customer> customerRepo,
             ILoggerService<InstallationService> logger,
             IHttpContextAccessor accessor,
-            IOptionsSnapshot<AppSettings> appSettingsDelegate)
+            IOptionsSnapshot<AppSettings> appSettingsDelegate,
+            IMailService mailService,
+            ITokenService tokenService)
         {
             this.hostEnvironment = hostEnvironment;
             this.userRepo = userRepo;
@@ -42,6 +46,8 @@ namespace PMAPortal.Web.Services.Implementations
             this.logger = logger;
             this.accessor = accessor;
             this.appSettingsDelegate = appSettingsDelegate;
+            this.mailService = mailService;
+            this.tokenService = tokenService;
         }
 
         // get customers pending installation assignment
@@ -114,6 +120,26 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.ASSIGN_INSTALLATION_TASK, currentUser.Email, installationRepo.TableName, oldInstallation, installation,
                 $"Assigned installation task of {installation.Customer.CustomerName} to {installer.FirstName} {installer.LastName}");
+
+            var installerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installer.Email,
+                            FirstName=installer.FirstName,
+                            LastName=installer.LastName
+                        }
+                    },
+                CustomerName = installation.Customer.CustomerName,
+                CustomerPhoneNo = installation.Customer.PhoneNumber,
+                CustomerEmail = installation.Customer.Email,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                AssignedByName = currentUser.FullName,
+                AssignedByEmail = currentUser.Email
+            };
+            await mailService.ScheduleNewAssignmentMailToInstaller(installerMail);
         }
 
         public async Task ReassignInstallation(long installerId, long installationId)
@@ -149,6 +175,26 @@ namespace PMAPortal.Web.Services.Implementations
                 // log activity
                 await logger.LogActivity(ActivityActionType.REASSIGN_INSTALLATION_TASK, currentUser.Email, installationRepo.TableName, _oldInstallation, installation,
                     $"Reassigned installation task of {installation.Customer.CustomerName} to {installer.FirstName} {installer.LastName}");
+
+                var installerMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installer.Email,
+                            FirstName=installer.FirstName,
+                            LastName=installer.LastName
+                        }
+                    },
+                    CustomerName = installation.Customer.CustomerName,
+                    CustomerPhoneNo = installation.Customer.PhoneNumber,
+                    CustomerEmail = installation.Customer.Email,
+                    CustomerAccountNumber = installation.Customer.AccountNumber,
+                    AssignedByName = currentUser.FullName,
+                    AssignedByEmail = currentUser.Email
+                };
+                await mailService.ScheduleNewAssignmentMailToInstaller(installerMail);
             }
 
 
@@ -176,7 +222,7 @@ namespace PMAPortal.Web.Services.Implementations
 
             var currentUser = accessor.HttpContext.GetUserSession();
             var installations = installationRepo.GetWhere(i => installationIds.Contains(i.Id)).ToList();
-            foreach(var i in installations)
+            foreach (var i in installations)
             {
                 await AddInstallationLog(i.Id, currentUser.Id, (long)InstallationStatuses.Pending, $"Assigned installation to {installer.FirstName} {installer.LastName}", null, false);
             }
@@ -193,6 +239,29 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.ASSIGN_INSTALLATION_TASKS, currentUser.Email,
                 $"Assigned {installationIds.Count()} installation tasks to {installer.FirstName} {installer.LastName}");
+
+            foreach (var i in installations)
+            {
+                var installerMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installer.Email,
+                            FirstName=installer.FirstName,
+                            LastName=installer.LastName
+                        }
+                    },
+                    CustomerName = i.Customer.CustomerName,
+                    CustomerPhoneNo = i.Customer.PhoneNumber,
+                    CustomerEmail = i.Customer.Email,
+                    CustomerAccountNumber = i.Customer.AccountNumber,
+                    AssignedByName = currentUser.FullName,
+                    AssignedByEmail = currentUser.Email
+                };
+                await mailService.ScheduleNewAssignmentMailToInstaller(installerMail);
+            }
         }
 
         public async Task ReassignInstallations(long installerId, IEnumerable<long> installationIds)
@@ -216,7 +285,7 @@ namespace PMAPortal.Web.Services.Implementations
 
             var currentUser = accessor.HttpContext.GetUserSession();
             var installations = installationRepo.GetWhere(i => installationIds.Contains(i.Id) && i.InstallerId != installerId).ToList();
-            foreach(var i in installations)
+            foreach (var i in installations)
             {
                 await AddInstallationLog(i.Id, currentUser.Id, (long)InstallationStatuses.Pending, $"Reassigned installation to {installer.FirstName} {installer.LastName}", null, false);
             }
@@ -233,6 +302,29 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.REASSIGN_INSTALLATION_TASKS, currentUser.Email,
                 $"Assigned {installationIds.Count()} installation tasks to {installer.FirstName} {installer.LastName}");
+
+            foreach (var i in installations)
+            {
+                var installerMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installer.Email,
+                            FirstName=installer.FirstName,
+                            LastName=installer.LastName
+                        }
+                    },
+                    CustomerName = i.Customer.CustomerName,
+                    CustomerPhoneNo = i.Customer.PhoneNumber,
+                    CustomerEmail = i.Customer.Email,
+                    CustomerAccountNumber = i.Customer.AccountNumber,
+                    AssignedByName = currentUser.FullName,
+                    AssignedByEmail = currentUser.Email
+                };
+                await mailService.ScheduleNewAssignmentMailToInstaller(installerMail);
+            }
         }
 
 
@@ -325,6 +417,24 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.SCHEDULE_INSTALLATION, currentUser.Email, installationRepo.TableName, oldInstallation, installation,
                 $"Scheduled installation for {scheduleDate.ToString("yyyy-MM-dd")}");
+
+            var customerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installation.Customer.Email,
+                            FirstName=installation.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                InstallerEmail = currentUser.Email,
+                InstallerName = currentUser.FullName,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                ScheduleDate = scheduleDate.ToString("MMM d, yyyy 'at' hh:mm")
+            };
+            await mailService.ScheduleInstallationScheduleMailToCustomer(customerMail);
         }
         public async Task ScheduleInstallations(IEnumerable<long> installationIds, DateTimeOffset scheduleDate)
         {
@@ -346,7 +456,7 @@ namespace PMAPortal.Web.Services.Implementations
             var installationsForReschedule = installations.Where(s => s.ScheduleDate != null);
             var installationsForSchedule = installations.Where(s => s.ScheduleDate == null);
 
-            foreach(var i in installations)
+            foreach (var i in installations)
             {
                 var descripTerm = i.ScheduleDate == null ? $"Scheduled" : "Rescheduled";
                 await AddInstallationLog(i.Id, currentUser.Id, (long)InstallationStatuses.Scheduled_for_Installation, $"{descripTerm} installation date for {scheduleDate.ToString("dd-MM-yyyy")}", null, false);
@@ -365,6 +475,28 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.SCHEDULE_INSTALLATIONS, currentUser.Email,
                 $"Scheduled installations with ids {string.Join(", ", installations.Select(s => s.Id))} for {scheduleDate.ToString("yyyy-MM-dd")}");
+
+            foreach (var i in installations)
+            {
+                var customerMail = new MailObject
+                {
+                    Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=i.Customer.Email,
+                            FirstName=i.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                    InstallerEmail = currentUser.Email,
+                    InstallerName = currentUser.FullName,
+                    CustomerAccountNumber = i.Customer.AccountNumber,
+                    ScheduleDate = scheduleDate.ToString("MMM d, yyyy 'at' hh:mm")
+                };
+                await mailService.ScheduleInstallationScheduleMailToCustomer(customerMail);
+            }
+
         }
 
         // get assigned for installer
@@ -444,6 +576,24 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.UPDATE_INSTALLATION_METER_INFO, currentUser.Email, installationRepo.TableName, oldInstallation, installation,
                 $"Update installation number to {meterNo}");
+
+            var customerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installation.Customer.Email,
+                            FirstName=installation.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                InstallerEmail = currentUser.Email,
+                InstallerName = currentUser.FullName,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                InstallationStatus = installation.InstallationStatus.Name
+            };
+            await mailService.ScheduleInstallationStatusUpdateMail(customerMail);
         }
 
         // Upload image
@@ -544,7 +694,7 @@ namespace PMAPortal.Web.Services.Implementations
         }
 
         // complete installation
-        public async Task CompleteInstallation(long installationId, string comment=null)
+        public async Task CompleteInstallation(long installationId, string comment = null)
         {
             var installation = await installationRepo.GetById(installationId);
             if (installation == null)
@@ -577,9 +727,48 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.COMPLETE_INSTALLATION, currentUser.Email, installationRepo.TableName, oldInstallation, installation,
                 $"Complete installation");
+
+            var customerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installation.Customer.Email,
+                            FirstName=installation.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                InstallerEmail = currentUser.Email,
+                InstallerName = currentUser.FullName,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                InstallationStatus = installation.InstallationStatus.Name,
+                MeterType = installation.MeterType,
+                MeterNo = installation.MeterNumber
+            };
+            await mailService.ScheduleInstallationCompletedMailToCustomer(customerMail);
+
+            var discos = userRepo.GetWhere(u => u.UserRoles.Any(r => r.RoleId == (long)AppRoles.DISCO_PERSONNEL));
+            var discoMail = new MailObject
+            {
+                Recipients = discos.Select(d => new Recipient
+                {
+                    Email = d.Email,
+                    FirstName = d.FirstName,
+                    LastName = d.LastName
+                }),
+                CustomerEmail = installation.Customer.Email,
+                CustomerName = installation.Customer.CustomerName,
+                CustomerPhoneNo = installation.Customer.PhoneNumber,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                InstallationStatus = installation.InstallationStatus.Name,
+                MeterType = installation.MeterType,
+                MeterNo = installation.MeterNumber
+            };
+            await mailService.ScheduleInstallationCompletedMailToDisco(discoMail);
         }
 
-        public async Task AddInstallationLog(long installationId, long? actionBy, long statusId, string description=null, string comment = null, bool save=true)
+        public async Task AddInstallationLog(long installationId, long? actionBy, long statusId, string description = null, string comment = null, bool save = true)
         {
             var log = new InstallationLog
             {
@@ -624,7 +813,7 @@ namespace PMAPortal.Web.Services.Implementations
         }
 
         // disco approve installation
-        public async Task DiscoApproveInstallation(long installationId, string comment=null)
+        public async Task DiscoApproveInstallation(long installationId, string comment = null)
         {
             var installation = await installationRepo.GetById(installationId);
             if (installation == null)
@@ -647,6 +836,51 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.DISCO_APPROVE_INSTALLATION, currentUser.Email, installationRepo.TableName, oldInstallation, installation,
                 $"Disco Approved installation");
+
+            var installerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installation.Installer.Email,
+                            FirstName=installation.Installer.FirstName,
+                            LastName=installation.Installer.LastName
+                        }
+                    },
+                CustomerEmail = installation.Customer.Email,
+                CustomerName = installation.Customer.CustomerName,
+                CustomerPhoneNo = installation.Customer.PhoneNumber,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                InstallationStatus = installation.InstallationStatus.Name,
+                MeterType = installation.MeterType,
+                MeterNo = installation.MeterNumber,
+                Comment = comment
+            };
+            await mailService.ScheduleDiscoApprovalMailToInstaller(installerMail);
+
+            var customerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installation.Customer.Email,
+                            FirstName=installation.Customer.CustomerName,
+                            LastName=null,
+                            Token=tokenService.GenerateTokenFromData(installationId.ToString())
+                        }
+                    },
+                CustomerEmail = installation.Customer.Email,
+                CustomerName = installation.Customer.CustomerName,
+                CustomerPhoneNo = installation.Customer.PhoneNumber,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                InstallationStatus = installation.InstallationStatus.Name,
+                MeterType = installation.MeterType,
+                MeterNo = installation.MeterNumber,
+                Comment = comment
+            };
+            await mailService.ScheduleInstallationApprovedMailToCustomer(customerMail);
         }
         // disco reject installation
         public async Task DiscoRejectInstallation(long installationId, string comment)
@@ -676,6 +910,50 @@ namespace PMAPortal.Web.Services.Implementations
             // log activity
             await logger.LogActivity(ActivityActionType.DISCO_REJECT_INSTALLATION, currentUser.Email, installationRepo.TableName, oldInstallation, installation,
                 $"Disco Reject installation");
+
+            var installerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installation.Installer.Email,
+                            FirstName=installation.Installer.FirstName,
+                            LastName=installation.Installer.LastName
+                        }
+                    },
+                CustomerEmail = installation.Customer.Email,
+                CustomerName = installation.Customer.CustomerName,
+                CustomerPhoneNo = installation.Customer.PhoneNumber,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                InstallationStatus = installation.InstallationStatus.Name,
+                MeterType = installation.MeterType,
+                MeterNo = installation.MeterNumber,
+                Comment = comment
+            };
+            await mailService.ScheduleDiscoRejectionMailToInstaller(installerMail);
+
+            var customerMail = new MailObject
+            {
+                Recipients = new List<Recipient>
+                    {
+                        new Recipient
+                        {
+                            Email=installation.Customer.Email,
+                            FirstName=installation.Customer.CustomerName,
+                            LastName=null
+                        }
+                    },
+                CustomerEmail = installation.Customer.Email,
+                CustomerName = installation.Customer.CustomerName,
+                CustomerPhoneNo = installation.Customer.PhoneNumber,
+                CustomerAccountNumber = installation.Customer.AccountNumber,
+                InstallationStatus = installation.InstallationStatus.Name,
+                MeterType = installation.MeterType,
+                MeterNo = installation.MeterNumber,
+                Comment = comment
+            };
+            await mailService.ScheduleDiscoRejectionMailToCustomer(customerMail);
         }
     }
-    }
+}

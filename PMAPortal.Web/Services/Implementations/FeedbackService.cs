@@ -9,10 +9,10 @@ namespace PMAPortal.Web.Services.Implementations
 {
     public class FeedbackService:IFeedbackService
     {
-        private readonly IRepository<ApplicantFeedback> feedbackRepo;
+        private readonly IRepository<CustomerFeedback> feedbackRepo;
         private readonly IRepository<FeedbackQuestion> feedbackQuestionRepo;
 
-        public FeedbackService(IRepository<ApplicantFeedback> feedbackRepo,
+        public FeedbackService(IRepository<CustomerFeedback> feedbackRepo,
             IRepository<FeedbackQuestion> feedbackQuestionRepo)
         {
             this.feedbackRepo = feedbackRepo;
@@ -24,17 +24,17 @@ namespace PMAPortal.Web.Services.Implementations
             return feedbackQuestionRepo.GetAll().OrderBy(q => q.Id);
         }
 
-        public async Task AddFeedback(ApplicantFeedback feedback)
+        public async Task AddFeedback(CustomerFeedback feedback)
         {
             await feedbackRepo.Insert(feedback);
         }
 
-        public IEnumerable<ApplicantFeedback> GetFeedbacks()
+        public IEnumerable<CustomerFeedback> GetFeedbacks()
         {
             return feedbackRepo.GetAll().OrderByDescending(f => f.Id);
         }
 
-        public async Task<ApplicantFeedback> GetFeedback(long id)
+        public async Task<CustomerFeedback> GetFeedback(long id)
         {
             return await feedbackRepo.GetById(id);
         }

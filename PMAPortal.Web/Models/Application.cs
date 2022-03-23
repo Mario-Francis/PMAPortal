@@ -35,7 +35,7 @@ namespace PMAPortal.Web.Models
         public virtual ICollection<ApplicationPet> ApplicationPets { get; set; }
         public virtual ICollection<ApplicationStatusLog> ApplicationStatusLogs { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
-        public virtual ICollection<ApplicantFeedback> ApplicantFeedbacks { get; set; }
+        public virtual ICollection<CustomerFeedback> ApplicantFeedbacks { get; set; }
 
     }
 }

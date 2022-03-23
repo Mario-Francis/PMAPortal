@@ -3,7 +3,7 @@
         serverSide: true,
         processing: true,
         ajax: {
-            url: $base + 'applications/FeedbacksDataTable',
+            url: $base + 'feedbacks/FeedbacksDataTable',
             type: "POST"
         },
         "order": [[2, "asc"]],
@@ -30,21 +30,21 @@
                         + '<i class="fa fa-ellipsis-v"></i>'
                         + '</button>'
                         + '<div class="dropdown-menu f14">'
-                        + `<a class="dropdown-item delete" href="${$base}applications/ApplicantFeedbacks/${data}" uid="${row.id}">View Details</a>`
+                        + `<a class="dropdown-item" href="${$base}feedbacks/${data}" uid="${row.id}">View Details</a>`
                         + '</div>'
                         + '</div>';
                 }
             },
             {
                 data: {
-                    "filter": "Applicant",
-                    "display": "applicant"
+                    "filter": "Customer",
+                    "display": "customer"
                 }
             },
             {
                 data: {
-                    "filter": "TrackNumber",
-                    "display": "trackNumber"
+                    "filter": "AccountNumber",
+                    "display": "accountNumber"
                 }
             },
             {

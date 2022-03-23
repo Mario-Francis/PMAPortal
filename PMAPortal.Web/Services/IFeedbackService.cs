@@ -9,8 +9,8 @@ namespace PMAPortal.Web.Services
     public interface IFeedbackService
     {
         IEnumerable<FeedbackQuestion> GetQuestions();
-        Task AddFeedback(ApplicantFeedback feedback);
-        IEnumerable<ApplicantFeedback> GetFeedbacks();
-        Task<ApplicantFeedback> GetFeedback(long id);
+        Task AddFeedback(CustomerFeedback feedback);
+        IEnumerable<CustomerFeedback> GetFeedbacks();
+        Task<CustomerFeedback> GetFeedback(long id);
     }
 }

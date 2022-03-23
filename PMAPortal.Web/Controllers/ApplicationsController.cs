@@ -433,20 +433,20 @@ namespace PMAPortal.Web.Controllers
 
             return View(feedback);
         }
-        [HttpPost]
-        public IActionResult FeedbacksDataTable()
-        {
-            var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
-                appSettingsDelegate.Value.DefaultTimeZoneOffset : Convert.ToInt32(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]);
+        //[HttpPost]
+        //public IActionResult FeedbacksDataTable()
+        //{
+        //    var clientTimeOffset = string.IsNullOrEmpty(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]) ?
+        //        appSettingsDelegate.Value.DefaultTimeZoneOffset : Convert.ToInt32(Request.Cookies[Constants.CLIENT_TIMEOFFSET_COOKIE_ID]);
 
            
-            var feedbacks = feedbackService.GetFeedbacks().Select(a => FeedbackVM.FromApplicantFeedback(a, clientTimeOffset));
+        //    var feedbacks = feedbackService.GetFeedbacks().Select(a => FeedbackVM.FromApplicantFeedback(a, clientTimeOffset));
 
-            var parser = new Parser<FeedbackVM>(Request.Form, feedbacks.AsQueryable())
-                   .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"));
+        //    var parser = new Parser<FeedbackVM>(Request.Form, feedbacks.AsQueryable())
+        //           .SetConverter(x => x.CreatedDate, x => x.CreatedDate.ToString("MMM d, yyyy 'at' hh:mmtt"));
 
-            return Ok(parser.Parse());
-        }
+        //    return Ok(parser.Parse());
+        //}
 
         //===============
         public IActionResult New()
@@ -618,38 +618,38 @@ namespace PMAPortal.Web.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Feedback(FeedbackVM model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    var errs = ModelState.Values.Where(v => v.Errors.Count > 0).Select(v => v.Errors.First().ErrorMessage);
-                    return StatusCode(400, new { IsSuccess = false, Message = "One or more fields failed validation", ErrorItems = errs });
-                }
-                else
-                {
-                    await feedbackService.AddFeedback(model.ToApplicantFeedback());
-                    return Ok(new
-                    {
-                        IsSuccess = true,
-                        Message = "Feedback added succeessfully",
-                        ErrorItems = new string[] { }
-                    });
-                }
-            }
-            catch (AppException ex)
-            {
-                return StatusCode(400, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
-            }
-            catch (Exception ex)
-            {
-                logger.LogException(ex, "An error was encountered while adding a new feedback");
-                return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
-            }
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Feedback(FeedbackVM model)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            var errs = ModelState.Values.Where(v => v.Errors.Count > 0).Select(v => v.Errors.First().ErrorMessage);
+        //            return StatusCode(400, new { IsSuccess = false, Message = "One or more fields failed validation", ErrorItems = errs });
+        //        }
+        //        else
+        //        {
+        //            //await feedbackService.AddFeedback(model.ToApplicantFeedback());
+        //            return Ok(new
+        //            {
+        //                IsSuccess = true,
+        //                Message = "Feedback added succeessfully",
+        //                ErrorItems = new string[] { }
+        //            });
+        //        }
+        //    }
+        //    catch (AppException ex)
+        //    {
+        //        return StatusCode(400, new { IsSuccess = false, Message = ex.Message, ErrorDetail = JsonSerializer.Serialize(ex.InnerException) });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogException(ex, "An error was encountered while adding a new feedback");
+        //        return StatusCode(500, new { IsSuccess = false, Message = ex.Message, ErrorDetail = ex.GetErrorDetails() });
+        //    }
+        //}
 
         public IActionResult FeedbackReceived()
         {

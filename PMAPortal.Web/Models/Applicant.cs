@@ -23,7 +23,7 @@ namespace PMAPortal.Web.Models
         public virtual User UpdatedByUser { get; set; }
 
         public virtual ICollection<ApplicantAddress> ApplicantAddresses { get; set; }
-        public virtual ICollection<ApplicantFeedback> ApplicantFeedbacks { get; set; }
+        public virtual ICollection<CustomerFeedback> ApplicantFeedbacks { get; set; }
         public virtual ICollection<Application> Applications { get; set; }
     }
 }

@@ -128,7 +128,7 @@ namespace PMAPortal.Web.Services.Implementations
                 CreatedDate = DateTimeOffset.Now
             };
             await applicationStatusLogRepo.Insert(statusLog);
-            await ScheduleMailOnStatusUpdate(applicationId, statusId, comment);
+            //await ScheduleMailOnStatusUpdate(applicationId, statusId, comment);
         }
 
         public async Task AssignInstaller(long applicationId, long installerId)
@@ -152,7 +152,7 @@ namespace PMAPortal.Web.Services.Implementations
             await applicationRepo.Update(application, false);
 
 
-            await ScheduleMailToInstallerOnNewAssignment(applicationId, installerId, currentUser.FullName, currentUser.Email);
+           // await ScheduleMailToInstallerOnNewAssignment(applicationId, installerId, currentUser.FullName, currentUser.Email);
         }
 
         public async Task UpdateApplicant(Applicant applicant)
@@ -223,151 +223,123 @@ namespace PMAPortal.Web.Services.Implementations
             var applicant = application.Applicant;
             var supervisors = userService.GetUsers((int)AppRoles.SUPERVISOR);
 
-            var applicantMail = new MailObject
-            {
-                Recipients = new List<Recipient>
-                {
-                    new Recipient
-                    {
-                        Email=applicant.Email,
-                        FirstName=applicant.FirstName,
-                        LastName=applicant.LastName
-                    }
-                },
-                TrackNo = application.TrackNumber
-            };
-            await mailService.ScheduleApplicationReceivedMail(applicantMail);
-
-            var supervisorMail = new MailObject
-            {
-                Recipients = supervisors.Select(u => new Recipient
-                {
-                    Email = u.Email,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName
-                }),
-                ApplicantEmail = applicant.Email,
-                ApplicantName = applicant.FirstName + " " + applicant.LastName,
-                MeterType = application.Meter.Name,
-                TrackNo = application.TrackNumber
-            };
-            await mailService.ScheduleNewApplicationMailToSupervisors(supervisorMail);
+           
         }
 
-        private async Task ScheduleMailOnStatusUpdate(long applicationId, long statusId, string comment)
-        {
-            var application = await applicationRepo.GetById(applicationId);
-            var applicant = application.Applicant;
-            var installers = userService.GetUsers((int)AppRoles.INSTALLER);
-            var discos = userService.GetUsers((int)AppRoles.DISCO_PERSONNEL);
-            var status = await applicationStatusRepo.GetById(statusId);
+        //private async Task ScheduleMailOnStatusUpdate(long applicationId, long statusId, string comment)
+        //{
+        //    var application = await applicationRepo.GetById(applicationId);
+        //    var applicant = application.Applicant;
+        //    var installers = userService.GetUsers((int)AppRoles.INSTALLER);
+        //    var discos = userService.GetUsers((int)AppRoles.DISCO_PERSONNEL);
+        //    var status = await applicationStatusRepo.GetById(statusId);
 
-            if (new long[] {3,4,5,6,8 }.Contains(statusId))
-            {
-                var applicantMail = new MailObject
-                {
-                    Recipients = new List<Recipient>
-                {
-                    new Recipient
-                    {
-                        Email=applicant.Email,
-                        FirstName=applicant.FirstName,
-                        LastName=applicant.LastName,
-                        Token=tokenService.GenerateTokenFromData(applicationId.ToString())
-                    }
-                },
-                    TrackNo = application.TrackNumber,
-                    ApplicationStatus = status.Name,
-                    Comment = comment,
-                    MeterType = application.Meter.Name
-                };
-                if(statusId==3 || statusId == 4 || statusId== 6)
-                {
-                    await mailService.ScheduleInstallationUpdateMail(applicantMail);
-                }else if (statusId == 5)
-                {
-                    await mailService.ScheduleInstallationFailedMail(applicantMail);
-                }
-                else
-                {
-                    await mailService.ScheduleInstallationCompletedMail(applicantMail);
-                }
-            }
-            if (new long[] { 7,8 }.Contains(statusId))
-            {
-                var installerMail = new MailObject
-                {
-                    Recipients = installers.Select(u => new Recipient
-                    {
-                        Email = u.Email,
-                        FirstName = u.FirstName,
-                        LastName = u.LastName
-                    }),
-                    ApplicantEmail = applicant.Email,
-                    ApplicantName = applicant.FirstName + " " + applicant.LastName,
-                    MeterType = application.Meter.Name,
-                    TrackNo = application.TrackNumber,
-                    ApplicationStatus = status.Name,
-                    Comment = comment
-                };
-                if (statusId == 7)
-                {
-                    await mailService.ScheduleDiscoDeclineMailToInstallers(installerMail);
-                }
-                else
-                {
-                    await mailService.ScheduleDiscoApproveMailToInstallers(installerMail);
-                }
+        //    if (new long[] {3,4,5,6,8 }.Contains(statusId))
+        //    {
+        //        var applicantMail = new MailObject
+        //        {
+        //            Recipients = new List<Recipient>
+        //        {
+        //            new Recipient
+        //            {
+        //                Email=applicant.Email,
+        //                FirstName=applicant.FirstName,
+        //                LastName=applicant.LastName,
+        //                Token=tokenService.GenerateTokenFromData(applicationId.ToString())
+        //            }
+        //        },
+        //            TrackNo = application.TrackNumber,
+        //            ApplicationStatus = status.Name,
+        //            Comment = comment,
+        //            MeterType = application.Meter.Name
+        //        };
+        //        if(statusId==3 || statusId == 4 || statusId== 6)
+        //        {
+        //            await mailService.ScheduleInstallationUpdateMail(applicantMail);
+        //        }else if (statusId == 5)
+        //        {
+        //            await mailService.ScheduleInstallationFailedMail(applicantMail);
+        //        }
+        //        else
+        //        {
+        //            await mailService.ScheduleInstallationCompletedMail(applicantMail);
+        //        }
+        //    }
+        //    if (new long[] { 7,8 }.Contains(statusId))
+        //    {
+        //        var installerMail = new MailObject
+        //        {
+        //            Recipients = installers.Select(u => new Recipient
+        //            {
+        //                Email = u.Email,
+        //                FirstName = u.FirstName,
+        //                LastName = u.LastName
+        //            }),
+        //            ApplicantEmail = applicant.Email,
+        //            ApplicantName = applicant.FirstName + " " + applicant.LastName,
+        //            MeterType = application.Meter.Name,
+        //            TrackNo = application.TrackNumber,
+        //            ApplicationStatus = status.Name,
+        //            Comment = comment
+        //        };
+        //        if (statusId == 7)
+        //        {
+        //            await mailService.ScheduleDiscoDeclineMailToInstallers(installerMail);
+        //        }
+        //        else
+        //        {
+        //            await mailService.ScheduleDiscoApproveMailToInstallers(installerMail);
+        //        }
                
-            }
+        //    }
 
-            if (new long[] { 6 }.Contains(statusId))
-            {
-                var discoMail = new MailObject
-                {
-                    Recipients = discos.Select(u => new Recipient
-                    {
-                        Email = u.Email,
-                        FirstName = u.FirstName,
-                        LastName = u.LastName
-                    }),
-                    ApplicantEmail = applicant.Email,
-                    ApplicantName = applicant.FirstName + " " + applicant.LastName,
-                    MeterType = application.Meter.Name,
-                    TrackNo = application.TrackNumber,
-                    ApplicationStatus=status.Name,
-                    Comment=comment
-                };
-                await mailService.ScheduleInstallationCompletedMailToDisco(discoMail);
-            }
-        }
-        private async Task ScheduleMailToInstallerOnNewAssignment(long applicationId, long installerId, string assignedByName, string assignedByEmail)
-        {
-            var application = await applicationRepo.GetById(applicationId);
-            var applicant = application.Applicant;
-            var installer = await userService.GetUser(installerId);
+        //    if (new long[] { 6 }.Contains(statusId))
+        //    {
+        //        var discoMail = new MailObject
+        //        {
+        //            Recipients = discos.Select(u => new Recipient
+        //            {
+        //                Email = u.Email,
+        //                FirstName = u.FirstName,
+        //                LastName = u.LastName
+        //            }),
+        //            ApplicantEmail = applicant.Email,
+        //            ApplicantName = applicant.FirstName + " " + applicant.LastName,
+        //            MeterType = application.Meter.Name,
+        //            TrackNo = application.TrackNumber,
+        //            ApplicationStatus=status.Name,
+        //            Comment=comment
+        //        };
+        //        await mailService.ScheduleInstallationCompletedMailToDisco(discoMail);
+        //    }
+        //}
+        //private async Task ScheduleMailToInstallerOnNewAssignment(long applicationId, long installerId, string assignedByName, string assignedByEmail)
+        //{
+        //    var application = await applicationRepo.GetById(applicationId);
+        //    var applicant = application.Applicant;
+        //    var installer = await userService.GetUser(installerId);
 
-            var installerMail = new MailObject
-            {
-                Recipients=new List<Recipient>
-                {
-                    new Recipient
-                    {
-                        Email=installer.Email,
-                        FirstName=installer.FirstName,
-                        LastName=installer.LastName
-                    }
-                },
-                ApplicantEmail = applicant.Email,
-                ApplicantName = applicant.FirstName + " " + applicant.LastName,
-                ApplicantPhoneNo=applicant.PhoneNumber,
-                MeterType = application.Meter.Name,
-                TrackNo = application.TrackNumber,
-                AssignedByEmail=assignedByEmail,
-                AssignedByName=assignedByName
-            };
-            await mailService.ScheduleNewAssignmentMailToInstaller(installerMail);
-        }
+        //    var installerMail = new MailObject
+        //    {
+        //        Recipients=new List<Recipient>
+        //        {
+        //            new Recipient
+        //            {
+        //                Email=installer.Email,
+        //                FirstName=installer.FirstName,
+        //                LastName=installer.LastName
+        //            }
+        //        },
+        //        ApplicantEmail = applicant.Email,
+        //        ApplicantName = applicant.FirstName + " " + applicant.LastName,
+        //        ApplicantPhoneNo=applicant.PhoneNumber,
+        //        MeterType = application.Meter.Name,
+        //        TrackNo = application.TrackNumber,
+        //        AssignedByEmail=assignedByEmail,
+        //        AssignedByName=assignedByName
+        //    };
+        //    await mailService.ScheduleNewAssignmentMailToInstaller(installerMail);
+        //}
 
 
         public async Task<(bool exist, Applicant applicant)> ApplicantExists(string email)

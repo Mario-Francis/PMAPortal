@@ -17,7 +17,7 @@ namespace PMAPortal.Web.Data
         public DbSet<Appliance> Appliances { get; set; }
         public DbSet<Applicant> Applicants { get; set; }
         public DbSet<ApplicantAddress> ApplicantAddresses { get; set; }
-        public DbSet<ApplicantFeedback> ApplicantFeedbacks { get; set; }
+        public DbSet<CustomerFeedback> ApplicantFeedbacks { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationAppliance> ApplicationAppliances{ get; set; }
         public DbSet<ApplicationPet> ApplicationPets{ get; set; }
@@ -64,15 +64,6 @@ namespace PMAPortal.Web.Data
                 .WithMany(x => x.ApplicantAddresses)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<ApplicantFeedback>()
-                .HasOne(x => x.Applicant)
-                .WithMany(x => x.ApplicantFeedbacks)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<ApplicantFeedback>()
-                .HasOne(x => x.Application)
-                .WithMany(x=>x.ApplicantFeedbacks)
-                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Application>()
                 .HasOne(x => x.Applicant)
@@ -130,7 +121,7 @@ namespace PMAPortal.Web.Data
                .HasForeignKey(x=>x.AssignedBy)
                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<ApplicantFeedback>()
+            modelBuilder.Entity<CustomerFeedback>()
                .HasMany(x => x.FeedbackAnswers)
                .WithOne(x=>x.ApplicantFeedback)
                .HasForeignKey(x => x.ApplicantFeedbackId)
@@ -255,11 +246,17 @@ namespace PMAPortal.Web.Data
                .HasForeignKey(x => x.InstallationStatusId)
                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<InstallationLog>()
-            //   .HasOne(x => x.Installation)
-            //   .WithMany(x=>x.InstallationLogs)
-            //   .HasForeignKey(x => x.InstallationId)
-            //   .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<CustomerFeedback>()
+                .HasOne(x => x.Customer)
+                .WithMany(x => x.CustomerFeedbacks)
+                .HasForeignKey(x=>x.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CustomerFeedback>()
+                .HasOne(x => x.Installation)
+                .WithMany(x => x.CustomerFeedbacks)
+                .HasForeignKey(x => x.InstallationId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             SeeData(modelBuilder);
         }

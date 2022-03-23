@@ -221,7 +221,7 @@
                             @*<a class="nav-link @(service.ControllerName.ToLower()=="reports"?"active":"")" asp-controller="Reports" asp-action="Index">
                                     <i class="fa fa-chart-bar"></i> &nbsp; Reports
                                 </a>*@
-                            <a class="nav-link @(service.ControllerName.ToLower()=="applications" && service.ActionName.ToLower()=="applicantfeedbacks"?"active":"")" asp-controller="Applications" asp-action="ApplicantFeedbacks">
+                            <a class="nav-link @(service.ControllerName.ToLower()=="feedbacks" && (service.ActionName.ToLower()=="index" ||  service.ActionName.ToLower()=="")?"active":"")" asp-controller="Feedbacks" asp-action="Index">
                                 <i class="fa fa-comments"></i> &nbsp; Feedbacks
                             </a>
                         }

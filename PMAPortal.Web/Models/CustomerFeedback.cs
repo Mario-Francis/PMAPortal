@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace PMAPortal.Web.Models
 {
-    public class ApplicantFeedback:BaseEntity
+    public class CustomerFeedback:BaseEntity
     {
-        public long ApplicantId { get; set; }
-        public long ApplicationId { get; set; }
+        public long CustomerId { get; set; }
+        public long InstallationId { get; set; }
         public string Rating { get; set; }
         public string Comment { get; set; }
 
         // navigation properties
-        public virtual Applicant Applicant { get; set; }
-        public virtual Application Application { get; set; }
+        public virtual Customer Customer { get; set; }
+        public virtual Installation Installation { get; set; }
         public virtual ICollection<FeedbackAnswer> FeedbackAnswers { get; set; }
     }
 }
