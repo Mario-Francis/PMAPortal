@@ -7,16 +7,26 @@
 
 
 <div class="row">
-    <div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
+    <div class="col-xl-8 col-lg-7 d-lg-block d-none">
+        <div class="row" style="margin-top: 20vh;">
+            <div class="col-sm-12">
+                <div class="p-3" style="border-left: 5px solid #aaa;">
+                    <h1 class="roboto text-white f50 font-weight-bold">METER <br />ORDERING SYSTEM</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-5">
         <div class="row">
-            <div class="col-12">
-                <div class="px-3 py-2" style="border-left: 3px solid #1C5B91;">
-                    <h6 class="roboto text-white f18 font-weight-bold">PREPAID METER <br />APPLICATION PORTAL</h6>
+            <div style="height:68px;" class="d-lg-block d-none"></div>
+            <div class="col-12 d-lg-none d-block">
+                <div class="px-3 py-2" style="border-left: 3px solid #aaa;">
+                    <h6 class="roboto text-white f18 font-weight-bold">METER <br />ORDERING SYSTEM</h6>
                 </div>
             </div>
         </div>
         <div class="card shadow" style="margin-top: 10vh;">
-            <div class="card-header">
+            <div class="card-header bg-white">
                 <h5 class="m-0">Login </h5>
             </div>
             <form method="post" id="setupForm">
@@ -39,11 +49,11 @@
                         </div>
 
                     </div>
-                    <div class="card-footer d-flex flex-row">
+                    <div class="card-footer d-flex flex-row bg-white">
                         <input type="hidden" id="returnUrl" value="@(ViewData["returnUrl"])" />
                         <div>
                             @*<button type="button" class="btn btn-danger btn-sm px-3 cancel" id="cancelBtn"><i class="fa fa-times"></i> Cancel</button>
-            <button type="button" class="btn btn-primary btn-sm px-3" id="prevBtn"><i class="fa fa-chevron-left"></i> &nbsp;Previous</button>*@
+                                <button type="button" class="btn btn-primary btn-sm px-3" id="prevBtn"><i class="fa fa-chevron-left"></i> &nbsp;Previous</button>*@
                         </div>
                         <div class="ml-auto">
                             @*<button type="button" class="btn btn-primary btn-sm px-3" id="nextBtn">Next &nbsp;<i class="fa fa-chevron-right"></i></button>*@
