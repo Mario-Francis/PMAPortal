@@ -28,18 +28,6 @@
         <!-- Navbar-->
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                @*<div class="btn-group d-block">
-                        <button type="button" class="btn text-dark btn-sm dropdown-toggle text-white d-block ml-auto remove-btn-outline px-0" style="margin-top:8px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-globe-africa"></i> &nbsp;@sharedLocalizer[service.Culture] <i class="fa fa-caret-down"></i>
-                        </button>
-                        <input type="hidden" id="culture" value="@service.Culture" />
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item culture" type="button" culture="en" lng="english">@sharedLocalizer["en"]</button>
-                            <button class="dropdown-item culture" type="button" culture="fr" lng="french">@sharedLocalizer["fr"]</button>
-                            <button class="dropdown-item culture" type="button" culture="pt" lng="portuguese">@sharedLocalizer["pt"]</button>
-                            <button class="dropdown-item culture" type="button" culture="es" lng="spanish">@sharedLocalizer["es"]</button>
-                        </div>
-                    </div>*@
             </li>
             @if (service.UserSessionExist)
             {
@@ -86,7 +74,7 @@
                         </a>
                         @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR))
                         {
-                            <a class="nav-link @(service.ControllerName.ToLower() == "batches" || service.ControllerName.ToLower()=="installationbatches" ? "collapsed" : "")" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <a class="nav-link @(service.ControllerName.ToLower() == "batches" || service.ControllerName.ToLower()=="installationbatches" ? "" : "collapsed")" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
 
                                 <i class="fas fa-layer-group"></i> &nbsp; Batches
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -132,82 +120,65 @@
 
 
                         @*@if (User.IsInRole(Constants.ROLE_ADMIN))
-                            {
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+        {
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
 
-                                    <i class='fa fa-clipboard-list'></i> &nbsp; Applications
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                                    <nav class="sb-sidenav-menu-nested nav pl-2">
+                <i class='fa fa-clipboard-list'></i> &nbsp; Applications
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                <nav class="sb-sidenav-menu-nested nav pl-2">
 
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">All</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending Installation</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending Disco Confirmation</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
-                                    </nav>
-                                </div>
-                            }
-                            else if (User.IsInRole(Constants.ROLE_INSTALLER))
-                            {
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">All</a>
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending Installation</a>
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending Disco Confirmation</a>
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
+                </nav>
+            </div>
+        }
+        else if (User.IsInRole(Constants.ROLE_INSTALLER))
+        {
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
 
-                                    <i class='fa fa-clipboard-list'></i> &nbsp; Applications
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                                    <nav class="sb-sidenav-menu-nested nav pl-2">
+                <i class='fa fa-clipboard-list'></i> &nbsp; Applications
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                <nav class="sb-sidenav-menu-nested nav pl-2">
 
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Installation</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Disco Confirmation</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
-                                    </nav>
-                                </div>
-                            }
-                            else
-                            {
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending</a>
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Installation</a>
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Disco Confirmation</a>
+                    <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
+                </nav>
+            </div>
+        }
+        else
+        {
 
-                                    <i class='fa fa-clipboard-list'></i> &nbsp; Applications
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                                    <nav class="sb-sidenav-menu-nested nav pl-2">
-
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Pending</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Failed Confirmation</a>
-                                        <a class="nav-link" asp-controller="Applications" asp-action="Index">Completed</a>
-                                    </nav>
-                                </div>
-                            }*@
+        }*@
 
                         @if (User.IsInRole(Constants.ROLE_ADMIN))
                         {
                             <a class="nav-link @(service.ControllerName.ToLower() == "users" ? "active" : "")" asp-controller="Users" asp-action="Index">
                                 <i class="fas fa-users"></i> &nbsp; Users
                             </a>
-                            @*<a class="nav-link @(service.ControllerName.ToLower() == "meters" ? "active" : "")" asp-controller="Meters" asp-action="Index">
-                                    <i class="fas fa-bolt"></i> &nbsp; Meters
-                                </a>
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
+                           
 
-                                    <i class='fa fa-angle-double-down'></i> &nbsp; Dropdown Options
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                                    <nav class="sb-sidenav-menu-nested nav pl-2">
+                            <a class="nav-link @(service.ControllerName.ToLower() == "housetypes" ? "" : "collapsed")" href="#" data-toggle="collapse" data-target="#collapseLayouts4" aria-expanded="false" aria-controls="collapseLayouts4">
 
-                                        <a class="nav-link" asp-controller="Areas" asp-action="Index">Areas</a>
-                                        <a class="nav-link" asp-controller="HouseTypes" asp-action="Index">House Types</a>
-                                        <a class="nav-link" asp-controller="Appliances" asp-action="Index">Appliances</a>
-                                        <a class="nav-link" asp-controller="Pets" asp-action="Index">Pets</a>
-                                    </nav>
-                                </div>*@
+                                <i class="fa fa-angle-double-down"></i> &nbsp; Dropdown Options
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="@(service.ControllerName.ToLower() == "housetypes" ? "show" : "") collapsed collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav pl-2">
+                                    <a class="nav-link @(service.ControllerName.ToLower() == "housetypes" ? "active" : "")" asp-controller="HouseTypes" asp-action="Index">House Types</a>
+                                </nav>
+                            </div>
                         }
                         @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR))
                         {
-                            <a class="nav-link @(service.ControllerName.ToLower() == "reports" ? "collapsed" : "")" href="#" data-toggle="collapse" data-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
+                            <a class="nav-link @(service.ControllerName.ToLower() == "reports" ? "" : "collapsed")" href="#" data-toggle="collapse" data-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
 
                                 <i class="fa fa-chart-bar"></i> &nbsp; Reports
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -219,8 +190,8 @@
                                 </nav>
                             </div>
                             @*<a class="nav-link @(service.ControllerName.ToLower()=="reports"?"active":"")" asp-controller="Reports" asp-action="Index">
-                                    <i class="fa fa-chart-bar"></i> &nbsp; Reports
-                                </a>*@
+                <i class="fa fa-chart-bar"></i> &nbsp; Reports
+            </a>*@
                             <a class="nav-link @(service.ControllerName.ToLower()=="feedbacks" && (service.ActionName.ToLower()=="index" ||  service.ActionName.ToLower()=="")?"active":"")" asp-controller="Feedbacks" asp-action="Index">
                                 <i class="fa fa-comments"></i> &nbsp; Feedbacks
                             </a>

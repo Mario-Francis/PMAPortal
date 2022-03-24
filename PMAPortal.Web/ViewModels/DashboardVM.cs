@@ -7,18 +7,30 @@ namespace PMAPortal.Web.ViewModels
 {
     public class DashboardVM
     {
-        public long TotalApplicationCount { get; set; }
-        public long UnassignedApplicationCount { get; set; }
-        public int TotalAssignedApplicationCount { get; set; }
-        public int PendingApplicationCount { get; set; }
-        public int FailedApplicationCount { get; set; }
-        public int CompletedApplicationCount { get; set; }
-        public string TotalIncome { get; set; }
-        public string CompletedIncome { get; set; }
-        public string FailedIncome { get; set; }
-        public string PendingIncome { get; set; }
-        public int UsersCount { get; set; }
-        public int FeedbacksCount { get; set; }
-        public IEnumerable<ReportItemVM> TotalAmountByType { get; set; }
+        public int CustomerCount { get; set; }
+
+        public int PendingSurveyCount { get; set; }
+        public int CompletedSurveyCount { get; set; }
+        public int MeterReadyCount { get; set; }
+        public int NotMeterReadyCount { get; set; }
+
+        public int PendingInstallationCount { get; set; }
+        public int CompletedInstallationCount { get; set; }
+        public int RejectedInstallationCount { get; set; }
+        public int ApprovedInstallationCount { get; set; }
+
+        public int MyPendingSurveyCount { get; set; }
+        public int MyCompletedSurveyCount { get; set; }
+
+        public int MyPendingInstallationCount { get; set; }
+        public int MyCompletedInstallationCount { get; set; }
+        public int MyApprovedInstallationCount { get; set; }
+        public int MyRejectedInstallationCount { get; set; }
+
+        public int UserCount { get; set; }
+        public int FeedbackCount { get; set; }
+        public int CustomerBatchCount { get; set; }
+        public int InstallerBatchCount { get; set; }
+
     }
 }

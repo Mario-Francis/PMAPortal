@@ -10,11 +10,11 @@
     <li class="breadcrumb-item active">Dashboard</li>
 </ol>
 <!-- Batches raw data -->
-<div class="row">
+<div class="row align-items-stretch">
     @if (User.IsInRole(Constants.ROLE_ADMIN))
     {
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-primary text-white mb-4 shadow">
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-primary text-white mb-0 shadow h-100">
                 <div class="card-body">
                     <div class="d-flex flex-row">
                         <div class="align-self-center">
@@ -25,37 +25,52 @@
                         <div class="flex-fill align-self-center">
                             <div class="pr-2">
                                 <h5 class="pt-3 m-0 text-right">Users</h5>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.UsersCount</h4>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.UserCount</h4>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                @*<div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white w-100" asp-controller="Users" asp-action="Index">
-                            View Details
-                            <div class="small text-white float-right"><i class="fas fa-angle-right"></i></div>
-                        </a>
-
-                    </div>*@
             </div>
         </div>
     }
     @if (User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR))
     {
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-lblue text-white mb-4 shadow">
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-lblue text-white mb-0 shadow h-100">
                 <div class="card-body">
                     <div class="d-flex flex-row">
                         <div class="align-self-center">
                             <div class="text-center">
-                                <p> <i class="fa fa-clipboard-list fa-3x"></i></p>
+                                <p> <i class="fa fa-layer-group fa-3x"></i></p>
                             </div>
                         </div>
                         <div class="flex-fill align-self-center">
                             <div class="pr-2">
-                                <h6 class="pt-3 m-0 text-right">Total Applications</h6>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.TotalApplicationCount</h4>
+                                <h6 class="pt-3 m-0 text-right">Batches</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@(Model.CustomerBatchCount+Model.InstallerBatchCount)</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-right">
+                        <span class="badge badge-light badge-pill">@Model.CustomerBatchCount Customer Batches</span>
+                        <span class="badge badge-light badge-pill">@Model.InstallerBatchCount Installation Batches</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-lblue text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-users fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Customers</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.CustomerCount</h4>
                             </div>
                         </div>
                     </div>
@@ -63,147 +78,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-light text-dark mb-4 shadow">
-                <div class="card-body">
-                    <div class="d-flex flex-row">
-                        <div class="align-self-center">
-                            <div class="text-center">
-                                <p> <i class="fa fa-clipboard-list fa-3x"></i></p>
-                            </div>
-                        </div>
-                        <div class="flex-fill align-self-center">
-                            <div class="pr-2">
-                                <h6 class="pt-3 m-0 text-right">Unassigned Applications</h6>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.UnassignedApplicationCount</h4>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    }
-    @if (User.IsInRole(Constants.ROLE_INSTALLER))
-    {
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-primary text-white mb-4 shadow">
-                <div class="card-body">
-                    <div class="d-flex flex-row">
-                        <div class="align-self-center">
-                            <div class="text-center">
-                                <p> <i class="fa fa-clipboard-list fa-3x"></i></p>
-                            </div>
-                        </div>
-                        <div class="flex-fill align-self-center">
-                            <div class="pr-2">
-                                <h6 class="pt-3 m-0 text-right">Assigned Applications</h6>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.TotalAssignedApplicationCount</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-secondary text-white mb-4 shadow">
-                <div class="card-body">
-                    <div class="d-flex flex-row">
-                        <div class="align-self-center">
-                            <div class="text-center">
-                                <p> <i class="fa fa-history fa-3x"></i></p>
-                            </div>
-                        </div>
-                        <div class="flex-fill align-self-center">
-                            <div class="pr-2">
-                                <h6 class="pt-3 m-0 text-right">Pending Applications</h6>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.PendingApplicationCount</h4>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-danger text-white mb-4 shadow">
-                <div class="card-body">
-                    <div class="d-flex flex-row">
-                        <div class="align-self-center">
-                            <div class="text-center">
-                                <p> <i class="fa fa-times-circle fa-3x"></i></p>
-                            </div>
-                        </div>
-                        <div class="flex-fill align-self-center">
-                            <div class="pr-2">
-                                <h6 class="pt-3 m-0 text-right">Failed Applications</h6>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.FailedApplicationCount</h4>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-success text-white mb-4 shadow">
-                <div class="card-body">
-                    <div class="d-flex flex-row">
-                        <div class="align-self-center">
-                            <div class="text-center">
-                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
-                            </div>
-                        </div>
-                        <div class="flex-fill align-self-center">
-                            <div class="pr-2">
-                                <h6 class="pt-3 m-0 text-right">Completed Applications</h6>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.CompletedApplicationCount</h4>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    @if (User.IsInRole(Constants.ROLE_ADMIN))
-    {
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-info text-white mb-4 shadow">
-                <div class="card-body">
-                    <div class="d-flex flex-row">
-                        <div class="align-self-center">
-                            <div class="text-center">
-                                <p> <i class="fa fa-money fa-3x"></i></p>
-                            </div>
-                        </div>
-                        <div class="flex-fill align-self-center">
-                            <div class="pr-2">
-                                <h6 class="pt-3 m-0 text-right">Total Income</h6>
-                                <h5 class="text-right pt-1 text-right w-100">@Model.TotalIncome</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="my-1" />
-                    <div class="d-flex flex-row f14">
-                        <p>Pending:</p>
-                        <p class="flex-fill text-right">@Model.PendingIncome</p>
-                    </div>
-                    <div class="d-flex flex-row f14">
-                        <p>Failed:</p>
-                        <p class="flex-fill text-right">@Model.FailedIncome</p>
-                    </div>
-                    <div class="d-flex flex-row f14">
-                        <p>Completed:</p>
-                        <p class="flex-fill text-right">@Model.CompletedIncome</p>
-                    </div>
-                </div>
-               
-            </div>
-        </div>
-        <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card bg-warning text-dark mb-4 shadow">
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-lblue text-white mb-0 shadow h-100">
                 <div class="card-body">
                     <div class="d-flex flex-row">
                         <div class="align-self-center">
@@ -214,7 +90,136 @@
                         <div class="flex-fill align-self-center">
                             <div class="pr-2">
                                 <h6 class="pt-3 m-0 text-right">Feedbacks</h6>
-                                <h4 class="text-right pt-1 text-right w-100">@Model.FeedbacksCount</h4>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.FeedbackCount</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-info text-light mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-history fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Pending Surveys</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.PendingSurveyCount</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-success text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Completed Surveys</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.CompletedSurveyCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-right text-success">
+                        <span class="badge badge-light badge-pill text-dark">@Model.NotMeterReadyCount Not Meter Ready</span>
+                        <span class="badge badge-light badge-pill text-dark">@Model.MeterReadyCount Meter Ready</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-info text-light mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-history fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Pending Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.PendingInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-success text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Completed Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.CompletedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-danger text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-times fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Rejected Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.RejectedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-success text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Approved Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.ApprovedInstallationCount</h4>
                             </div>
                         </div>
                     </div>
@@ -223,7 +228,197 @@
             </div>
         </div>
     }
-    </div>
+    @if (User.IsInRole(Constants.ROLE_SURVEY_STAFF))
+    {
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-info text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-history fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">My Pending Surveys</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.MyPendingSurveyCount</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-success text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">My Completed Surveys</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.MyCompletedSurveyCount</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.IsInRole(Constants.ROLE_INSTALLER))
+    {
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-info text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-history fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">My Pending Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.MyPendingInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-success text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">My Completed Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.MyCompletedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-primary text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">My Approved Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.MyApprovedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-danger text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-times fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">My Rejected Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.MyRejectedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (User.IsInRole(Constants.ROLE_DISCO) && !(User.IsInRole(Constants.ROLE_ADMIN) || User.IsInRole(Constants.ROLE_SUPERVISOR)))
+    {
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-info text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-history fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Installations Pending Review</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.CompletedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-success text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-check-circle fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Approved Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.ApprovedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 py-2">
+            <div class="card bg-danger text-white mb-0 shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="align-self-center">
+                            <div class="text-center">
+                                <p> <i class="fa fa-times fa-3x"></i></p>
+                            </div>
+                        </div>
+                        <div class="flex-fill align-self-center">
+                            <div class="pr-2">
+                                <h6 class="pt-3 m-0 text-right">Rejected Installations</h6>
+                                <h4 class="text-right pt-1 text-right w-100">@Model.RejectedInstallationCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
 
 
 @section css{
